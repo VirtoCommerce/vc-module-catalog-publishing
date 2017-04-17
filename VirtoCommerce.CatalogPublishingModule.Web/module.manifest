@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<module>
+    <id>VirtoCommerce.CatalogPublishing</id>
+    <version>0.1.0</version>
+    <platformVersion>2.13.2</platformVersion>
+    <dependencies>
+        <dependency id="VirtoCommerce.Core" version="2.21.0" />
+    </dependencies>
+
+    <title>Catalog publishing module</title>
+    <description>Allow you to see progress on filling in information about products and marks missed info.</description>
+    <authors>
+        <author>Alexey Antonov</author>
+        <author>Andrew Orlov</author>
+        <author>Aleksandr Vishnyakov</author>
+    </authors>
+    <owners>
+        <owner>Virto Commerce</owner>
+    </owners>
+    <projectUrl>https://github.com/VirtoCommerce/vc-module-catalog-publishing</projectUrl>
+    <iconUrl>https://github.com/VirtoCommerce/vc-module-catalog-publishing/raw/master/VirtoCommerce.CatalogPublishingModule.Web/Content/logo.png</iconUrl>
+    <releaseNotes>Initial implementation of module features.</releaseNotes>
+    <copyright>Copyright © 2017 Virto Commerce. All rights reserved</copyright>
+    <tags>publishing filling</tags>
+
+    <assemblyFile>VirtoCommerce.CatalogPublishingModule.Web.dll</assemblyFile>
+    <moduleType>VirtoCommerce.CatalogPublishingModule.Web.Module, VirtoCommerce.CatalogPublishingModule.Web</moduleType>
+
+    <scripts>
+        <directory virtualPath="$/Scripts" searchPattern="*.js" searchSubdirectories="true" />
+    </scripts>
+</module>
