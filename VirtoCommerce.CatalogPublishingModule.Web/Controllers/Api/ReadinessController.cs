@@ -3,12 +3,16 @@ using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Hangfire;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Web.Model;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.PushNotifications;
+using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Data.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
 {
@@ -16,12 +20,17 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
     public class ReadinessController : ApiController
     {
         private readonly IReadinessService _readinessService;
-        private readonly IReadinessEvaluator _readinessEvaluator;
+        private readonly IReadinessEvaluator[] _readinessEvaluators;
+        private readonly IUserNameResolver _userNameResolver;
+        private readonly IPushNotificationManager _pushNotifier;
 
-        public ReadinessController(IReadinessService readinessService, IReadinessEvaluator readinessEvaluator)
+        public ReadinessController(IReadinessService readinessService, IReadinessEvaluator[] readinessEvaluators,
+            IUserNameResolver userNameResolver, IPushNotificationManager pushNotifier)
         {
             _readinessService = readinessService;
-            _readinessEvaluator = readinessEvaluator;
+            _readinessEvaluators = readinessEvaluators;
+            _userNameResolver = userNameResolver;
+            _pushNotifier = pushNotifier;
         }
 
         /// <summary>
@@ -29,10 +38,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// </summary>
         [HttpGet]
         [Route("evaluators")]
-        [ResponseType(typeof(IReadinessEvaluator))]
+        [ResponseType(typeof(IReadinessEvaluator[]))]
         public IHttpActionResult GetEvaluators()
         {
-            throw new NotImplementedException();
+            return Ok(_readinessEvaluators);
         }
 
         /// <summary>
@@ -41,9 +50,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/evaluate")]
         [ResponseType(typeof(PushNotification))]
-        public IHttpActionResult EvaluateChannel(string id)
+        public IHttpActionResult EvaluateReadiness(string id)
         {
-            throw new NotImplementedException();
+            return EvaluateReadiness(id, "EvaluateReadiness", "Evaluate readiness task", (channel, notification) => BackgroundJob.Enqueue(() => EvaluateReadinessJob(channel, null, notification)));
         }
 
         /// <summary>
@@ -53,9 +62,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
         [ResponseType(typeof(PushNotification))]
-        public IHttpActionResult EvaluateChannel(string id, [FromBody] CatalogProduct[] products)
+        public IHttpActionResult EvaluateReadiness(string id, [FromBody] CatalogProduct[] products)
         {
-            throw new NotImplementedException();
+            return EvaluateReadiness(id, "EvaluateReadiness", "Evaluate readiness for some products task", (channel, notification) => BackgroundJob.Enqueue(() => EvaluateReadinessJob(channel, products, notification)));
         }
 
         /// <summary>
@@ -130,6 +139,50 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         {
             _readinessService.DeleteChannels(ids);
             return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        private IHttpActionResult EvaluateReadiness(string channelId, string notifyType, string notificationDescription, Action<ReadinessChannel, EvaluateReadinessNotification> job)
+        {
+            var channel = _readinessService.GetChannelsByIds(new[] { channelId }).FirstOrDefault();
+            if (channel == null)
+            {
+                throw new NullReferenceException("channel");
+            }
+
+            var notification = new EvaluateReadinessNotification(_userNameResolver.GetCurrentUserName(), notifyType)
+            {
+                Title = notificationDescription,
+                Description = "Starting export..."
+            };
+            _pushNotifier.Upsert(notification);
+
+            job(channel, notification);
+
+            return Ok(notification);
+        }
+
+        private void EvaluateReadinessJob(ReadinessChannel channel, CatalogProduct[] products, EvaluateReadinessNotification notification)
+        {
+            try
+            {
+                var evaluator = _readinessEvaluators.FirstOrDefault(x => channel.EvaluatorType == x.GetType().Name);
+                if (evaluator == null)
+                {
+                    throw new InvalidOperationException("Channel's evaluator type not found");
+                }
+                notification.Readiness = evaluator.EvaluateReadiness(channel, products);
+            }
+            catch (Exception ex)
+            {
+                notification.Description = "Export failed";
+                notification.Errors.Add(ex.ExpandExceptionMessage());
+            }
+            finally
+            {
+                notification.Description = "Export finished";
+                notification.Finished = DateTime.UtcNow;
+                _pushNotifier.Upsert(notification);
+            }
         }
     }
 }

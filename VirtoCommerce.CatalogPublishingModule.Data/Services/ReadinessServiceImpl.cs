@@ -11,11 +11,11 @@ using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 {
-    public class ReadinessService : ServiceBase, IReadinessService
+    public class ReadinessServiceImpl : ServiceBase, IReadinessService
     {
         private readonly Func<IReadinessRepository> _repositoryFactory;
 
-        public ReadinessService(Func<IReadinessRepository> repositoryFactory)
+        public ReadinessServiceImpl(Func<IReadinessRepository> repositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
         }

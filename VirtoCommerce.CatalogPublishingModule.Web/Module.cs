@@ -1,5 +1,9 @@
-﻿using Microsoft.Practices.Unity;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Practices.Unity;
+using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
+using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
@@ -18,16 +22,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
         public override void SetupDatabase()
         {
-            using (var context = new ReadinessRepository(ConnectionStringName, _container.Resolve<AuditableInterceptor>()))
+            using (var context = new ReadinessRepositoryImpl(ConnectionStringName, _container.Resolve<AuditableInterceptor>()))
             {
-                var initializer = new SetupDatabaseInitializer<ReadinessRepository, Data.Migrations.Configuration>();
+                var initializer = new SetupDatabaseInitializer<ReadinessRepositoryImpl, Data.Migrations.Configuration>();
                 initializer.InitializeDatabase(context);
             }
         }
 
         public override void Initialize()
         {
-            _container.RegisterType<IReadinessRepository>(new InjectionFactory(c => new ReadinessRepository(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
+            _container.RegisterType<IReadinessRepository>(new InjectionFactory(c => new ReadinessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
+            _container.RegisterType<IReadinessService, ReadinessServiceImpl>();
+            _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>();
         }
     }
 }
