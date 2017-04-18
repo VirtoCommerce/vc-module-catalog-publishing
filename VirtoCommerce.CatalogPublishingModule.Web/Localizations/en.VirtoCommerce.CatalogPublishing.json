@@ -8,6 +8,13 @@
           "name": "Name",
           "readiness-percent": "Readiness percent"
         }
+      },
+      "channel-details": {
+        "new-title": "New catalog publishing channel",
+        "title": "Catalog publishing channel",
+        "labels": {
+          "name": "Name"
+        }
       }
     },
     "dialogs": {

@@ -1,0 +1,14 @@
+﻿<div class="blade-content">
+    <div class="blade-inner">
+        <div class="inner-block clearfix">
+            <form class="form" name="formChannel">
+                <div ng-init="setForm(formChannel)">
+                    <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.name' | translate"></label>
+                    <div class="form-input">
+                        <input placeholder="{{ 'catalog-publishing.blades.channel-details.labels.name' | translate }}" required="required" ng-model="blade.currentEntity.name">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

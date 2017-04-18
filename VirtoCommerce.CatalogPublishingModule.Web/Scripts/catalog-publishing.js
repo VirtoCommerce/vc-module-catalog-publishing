@@ -12,9 +12,9 @@ angular.module(moduleName, [])
                 var blade = {
                     id: 'catalogPublishing',
                     title: 'catalog-publishing.blades.channel-list.title',
+                    headIcon: 'fa fa-tasks',
                     controller: 'virtoCommerce.catalogPublishingModule.channelListController',
                     template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-list.tpl.html',
-                    isExpandable: true,
                     isClosingDisabled: true
                 }
                 bladeNavigationService.showBlade(blade);

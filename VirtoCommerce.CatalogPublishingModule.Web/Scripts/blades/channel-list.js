@@ -11,14 +11,22 @@
         }
 
         $scope.selectNode = function (entity) {
-
+            bladeNavigationService.showBlade({
+                id: 'catalogPublishingChannel',
+                title: entity ? 'catalog-publishing.blades.channel-details.title' : 'catalog-publishing.blades.channel-details.new-title',
+                headIcon: 'fa fa-tasks',
+                currentEntity: entity,
+                originalEntity: angular.copy(entity),
+                controller: 'virtoCommerce.catalogPublishingModule.channelDetailsController',
+                template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-details.tpl.html'
+            });
         }
 
         $scope.deleteChannels = function (selectedItems) {
             var dialog = {
                 id: 'deleteCatalogPublishingChannelsDialog',
                 title: 'catalog-publishing.dialogs.channel-delete.title',
-                title: 'catalog-publishing.dialogs.channel-delete.message',
+                message: 'catalog-publishing.dialogs.channel-delete.message',
                 callback: function (remove) {
                     if (remove) {
                         bladeNavigationService.closeChildrenBlades(blade, function () {

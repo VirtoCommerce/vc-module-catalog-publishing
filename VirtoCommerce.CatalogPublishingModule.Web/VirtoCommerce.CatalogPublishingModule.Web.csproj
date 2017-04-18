@@ -147,6 +147,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\blades\channel-details.js" />
+    <Content Include="Scripts\blades\channel-details.tpl.html" />
     <Content Include="Scripts\blades\channel-list.js" />
     <Content Include="Scripts\blades\channel-list.tpl.html" />
     <Content Include="Scripts\catalog-publishing.js" />
