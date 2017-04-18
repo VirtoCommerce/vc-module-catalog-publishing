@@ -130,6 +130,7 @@
     <Content Include="app.config" />
     <Content Include="module.ignore" />
     <Content Include="module.manifest" />
+    <Content Include="Localizations\en.VirtoCommerce.CatalogPublishing.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -138,6 +139,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\blades\channel-list.js" />
+    <Content Include="Scripts\blades\channel-list.tpl.html" />
+    <Content Include="Scripts\catalog-publishing.js" />
+    <Content Include="Scripts\resources\catalog-publishing.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -148,9 +153,7 @@
     <Compile Include="Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scripts\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj">
       <Project>{451fecd7-a434-4a0b-b54a-56d92c99d17c}</Project>

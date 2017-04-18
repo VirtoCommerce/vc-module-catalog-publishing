@@ -1,0 +1,10 @@
+﻿{
+  "catalog-publishing": {
+    "main-menu-title": "Catalog publishing",
+    "blades": {
+      "channel-list": {
+        "title": "Catalog publishing channels"
+      }
+    }
+  }
+}
