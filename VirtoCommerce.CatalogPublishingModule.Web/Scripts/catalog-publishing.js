@@ -13,7 +13,7 @@ angular.module(moduleName, [])
                     id: 'catalogPublishing',
                     title: 'catalog-publishing.blades.channel-list.title',
                     controller: 'virtoCommerce.catalogPublishingModule.channelListController',
-                    template: 'Modules/$(VirtoCommerce.CatalogPublishingModule)/Scripts/blades/channel-list.tpl.html',
+                    template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-list.tpl.html',
                     isExpandable: true,
                     isClosingDisabled: true
                 }
