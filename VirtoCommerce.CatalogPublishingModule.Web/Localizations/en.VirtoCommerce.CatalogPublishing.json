@@ -3,7 +3,17 @@
     "main-menu-title": "Catalog publishing",
     "blades": {
       "channel-list": {
-        "title": "Catalog publishing channels"
+        "title": "Catalog publishing channels",
+        "labels": {
+          "name": "Name",
+          "readiness-percent": "Readiness percent"
+        }
+      }
+    },
+    "dialogs": {
+      "channel-delete": {
+        "title": "Delete confirmation",
+        "message": "Are you sure you want to delete selected Catalog Publishing Channels?"
       }
     }
   }

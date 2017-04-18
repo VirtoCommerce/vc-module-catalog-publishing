@@ -5,7 +5,7 @@
 
         blade.refresh = function () {
             blade.isLoading = true;
-            blade.currentEnties = data;
+            blade.currentEntities = data.results;
             $scope.pageSettings.totalItems = data.totalCount;
             blade.isLoading = false;
         }
