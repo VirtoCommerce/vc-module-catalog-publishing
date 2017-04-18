@@ -1,19 +1,20 @@
 ﻿using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
+using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 {
-    public interface IReadinessRepository
+    public interface IReadinessRepository : IRepository
     {
-        IQueryable<ReadinessEntry> Entries { get; }
+        IQueryable<ReadinessEntryEntity> Entries { get; }
 
-        IQueryable<ReadinessDetail> Details { get; }
+        IQueryable<ReadinessDetailEntity> Details { get; }
 
-        IQueryable<ReadinessChannel> Channels { get; }
+        IQueryable<ReadinessChannelEntity> Channels { get; }
 
-        ReadinessChannel[] GetChannelsByIds(string[] ids);
+        ReadinessChannelEntity[] GetChannelsByIds(string[] ids);
 
-        ReadinessEntry[] GetEntriesByIds(string[] ids);
+        ReadinessEntryEntity[] GetEntriesByIds(string[] ids);
 
         void DeleteChannels(string[] ids);
     }

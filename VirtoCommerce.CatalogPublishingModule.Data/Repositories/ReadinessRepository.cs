@@ -20,41 +20,41 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ReadinessDetail>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<ReadinessDetail>().HasRequired(x => x.ReadinessEntry).WithMany(x => x.Details).HasForeignKey(x => x.ReadinessEntryId).WillCascadeOnDelete(true);
-            modelBuilder.Entity<ReadinessDetail>().ToTable("ReadinessDetail");
+            modelBuilder.Entity<ReadinessDetailEntity>().HasKey(x => x.Id).Property(x => x.Id);
+            modelBuilder.Entity<ReadinessDetailEntity>().HasRequired(x => x.ReadinessEntry).WithMany(x => x.Details).HasForeignKey(x => x.ReadinessEntryId).WillCascadeOnDelete(true);
+            modelBuilder.Entity<ReadinessDetailEntity>().ToTable("ReadinessDetail");
 
-            modelBuilder.Entity<ReadinessEntry>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<ReadinessEntry>().HasRequired(x => x.Channel).WithMany().HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
-            modelBuilder.Entity<ReadinessEntry>().ToTable("ReadinessEntry");
+            modelBuilder.Entity<ReadinessEntryEntity>().HasKey(x => x.Id).Property(x => x.Id);
+            modelBuilder.Entity<ReadinessEntryEntity>().HasRequired(x => x.Channel).WithMany().HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
+            modelBuilder.Entity<ReadinessEntryEntity>().ToTable("ReadinessEntry");
 
-            modelBuilder.Entity<ReadinessChannel>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<ReadinessChannel>().ToTable("ReadinessChannel");
+            modelBuilder.Entity<ReadinessChannelEntity>().HasKey(x => x.Id).Property(x => x.Id);
+            modelBuilder.Entity<ReadinessChannelEntity>().ToTable("ReadinessChannel");
 
             base.OnModelCreating(modelBuilder);
         }
 
-        public IQueryable<ReadinessEntry> Entries
+        public IQueryable<ReadinessEntryEntity> Entries
         {
-            get { return GetAsQueryable<ReadinessEntry>(); }
+            get { return GetAsQueryable<ReadinessEntryEntity>(); }
         }
 
-        public IQueryable<ReadinessDetail> Details
+        public IQueryable<ReadinessDetailEntity> Details
         {
-            get { return GetAsQueryable<ReadinessDetail>(); }
+            get { return GetAsQueryable<ReadinessDetailEntity>(); }
         }
 
-        public IQueryable<ReadinessChannel> Channels
+        public IQueryable<ReadinessChannelEntity> Channels
         {
-            get { return GetAsQueryable<ReadinessChannel>(); }
+            get { return GetAsQueryable<ReadinessChannelEntity>(); }
         }
 
-        public ReadinessChannel[] GetChannelsByIds(string[] ids)
+        public ReadinessChannelEntity[] GetChannelsByIds(string[] ids)
         {
             return Channels.Where(x => ids.Contains(x.Id)).ToArray();
         }
 
-        public ReadinessEntry[] GetEntriesByIds(string[] ids)
+        public ReadinessEntryEntity[] GetEntriesByIds(string[] ids)
         {
             return Entries.Include(x => x.Details).Where(x => ids.Contains(x.Id)).ToArray();
         }

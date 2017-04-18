@@ -1,6 +1,8 @@
-﻿namespace VirtoCommerce.CatalogPublishingModule.Core.Model
+﻿using VirtoCommerce.Platform.Core.Common;
+
+namespace VirtoCommerce.CatalogPublishingModule.Core.Model
 {
-    public class ReadinessEntry
+    public class ReadinessEntry: ValueObject<ReadinessEntry>
     {
         public string ChannelId { get; set; }
 
