@@ -43,6 +43,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         Language = c.String(),
                         PricelistId = c.String(maxLength: 128),
                         EvaluatorType = c.String(),
+                        CreatedDate = c.DateTime(nullable: false),
+                        ModifiedDate = c.DateTime(),
+                        CreatedBy = c.String(maxLength: 64),
+                        ModifiedBy = c.String(maxLength: 64),
                     })
                 .PrimaryKey(t => t.Id);
             

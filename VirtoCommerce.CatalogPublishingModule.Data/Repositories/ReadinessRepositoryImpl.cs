@@ -6,13 +6,13 @@ using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 {
-    public class ReadinessRepository : EFRepositoryBase, IReadinessRepository
+    public class ReadinessRepositoryImpl : EFRepositoryBase, IReadinessRepository
     {
-        public ReadinessRepository()
+        public ReadinessRepositoryImpl()
         {
         }
 
-        public ReadinessRepository(string nameOrConnectionString, params IInterceptor[] interceptors)
+        public ReadinessRepositoryImpl(string nameOrConnectionString, params IInterceptor[] interceptors)
             : base(nameOrConnectionString, null, interceptors)
         {
             Configuration.LazyLoadingEnabled = false;
