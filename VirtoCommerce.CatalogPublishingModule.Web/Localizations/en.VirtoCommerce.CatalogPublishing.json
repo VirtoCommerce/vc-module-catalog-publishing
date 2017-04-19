@@ -13,7 +13,9 @@
         "new-title": "New catalog publishing channel",
         "title": "Catalog publishing channel",
         "labels": {
-          "name": "Name"
+          "name": "Name",
+          "catalog": "Catalog",
+          "pricelist": "Pricelist"
         }
       }
     },

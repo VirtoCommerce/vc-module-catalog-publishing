@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', function ($scope) {
+    .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', 'virtoCommerce.catalogModule.catalogs', function ($scope, catalogApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
 
@@ -12,11 +12,16 @@
             executeMethod: function () {
 
             }
+        }, {
+            name: 'catalog-publishing.blades.channel-details.labels.evaluate',
+            icon: ''
         }];
 
         $scope.setForm = function (form) {
             $scope.formChannel = form;
         }
+
+        $scope.catalogs = catalogApi.getCatalogs();
 
         function isDirty() {
             return !angular.equals(blade.currentEntity, blade.originalEntity);
