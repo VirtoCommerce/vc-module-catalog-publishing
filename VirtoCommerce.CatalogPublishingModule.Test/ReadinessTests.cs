@@ -13,8 +13,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
     [Rollback]
     public class ReadinessTests
     {
-        private const string ConnectionString = "Data Source=(local);Initial Catalog=VirtoCommerce2;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=420";
-
         [Fact]
         public void ChannelTest()
         {
@@ -36,7 +34,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
             service.DeleteChannels(new [] { channel.Id });
             testChannel = service.GetChannelsByIds(new[] { channel.Id }).FirstOrDefault();
-            Assert.True(testChannel == null);
+            Assert.True(CompareChannels(testChannel, null));
         }
 
         private ReadinessChannel GetChannel()
@@ -57,6 +55,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private bool CompareChannels(ReadinessChannel first, ReadinessChannel second)
         {
+            if (first == null && second == null)
+            {
+                return true;
+            }
             if (first == null || second == null)
             {
                 return false;
@@ -77,7 +79,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private static IReadinessRepository GetRepository()
         {
-            var repository = new ReadinessRepositoryImpl(ConnectionString, new EntityPrimaryKeyGeneratorInterceptor());
+            var repository = new ReadinessRepositoryImpl("VirtoCommerce", new EntityPrimaryKeyGeneratorInterceptor());
             return repository;
         }
     }
