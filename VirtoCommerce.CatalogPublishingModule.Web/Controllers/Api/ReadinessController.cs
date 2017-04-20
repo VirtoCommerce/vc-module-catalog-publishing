@@ -9,6 +9,7 @@ using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Web.Model;
 using VirtoCommerce.Domain.Catalog.Model;
+using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
@@ -21,14 +22,17 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
     {
         private readonly IReadinessService _readinessService;
         private readonly IReadinessEvaluator[] _readinessEvaluators;
+        private readonly ICatalogSearchService _catalogSearchService;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _pushNotifier;
 
         public ReadinessController(IReadinessService readinessService, IReadinessEvaluator[] readinessEvaluators,
+            ICatalogSearchService catalogSearchService,
             IUserNameResolver userNameResolver, IPushNotificationManager pushNotifier)
         {
             _readinessService = readinessService;
             _readinessEvaluators = readinessEvaluators;
+            _catalogSearchService = catalogSearchService;
             _userNameResolver = userNameResolver;
             _pushNotifier = pushNotifier;
         }
@@ -52,7 +56,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [ResponseType(typeof(PushNotification))]
         public IHttpActionResult EvaluateReadiness(string id)
         {
-            return EvaluateReadiness(id, "EvaluateReadiness", "Evaluate readiness task", (channel, notification) => BackgroundJob.Enqueue(() => EvaluateReadinessJob(channel, null, notification)));
+            return EvaluateReadiness(id, "EvaluateReadiness", "Evaluate readiness task", (channel, notification) => BackgroundJob.Enqueue(() => EvaluateReadinessJob(channel,
+                    _catalogSearchService.Search(new SearchCriteria { CatalogId = channel.CatalogId, ResponseGroup = SearchResponseGroup.WithProducts }).Products.ToArray(), notification)));
         }
 
         /// <summary>
