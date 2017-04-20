@@ -42,7 +42,7 @@
             $scope.pricelists = response.results;
         });
         $scope.catalogs = catalogApi.getCatalogs();
-        $scope.evaluators = [{ id: 'Default' }]; //catalogPublishingApi.getEvaluators();
+        $scope.evaluators = catalogPublishingApi.getEvaluators();
 
         function isDirty() {
             return !angular.equals(blade.currentEntity, blade.originalEntity);

@@ -21,7 +21,7 @@
                 id: 'catalogPublishingChannel',
                 title: entity ? 'catalog-publishing.blades.channel-details.title' : 'catalog-publishing.blades.channel-details.new-title',
                 headIcon: 'fa fa-tasks',
-                currentEntity: entity,
+                currentEntity: angular.copy(entity),
                 originalEntity: angular.copy(entity),
                 controller: 'virtoCommerce.catalogPublishingModule.channelDetailsController',
                 template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-details.tpl.html'
@@ -43,6 +43,21 @@
                 }
             }
             dialogService.showConfirmationDialog(dialog);
+        }
+
+        $scope.selectCatalogItem = function (catalogId) {
+            bladeNavigationService.showBlade({
+                id: 'readinessCatalogItems',
+                title: '',
+                breadcrumbs: [],
+                filter: {
+                    keyword: 'readiness_percent:[0 TO 99.9]',
+                    searchedKeyword: 'readiness_percent:[0 TO 99.9]'
+                },
+                catalogId: catalogId,
+                controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
+                template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html'
+            }, blade);
         }
 
         blade.toolbarCommands = [{
