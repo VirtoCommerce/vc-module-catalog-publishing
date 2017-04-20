@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
@@ -44,7 +45,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             {
                 using (var changeTracker = GetChangeTracker(repository))
                 {
-                    var alreadyExistEntities = repository.Entries.ToArray().Where(x => entries.Any(y => CompareEntries(y, x))).ToArray();
+                    var alreadyExistEntities = repository.Entries.Include(x => x.Details).ToArray().Where(x => entries.Any(y => CompareEntries(y, x))).ToArray();
                     foreach (var entry in entries)
                     {
                         var sourceEntity = AbstractTypeFactory<ReadinessEntryEntity>.TryCreateInstance().FromModel(entry);
