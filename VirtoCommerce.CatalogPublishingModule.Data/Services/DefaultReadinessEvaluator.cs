@@ -57,9 +57,34 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 };
                 entry.ReadinessPercent = (int) Math.Round((double) entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
                 entries[i] = entry;
+
+                UpdateReadinessProperty(channel.Name, product, entry.ReadinessPercent);
             }
             _readinessService.SaveEntries(entries);
+            _productService.Update(products);
             return entries;
+        }
+
+        private void UpdateReadinessProperty(string channelName, CatalogProduct product, int readinessPercent)
+        {
+            var readinessPropertyName = "readiness_" + channelName;
+                var readinessProperty = product.Properties.FirstOrDefault(x => x.Name == readinessPropertyName);
+                if (readinessProperty == null)
+                {
+                    readinessProperty = new Property
+                    {
+                        Name = readinessPropertyName,
+                        ValueType = PropertyValueType.Number
+                    };
+                    product.Properties.Add(readinessProperty);
+                }
+                var readinessPropertyValue = product.PropertyValues.FirstOrDefault(x => x.PropertyName == readinessPropertyName);
+                if (readinessPropertyValue == null)
+                {
+                    readinessPropertyValue = new PropertyValue();
+                    product.PropertyValues.Add(readinessPropertyValue);
+                }
+                readinessPropertyValue.Value = readinessPercent;
         }
 
         private ReadinessDetail ValidateProperties(ReadinessChannel channel, CatalogProduct product)
@@ -90,41 +115,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 }
             }
             return retVal;
-        }
-
-        private ReadinessDetail ValidateDescriptions(ReadinessChannel channel, CatalogProduct product)
-        {
-            var retVal = new ReadinessDetail { Name = "Descriptions" };
-            var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").AllowedValues;
-            var missedDescriptionTypes = descriptionTypes.Except(product.Reviews
-                .Where(x => x.LanguageCode == channel.Language && !string.IsNullOrEmpty(x.Content))
-                .Select(x => x.ReviewType)
-                .Distinct());
-            retVal.ReadinessPercent = CalculateReadiness(descriptionTypes.Length, missedDescriptionTypes.Count());
-            return retVal;
-        }
-
-        private ReadinessDetail ValidatePrices(Pricelist pricelist, CatalogProduct product)
-        {
-            var retVal = new ReadinessDetail
-            {
-                Name = "Prices",
-                ReadinessPercent = pricelist.Prices.Any(x => x.ProductId == product.Id && x.List > 0) ? 100 : 0
-            };
-            return retVal;
-        }
-
-        private ReadinessDetail ValidateSeo(ReadinessChannel channel, CatalogProduct product)
-        {
-            var retVal = new ReadinessDetail { Name = "Seo" };
-            string pattern = @"[$+;=%{}[\]|\\\/@ ~#!^*&?:'<>,]";
-            retVal.ReadinessPercent = product.SeoInfos.Any(x => x.LanguageCode == channel.Language && !Regex.IsMatch(x.SemanticUrl, pattern)) ? 100 : 0;
-            return retVal;
-        }
-
-        private int CalculateReadiness(int validCount, int invalidCount)
-        {
-            return validCount == 0 || invalidCount == 0 ? 100 : (int) Math.Round((double) validCount / (double) invalidCount) * 100;
         }
 
         private bool IsEqualValues(PropertyValueType type, string first, object second)
@@ -174,6 +164,41 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 }
             }
             return retVal;
+        }
+
+        private ReadinessDetail ValidateDescriptions(ReadinessChannel channel, CatalogProduct product)
+        {
+            var retVal = new ReadinessDetail { Name = "Descriptions" };
+            var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").AllowedValues;
+            var missedDescriptionTypes = descriptionTypes.Except(product.Reviews
+                .Where(x => x.LanguageCode == channel.Language && !string.IsNullOrEmpty(x.Content))
+                .Select(x => x.ReviewType)
+                .Distinct());
+            retVal.ReadinessPercent = CalculateReadiness(descriptionTypes.Length, missedDescriptionTypes.Count());
+            return retVal;
+        }
+
+        private ReadinessDetail ValidatePrices(Pricelist pricelist, CatalogProduct product)
+        {
+            var retVal = new ReadinessDetail
+            {
+                Name = "Prices",
+                ReadinessPercent = pricelist.Prices.Any(x => x.ProductId == product.Id && x.List > 0) ? 100 : 0
+            };
+            return retVal;
+        }
+
+        private ReadinessDetail ValidateSeo(ReadinessChannel channel, CatalogProduct product)
+        {
+            var retVal = new ReadinessDetail { Name = "Seo" };
+            string pattern = @"[$+;=%{}[\]|\\\/@ ~#!^*&?:'<>,]";
+            retVal.ReadinessPercent = product.SeoInfos.Any(x => x.LanguageCode == channel.Language && !Regex.IsMatch(x.SemanticUrl, pattern)) ? 100 : 0;
+            return retVal;
+        }
+
+        private int CalculateReadiness(int validCount, int invalidCount)
+        {
+            return validCount == 0 || invalidCount == 0 ? 100 : (int) Math.Round((double) validCount / (double) invalidCount) * 100;
         }
     }
 }

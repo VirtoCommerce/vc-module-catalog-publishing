@@ -42,10 +42,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// </summary>
         [HttpGet]
         [Route("evaluators")]
-        [ResponseType(typeof(IReadinessEvaluator[]))]
+        [ResponseType(typeof(string[]))]
         public IHttpActionResult GetEvaluators()
         {
-            return Ok(_readinessEvaluators);
+            return Ok(_readinessEvaluators.Select(x => x.GetType().Name));
         }
 
         /// <summary>

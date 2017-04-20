@@ -24,7 +24,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 
         #region Navigation properties
 
-        public ObservableCollection<ReadinessDetailEntity> Details { get; set; }
+        public virtual ObservableCollection<ReadinessDetailEntity> Details { get; set; }
         
         public string ChannelId { get; set; }
 

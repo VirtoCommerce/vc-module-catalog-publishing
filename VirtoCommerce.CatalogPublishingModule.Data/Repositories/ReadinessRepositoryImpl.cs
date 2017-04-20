@@ -25,7 +25,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
             modelBuilder.Entity<ReadinessDetailEntity>().ToTable("ReadinessDetail");
 
             modelBuilder.Entity<ReadinessEntryEntity>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<ReadinessEntryEntity>().HasRequired(x => x.Channel).WithMany().HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
+            modelBuilder.Entity<ReadinessEntryEntity>().HasRequired(x => x.Channel).WithMany(x => x.Entries).HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
             modelBuilder.Entity<ReadinessEntryEntity>().ToTable("ReadinessEntry");
 
             modelBuilder.Entity<ReadinessChannelEntity>().HasKey(x => x.Id).Property(x => x.Id);

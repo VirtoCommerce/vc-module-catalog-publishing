@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
@@ -33,7 +31,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
         {
             _container.RegisterType<IReadinessRepository>(new InjectionFactory(c => new ReadinessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
             _container.RegisterType<IReadinessService, ReadinessServiceImpl>();
-            _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>();
+            _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>("DefaultReadinessEvaluator");
         }
     }
 }

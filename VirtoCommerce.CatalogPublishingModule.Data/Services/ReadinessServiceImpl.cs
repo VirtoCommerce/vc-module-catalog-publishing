@@ -27,7 +27,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             {
                 using (var repository = _repositoryFactory())
                 {
-                    retVal = repository.GetChannelsByIds(ids).Select(x => x.ToModel(AbstractTypeFactory<ReadinessChannel>.TryCreateInstance())).ToArray();
+                    retVal = repository.GetChannelsByIds(ids).Select(x =>
+                    {
+                        var channel = x.ToModel(AbstractTypeFactory<ReadinessChannel>.TryCreateInstance());
+                        channel.ReadinessPercent = x.Entries.Count > 0 ? (int) Math.Round((double) x.Entries.Sum(y => y.ReadinessPercent) / x.Entries.Count) : 0;
+                        return channel;
+                    }).ToArray();
                 }
             }
             return retVal;
@@ -39,7 +44,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             {
                 using (var changeTracker = GetChangeTracker(repository))
                 {
-                    var alreadyExistEntities = repository.Entries.Where(x => entries.Any(y => CompareEntries(y, x))).ToArray();
+                    var alreadyExistEntities = repository.Entries.ToArray().Where(x => entries.Any(y => CompareEntries(y, x))).ToArray();
                     foreach (var entry in entries)
                     {
                         var sourceEntity = AbstractTypeFactory<ReadinessEntryEntity>.TryCreateInstance().FromModel(entry);
