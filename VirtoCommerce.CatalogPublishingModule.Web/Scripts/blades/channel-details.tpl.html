@@ -35,9 +35,9 @@
                         <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.evaluator' | translate"></label>
                         <div class="form-input">
                             <ui-select required ng-model="blade.currentEntity.evaluatorType">
-                                <ui-select-match>{{ $select.selected.id }}</ui-select-match>
-                                <ui-select-choices repeat="x.id as x in evaluators | filter: { id: $select.search }">
-                                    <span ng-bind-html="x.id | highlight: $select.search"></span>
+                                <ui-select-match>{{ $select.selected }}</ui-select-match>
+                                <ui-select-choices repeat="x in evaluators">
+                                    <span ng-bind-html="x | highlight: $select.search"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>
