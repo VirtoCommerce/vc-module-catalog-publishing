@@ -63,8 +63,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 
             public int GetHashCode(ReadinessDetailEntity obj)
             {
-                var result = string.Join(":", obj.Name, obj.ReadinessPercent);
-                return result.GetHashCode();
+                return obj.Name.GetHashCode();
             }
         }
     }

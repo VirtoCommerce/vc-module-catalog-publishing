@@ -51,7 +51,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 
         public ReadinessChannelEntity[] GetChannelsByIds(string[] ids)
         {
-            return Channels.Where(x => ids.Contains(x.Id)).ToArray();
+            return Channels.Include(x => x.Entries).Where(x => ids.Contains(x.Id)).ToArray();
         }
 
         public ReadinessEntryEntity[] GetEntriesByIds(string[] ids)
