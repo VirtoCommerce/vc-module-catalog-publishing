@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
@@ -68,13 +69,26 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             var invalidProperties = properties.Where(p =>
             {
                 var values = product.PropertyValues.Where(x => x.Property.Id == p.Id).ToArray();
-                return values.IsNullOrEmpty() || p.Dictionary
-                    ? values.All(x => !p.DictionaryValues.Any(y => y.LanguageCode == channel.Language && y.Value == x.Value.ToString()))
-                    : values.All(x => x.LanguageCode != channel.Language && x.Value != null &&
-                                        (x.ValueType != PropertyValueType.ShortText && x.ValueType != PropertyValueType.LongText || !string.IsNullOrEmpty((string) x.Value)) &&
-                                        (x.ValueType != PropertyValueType.Number || (decimal) x.Value >= 0m));
+                return IsInvalidProperty(p, values, channel.Language);
             });
             retVal.ReadinessPercent = CalculateReadiness(properties.Length, invalidProperties.Count());
+            return retVal;
+        }
+
+        private bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode)
+        {
+            var retVal = values.IsNullOrEmpty();
+            if (!retVal)
+            {
+                if (property.Dictionary)
+                {
+                    retVal = values.All(x => !property.DictionaryValues.Any(y => y.LanguageCode == languageCode && IsEqualValues(x.ValueType, y.Value, x.Value)));
+                }
+                else
+                {
+                    retVal = values.All(x => x.LanguageCode != languageCode && IsValidPropertyValue(x.ValueType, x.Value));
+                }
+            }
             return retVal;
         }
 
@@ -111,6 +125,55 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         private int CalculateReadiness(int validCount, int invalidCount)
         {
             return validCount == 0 || invalidCount == 0 ? 100 : (int) Math.Round((double) validCount / (double) invalidCount) * 100;
+        }
+
+        private bool IsEqualValues(PropertyValueType type, string first, object second)
+        {
+            var retVal = false;
+            bool successfulParse;
+            switch (type)
+            {
+                case PropertyValueType.ShortText:
+                case PropertyValueType.LongText:
+                    retVal = first == (string)second;
+                    break;
+                case PropertyValueType.Number:
+                    decimal parsedDecimal;
+                    successfulParse = decimal.TryParse(first.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out parsedDecimal);
+                    retVal = successfulParse && parsedDecimal == (decimal)second;
+                    break;
+                case PropertyValueType.DateTime:
+                    DateTime parsedDateTime;
+                    successfulParse = DateTime.TryParse(first, out parsedDateTime);
+                    retVal = successfulParse && parsedDateTime == (DateTime)second;
+                    break;
+                case PropertyValueType.Boolean:
+                    bool parsedBool;
+                    successfulParse = bool.TryParse(first, out parsedBool);
+                    retVal = successfulParse && parsedBool == (bool)second;
+                    break;
+            }
+            return retVal;
+        }
+
+        private bool IsValidPropertyValue(PropertyValueType type, object value)
+        {
+            var retVal = value != null;
+            if (retVal)
+            {
+                switch (type)
+                {
+                    case PropertyValueType.ShortText:
+                    case PropertyValueType.LongText:
+                        retVal = !string.IsNullOrEmpty((string) value);
+                        break;
+                    case PropertyValueType.Number:
+                        retVal = (decimal) value >= 0m;
+                        break;
+                    // No checks for DateTime & Boolean - any value is valid
+                }
+            }
+            return retVal;
         }
     }
 }
