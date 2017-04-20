@@ -1,13 +1,19 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', function ($scope, uiGridHelper, bladeNavigationService, dialogService, bladeUtils) {
+    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, catalogPublishingApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
 
         blade.refresh = function () {
             blade.isLoading = true;
-            blade.currentEntities = data.results;
-            $scope.pageSettings.totalItems = data.totalCount;
-            blade.isLoading = false;
+            catalogPublishingApi.searchChannels({
+                sort: uiGridHelper.getSortExpression($scope),
+                skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
+                take: $scope.pageSettings.itemsPerPageCount
+            }, function (response) {
+                blade.currentEntities = response.results;
+                $scope.pageSettings.totalItems = response.totalCount;
+                blade.isLoading = false;
+            });
         }
 
         $scope.selectNode = function (entity) {
@@ -19,7 +25,7 @@
                 originalEntity: angular.copy(entity),
                 controller: 'virtoCommerce.catalogPublishingModule.channelDetailsController',
                 template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-details.tpl.html'
-            });
+            }, blade);
         }
 
         $scope.deleteChannels = function (selectedItems) {
@@ -30,6 +36,8 @@
                 callback: function (remove) {
                     if (remove) {
                         bladeNavigationService.closeChildrenBlades(blade, function () {
+                            var ids = _.pluck(selectedItems, 'id');
+                            catalogPublishingApi.deleteChannels({ ids: ids }, blade.refresh);
                         });
                     }
                 }
@@ -76,16 +84,3 @@
             bladeUtils.initializePagination($scope);
         };
     }]);
-
-var data = {
-    results: [{
-        id: '1',
-        name: 'test-1',
-        language: 'en-US',
-        pricelistId: '934da94516a74f9ab4ec001343ac928a',
-        catalogId: '4974648a41df4e6ea67ef2ad76d7bbd4',
-        evaluatorType: '',
-        readinessPercent: 95
-    }],
-    totalCount: 1
-};

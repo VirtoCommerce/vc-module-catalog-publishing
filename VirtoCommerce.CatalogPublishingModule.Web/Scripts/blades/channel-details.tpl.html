@@ -6,14 +6,14 @@
                     <div class="form-group">
                         <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.name' | translate"></label>
                         <div class="form-input">
-                            <input placeholder="{{ 'catalog-publishing.blades.channel-details.labels.name' | translate }}" required="required" ng-model="blade.currentEntity.name">
+                            <input required="required" ng-model="blade.currentEntity.name">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.pricelist' | translate"></label>
                         <div class="form-input">
                             <ui-select required ng-model="blade.currentEntity.pricelistId">
-                                <ui-select-match placeholder="{{ 'catalog-publishing.blades.channel-detail.placeholders.pricelist' | translate }}">{{ $select.selected.name }}</ui-select-match>
+                                <ui-select-match>{{ $select.selected.name }}</ui-select-match>
                                 <ui-select-choices repeat="x.id as x in pricelists | filter: { name: $select.search }">
                                     <span ng-bind-html="x.name | highlight: $select.search"></span>
                                 </ui-select-choices>
@@ -24,9 +24,20 @@
                         <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.catalog' | translate"></label>
                         <div class="form-input">
                             <ui-select required ng-model="blade.currentEntity.catalogId">
-                                <ui-select-match placeholder="{{ 'catalog-publishing.blades.channel-detail.placeholders.catalog' | translate }}">{{ $select.selected.name }}</ui-select-match>
+                                <ui-select-match>{{ $select.selected.name }}</ui-select-match>
                                 <ui-select-choices repeat="x.id as x in catalogs | filter: { name: $select.search }">
                                     <span ng-bind-html="x.name | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.evaluator' | translate"></label>
+                        <div class="form-input">
+                            <ui-select required ng-model="blade.currentEntity.evaluatorType">
+                                <ui-select-match>{{ $select.selected.id }}</ui-select-match>
+                                <ui-select-choices repeat="x.id as x in evaluators | filter: { id: $select.search }">
+                                    <span ng-bind-html="x.id | highlight: $select.search"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>

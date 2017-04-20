@@ -15,7 +15,9 @@
         "labels": {
           "name": "Name",
           "catalog": "Catalog",
-          "pricelist": "Pricelist"
+          "pricelist": "Pricelist",
+          "evaluator": "Evaluator type",
+          "evaluate": "Evaluate"
         }
       }
     },
