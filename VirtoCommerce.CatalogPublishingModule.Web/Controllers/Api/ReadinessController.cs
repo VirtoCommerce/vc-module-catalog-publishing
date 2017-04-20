@@ -166,7 +166,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             return Ok(notification);
         }
 
-        private void EvaluateReadinessJob(ReadinessChannel channel, CatalogProduct[] products, EvaluateReadinessNotification notification)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public void EvaluateReadinessJob(ReadinessChannel channel, CatalogProduct[] products, EvaluateReadinessNotification notification)
         {
             try
             {
