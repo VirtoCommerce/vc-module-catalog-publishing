@@ -10,6 +10,7 @@ using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Pricing.Model;
 using VirtoCommerce.Domain.Pricing.Services;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 
@@ -50,11 +51,59 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
         }
 
-        public void DescriptionsValidation()
+        public static IEnumerable<object[]> Descriptions
         {
+            get
+            {
+                foreach (var types in new[] { null, new string[0], new[] { "Valid" }, new[] { "Valid", "Valid2" } })
+                {
+                    yield return new object[] { types, null, 0 };
+                    yield return new object[] { types, new EditorialReview[0], types.IsNullOrEmpty() ? 100 : 0 };
+                    foreach (var languageCode in new[] { null, string.Empty, "Invalid", "Valid" })
+                    {
+                        foreach (var description in new[] { null, string.Empty, "Valid" })
+                        {
+                            yield return new object[]
+                            {
+                                types,
+                                new[]
+                                {
+                                    new EditorialReview { LanguageCode = languageCode, Content = description, ReviewType = "Valid" },
+                                    new EditorialReview { LanguageCode = languageCode, Content = description, ReviewType = "Valid" }
+                                },
+                                types.IsNullOrEmpty() ? 100 : languageCode == "Valid" && description == "Valid" ? 100 / types.Length : 0
+                            };
+                            yield return new object[]
+                            {
+                                types,
+                                new[]
+                                {
+                                    new EditorialReview { LanguageCode = languageCode, Content = description, ReviewType = "Valid" },
+                                    new EditorialReview { LanguageCode = languageCode, Content = description, ReviewType = "Valid" },
+                                    new EditorialReview { LanguageCode = languageCode, Content = description, ReviewType = "Valid2" },
+                                    new EditorialReview { LanguageCode = languageCode, Content = description, ReviewType = "Valid2" }
+                                },
+                                types.IsNullOrEmpty() ? 100 : languageCode == "Valid" && description == "Valid" ? 100 : 0
+                            };
+                        }
+                    }
+                }
+            }
         }
 
+        [Theory]
+        [MemberData("Descriptions")]
+        public void DescriptionsValidation(string[] descriptionTypes, EditorialReview[] descriptions, int readinessPercent)
+        {
+            var evaluator = GetReadinessEvaluator();
+            PrepareData();
 
+            editorialReviewTypes = descriptionTypes;
+            products[0].Reviews = descriptions;
+            var readiness = evaluator.EvaluateReadiness(GetChannel(), products);
+            Assert.True(readiness[0].Details.First(x => x.Name == "Descriptions").ReadinessPercent == readinessPercent);
+        }
+        
         public static IEnumerable<object[]> Prices
         {
             get
