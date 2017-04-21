@@ -6,7 +6,8 @@
                     <div class="form-group">
                         <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.name' | translate"></label>
                         <div class="form-input">
-                            <input required="required" ng-model="blade.currentEntity.name">
+                            <input name="Name" required="required" type="text" ng-model="blade.currentEntity.name" ng-pattern="/^[a-zA-Z0-9]*$/">
+                            <div class="error" ng-show="formChannel.$dirty && formChannel.Name.$invalid && formChannel.Name.$error.pattern" ng-bind="'catalog-publishing.blades.channel-details.labels.name-pattern-error-message' | translate">{{  }}</div>
                         </div>
                     </div>
                     <div class="form-group">

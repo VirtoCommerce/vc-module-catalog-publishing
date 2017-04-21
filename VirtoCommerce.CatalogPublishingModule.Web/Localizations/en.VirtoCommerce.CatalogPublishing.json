@@ -17,7 +17,8 @@
           "catalog": "Catalog",
           "pricelist": "Pricelist",
           "evaluator": "Evaluator type",
-          "evaluate": "Evaluate"
+          "evaluate": "Evaluate",
+          "name-pattern-error-message": "This field can contain only latin symbols and digits"
         }
       }
     },
