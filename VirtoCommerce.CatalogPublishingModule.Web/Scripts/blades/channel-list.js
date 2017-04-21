@@ -49,12 +49,16 @@
             dialogService.showConfirmationDialog(dialog);
         }
 
-        $scope.selectCatalogItem = function (catalogId) {
+        $scope.selectCatalogItem = function (channel) {
             bladeNavigationService.showBlade({
                 id: 'readinessCatalogItems',
                 title: '',
                 breadcrumbs: [],
-                catalogId: catalogId,
+                filter: {
+                    keyword: 'readiness_' + channel.name + ':[0 TO 99]',
+                    searchedKeyword: 'readiness_' + channel.name + ':[0 TO 99]'
+                },
+                catalogId: channel.catalogId,
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
                 template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html'
             }, blade);
@@ -97,7 +101,13 @@
                 });
             };
             bladeUtils.initializePagination($scope);
-            gridOptionExtension.tryExtendGridOptions('catalog-item-select-grid', gridOptions);
-            //gridOptionExtension.tryExtendGridOptions();
         };
+    }])
+    .run(['platformWebApp.ui-grid.extension', function (gridOptionExtension) {
+        gridOptionExtension.registerExtension('catalog-item-select-grid', function (gridOptions) {
+            gridOptions.columnDefs.push({
+                name: 'readinessPercent',
+                displayName: 'catalog-publishing.blades.channel-list.labels.readiness-percent'
+            });
+        });
     }]);

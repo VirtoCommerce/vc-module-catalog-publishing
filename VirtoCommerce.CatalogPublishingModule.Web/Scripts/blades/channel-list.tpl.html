@@ -44,7 +44,7 @@
          class="ui-grid-cell"
          role="{{ col.isRowHeader ? 'rowheader' : 'gridcell' }}"
          data-target="prl_menu"
-         ng-click="grid.appScope.selectCatalogItem(row.entity.catalogId)"
+         ng-click="grid.appScope.selectCatalogItem(row.entity)"
          ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
          ng-class="{ 'ui-grid-row-header-cell': col.isRowHeader, '__hovered': grid.appScope.contextMenuEntity === row.entity, '__selected': row.entity.id === grid.appScope.selectedNodeId }"
          ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'"
