@@ -183,11 +183,22 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         {
             var retVal = new ReadinessDetail { Name = "Descriptions" };
             var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").AllowedValues;
-            var missedDescriptionTypes = descriptionTypes.Except(product.Reviews
-                .Where(x => x.LanguageCode == channel.Language && !string.IsNullOrEmpty(x.Content))
-                .Select(x => x.ReviewType)
-                .Distinct());
-            retVal.ReadinessPercent = CalculateReadiness(descriptionTypes.Length, missedDescriptionTypes.Count());
+            if (product.Reviews == null)
+            {
+                retVal.ReadinessPercent = 0;
+            }
+            else if (descriptionTypes.IsNullOrEmpty())
+            {
+                retVal.ReadinessPercent = 100;
+            }
+            else
+            {
+                var missedDescriptionTypes = descriptionTypes.Except(product.Reviews
+                    .Where(x => x.LanguageCode == channel.Language && !string.IsNullOrEmpty(x.Content))
+                    .Select(x => x.ReviewType)
+                    .Distinct());
+                retVal.ReadinessPercent = CalculateReadiness(descriptionTypes.Length, missedDescriptionTypes.Count());
+            }
             return retVal;
         }
 
@@ -211,9 +222,22 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             return retVal;
         }
 
-        private int CalculateReadiness(int validCount, int invalidCount)
+        private int CalculateReadiness(int totalCount, int invalidCount)
         {
-            return validCount == 0 || invalidCount == 0 ? 100 : (int) Math.Round((double) validCount / (double) invalidCount) * 100;
+            int retVal;
+            if (totalCount == 0 || invalidCount == 0)
+            {
+                retVal = 100;
+            }
+            else if (totalCount == invalidCount)
+            {
+                retVal = 0;
+            }
+            else
+            {
+                retVal = (int) Math.Round((totalCount - invalidCount) / (double) totalCount * 100);
+            }
+            return retVal;
         }
     }
 }
