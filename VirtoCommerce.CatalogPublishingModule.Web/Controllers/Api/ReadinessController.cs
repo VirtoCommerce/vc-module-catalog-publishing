@@ -11,6 +11,7 @@ using VirtoCommerce.CatalogPublishingModule.Web.Model;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model.Search;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Data.Common;
@@ -23,16 +24,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         private readonly IReadinessService _readinessService;
         private readonly IReadinessEvaluator[] _readinessEvaluators;
         private readonly ICatalogSearchService _catalogSearchService;
+        private readonly IItemService _productService;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _pushNotifier;
 
         public ReadinessController(IReadinessService readinessService, IReadinessEvaluator[] readinessEvaluators,
-            ICatalogSearchService catalogSearchService,
+            ICatalogSearchService catalogSearchService, IItemService productService,
             IUserNameResolver userNameResolver, IPushNotificationManager pushNotifier)
         {
             _readinessService = readinessService;
             _readinessEvaluators = readinessEvaluators;
             _catalogSearchService = catalogSearchService;
+            _productService = productService;
             _userNameResolver = userNameResolver;
             _pushNotifier = pushNotifier;
         }
@@ -56,8 +59,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [ResponseType(typeof(PushNotification))]
         public IHttpActionResult EvaluateReadiness(string id)
         {
-            return EvaluateReadiness(id, "EvaluateReadiness", "Evaluate readiness task", (channel, notification) => BackgroundJob.Enqueue(() => EvaluateReadinessJob(channel,
-                    _catalogSearchService.Search(new SearchCriteria { CatalogId = channel.CatalogId, ResponseGroup = SearchResponseGroup.WithProducts }).Products.ToArray(), notification)));
+            return EvaluateReadiness("EvaluateReadiness", "Evaluate readiness task", notification => BackgroundJob.Enqueue(() => EvaluateReadinessJob(id, null, notification)));
         }
 
         /// <summary>
@@ -67,9 +69,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
         [ResponseType(typeof(PushNotification))]
-        public IHttpActionResult EvaluateReadiness(string id, [FromBody] CatalogProduct[] products)
+        public IHttpActionResult EvaluateReadiness(string id, [FromBody] string[] productIds)
         {
-            return EvaluateReadiness(id, "EvaluateReadiness", "Evaluate readiness for some products task", (channel, notification) => BackgroundJob.Enqueue(() => EvaluateReadinessJob(channel, products, notification)));
+            return EvaluateReadiness("EvaluateReadiness", "Evaluate readiness for some products task", notification => BackgroundJob.Enqueue(() => EvaluateReadinessJob(id, productIds, notification)));
         }
 
         /// <summary>
@@ -146,14 +148,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        private IHttpActionResult EvaluateReadiness(string channelId, string notifyType, string notificationDescription, Action<ReadinessChannel, EvaluateReadinessNotification> job)
+        private IHttpActionResult EvaluateReadiness(string notifyType, string notificationDescription, Action<EvaluateReadinessNotification> job)
         {
-            var channel = _readinessService.GetChannelsByIds(new[] { channelId }).FirstOrDefault();
-            if (channel == null)
-            {
-                throw new NullReferenceException("channel");
-            }
-
             var notification = new EvaluateReadinessNotification(_userNameResolver.GetCurrentUserName(), notifyType)
             {
                 Title = notificationDescription,
@@ -161,14 +157,32 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             };
             _pushNotifier.Upsert(notification);
 
-            job(channel, notification);
+            job(notification);
 
             return Ok(notification);
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public void EvaluateReadinessJob(ReadinessChannel channel, CatalogProduct[] products, EvaluateReadinessNotification notification)
+        public void EvaluateReadinessJob(string channelId, string[] productIds, EvaluateReadinessNotification notification)
         {
+            var channel = _readinessService.GetChannelsByIds(new[] { channelId }).FirstOrDefault();
+            if (channel == null)
+            {
+                throw new NullReferenceException("channel");
+            }
+            if (productIds.IsNullOrEmpty())
+            {
+                productIds = _catalogSearchService.Search(new SearchCriteria
+                {
+                    CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts
+                }).Products.Select(x => x.Id).ToArray();
+            }
+            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo, channel.CatalogId);
+            if (products == null)
+            {
+                throw new NullReferenceException("products");
+            }
+
             try
             {
                 var evaluator = _readinessEvaluators.FirstOrDefault(x => channel.EvaluatorType == x.GetType().Name);
@@ -180,12 +194,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             }
             catch (Exception ex)
             {
-                notification.Description = "Export failed";
+                notification.Description = "Evaluation failed";
                 notification.Errors.Add(ex.ExpandExceptionMessage());
             }
             finally
             {
-                notification.Description = "Export finished";
+                notification.Description = "Evaluation finished";
                 notification.Finished = DateTime.UtcNow;
                 _pushNotifier.Upsert(notification);
             }
