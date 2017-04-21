@@ -27,7 +27,7 @@
                 return blade.currentEntity && blade.currentEntity.id && $scope.formChannel && $scope.formChannel.$valid;
             },
             executeMethod: function () {
-                evaluateChannel();
+                catalogPublishingApi.evaluateChannel({ id: blade.currentEntity.id });
             }
         }];
 
@@ -65,13 +65,5 @@
                     blade.isLoading = false;
                 });
             }
-        }
-
-        function evaluateChannel() {
-            catalogPublishingApi.evaluateChannel({
-                id: blade.currentEntity.id
-            }, function (response) {
-                blade.refresh(true);
-            });
         }
     }]);

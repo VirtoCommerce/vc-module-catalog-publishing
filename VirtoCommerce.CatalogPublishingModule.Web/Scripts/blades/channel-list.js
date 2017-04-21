@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, catalogPublishingApi) {
+    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.ui-grid.extension', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, gridOptionExtension, catalogPublishingApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
 
@@ -28,6 +28,10 @@
             }, blade);
         }
 
+        $scope.evaluateChannel = function (channel) {
+            catalogPublishingApi.evaluateChannel({ id: channel.id });
+        }
+
         $scope.deleteChannels = function (selectedItems) {
             var dialog = {
                 id: 'deleteCatalogPublishingChannelsDialog',
@@ -50,10 +54,6 @@
                 id: 'readinessCatalogItems',
                 title: '',
                 breadcrumbs: [],
-                filter: {
-                    keyword: 'readiness_percent:[0 TO 99.9]',
-                    searchedKeyword: 'readiness_percent:[0 TO 99.9]'
-                },
                 catalogId: catalogId,
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
                 template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html'
@@ -97,5 +97,7 @@
                 });
             };
             bladeUtils.initializePagination($scope);
+            gridOptionExtension.tryExtendGridOptions('catalog-item-select-grid', gridOptions);
+            //gridOptionExtension.tryExtendGridOptions();
         };
     }]);
