@@ -12,8 +12,9 @@
                 return true;
             },
             executeMethod: function () {
-                $localStorage.catalogPublishingChannel = $scope.channel;
-                catalogPublishingApi.evaluateChannelProducts({ id: $scope.channel.id }, [blade.productId],
+                var channel = _.find($scope.channels, function (c) { return c.id === $scope.channel.id });
+                $localStorage.catalogPublishingChannel = channel;
+                catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, [blade.productId],
                     function (response) {
                         $scope.readinessPercent = response.length? response[0].readinessPercent : 0;
                     });
