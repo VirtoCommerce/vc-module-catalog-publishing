@@ -110,6 +110,8 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="EvaluationTests.cs" />
+    <Compile Include="Model\Property.cs" />
+    <Compile Include="Model\PropertyValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadinessTests.cs" />
     <Compile Include="RollbackAttribute.cs" />

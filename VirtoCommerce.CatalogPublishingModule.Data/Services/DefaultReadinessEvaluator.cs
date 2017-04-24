@@ -81,7 +81,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         private void UpdateReadinessProperty(string channelName, CatalogProduct product, int readinessPercent)
         {
             var readinessPropertyName = "readiness_" + channelName;
-            var readinessProperty = product.Properties.FirstOrDefault(x => x.Name == readinessPropertyName);
+            var readinessProperty = product.Properties.FirstOrDefault(x => x != null && x.Name == readinessPropertyName);
             if (readinessProperty == null)
             {
                 readinessProperty = new Property
@@ -97,19 +97,27 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 readinessPropertyValue = new PropertyValue();
                 product.PropertyValues.Add(readinessPropertyValue);
             }
+            readinessPropertyValue.Property = readinessProperty;
             readinessPropertyValue.Value = readinessPercent;
         }
 
         private ReadinessDetail ValidateProperties(ReadinessChannel channel, CatalogProduct product)
         {
             var retVal = new ReadinessDetail { Name = "Properties" };
-            var properties = product.Properties.Where(x => x.Required).ToArray();
-            var invalidProperties = properties.Where(p =>
+            if (product.Properties.IsNullOrEmpty())
             {
-                var values = product.PropertyValues.Where(x => x.Property.Id == p.Id).ToArray();
-                return IsInvalidProperty(p, values, channel.Language);
-            });
-            retVal.ReadinessPercent = CalculateReadiness(properties.Length, invalidProperties.Count());
+                retVal.ReadinessPercent = 100;
+            }
+            else
+            {
+                var properties = product.Properties.Where(x => x != null && x.Required).ToArray();
+                var invalidProperties = properties.Where(p =>
+                {
+                    var values = product.PropertyValues.Where(x => x.Property != null && x.Property.Id == p.Id).ToArray();
+                    return IsInvalidProperty(p, values, channel.Language);
+                });
+                retVal.ReadinessPercent = CalculateReadiness(properties.Length, invalidProperties.Count());
+            }
             return retVal;
         }
 
@@ -120,11 +128,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             {
                 if (property.Dictionary)
                 {
-                    retVal = values.All(x => !property.DictionaryValues.Any(y => y.LanguageCode == languageCode && IsEqualValues(x.ValueType, y.Value, x.Value)));
+                    retVal = values.Any(x => !property.DictionaryValues.IsNullOrEmpty() && (x.LanguageCode != languageCode || !property.DictionaryValues.Any(y => IsEqualValues(x.ValueType, y.Value, x.Value))));
                 }
                 else
                 {
-                    retVal = values.All(x => x.LanguageCode != languageCode && IsValidPropertyValue(x.ValueType, x.Value));
+                    retVal = values.Any(x => x.LanguageCode != languageCode || !IsValidPropertyValue(x.ValueType, x.Value));
                 }
             }
             return retVal;
