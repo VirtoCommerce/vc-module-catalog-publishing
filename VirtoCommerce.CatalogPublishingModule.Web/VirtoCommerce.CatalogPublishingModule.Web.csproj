@@ -151,8 +151,12 @@
     <Content Include="Scripts\blades\channel-details.tpl.html" />
     <Content Include="Scripts\blades\channel-list.js" />
     <Content Include="Scripts\blades\channel-list.tpl.html" />
+    <Content Include="Scripts\blades\channel-select.js" />
+    <Content Include="Scripts\blades\channel-select.tpl.html" />
     <Content Include="Scripts\catalog-publishing.js" />
     <Content Include="Scripts\resources\catalog-publishing.js" />
+    <Content Include="Scripts\widgets\catalog-publishing-widget.js" />
+    <Content Include="Scripts\widgets\catalog-publishing-widget.tpl.html" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

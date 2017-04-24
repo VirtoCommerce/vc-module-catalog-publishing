@@ -1,0 +1,21 @@
+﻿<div class="blade-content __medium-wide">
+    <div class="blade-inner">
+        <div class="inner-block clearfix">
+            <form class="form" name="formChannel">
+                <div ng-init="setForm(formChannel)">
+                    <div class="form-group">
+                        <label class="form-label" ng-bind="'catalog-publishing.blades.channel-select.labels.channels' | translate"></label>
+                        <div class="form-input">
+                            <ui-select required ng-model="channel">
+                                <ui-select-match>{{ $select.selected.name }}</ui-select-match>
+                                <ui-select-choices repeat="x in channels | filter: { name: $select.search }">
+                                    <span ng-bind-html="x.name | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

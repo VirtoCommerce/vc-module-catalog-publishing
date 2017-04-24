@@ -40,7 +40,7 @@ angular.module(moduleName, [])
         };
         return retVal;
     })
-    .run(['$rootScope', '$state', 'platformWebApp.mainMenuService', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($rootScope, $state, mainMenuService, widgetMapperService) {
+    .run(['$rootScope', '$state', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($rootScope, $state, mainMenuService, widgetService, widgetMapperService) {
         mainMenuService.addMenuItem({
             path: 'browse/publishing-channels',
             icon: 'fa fa-tasks',
@@ -50,6 +50,10 @@ angular.module(moduleName, [])
                 $state.go('workspace.catalogPublishingModule');
             }
         });
+        widgetService.registerWidget({
+            controller: 'virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController',
+            template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/widgets/catalog-publishing-widget.tpl.html'
+        }, 'itemDetail');
 
         widgetMapperService.map("Properties", "virtoCommerce.catalogModule.itemPropertyWidgetController");
         widgetMapperService.map("Descriptions", "virtoCommerce.catalogModule.editorialReviewWidgetController");

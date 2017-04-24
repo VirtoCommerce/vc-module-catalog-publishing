@@ -7,7 +7,7 @@
             updateChannel: { url: 'api/readiness/channels', method: 'PUT' },
             deleteChannels: { url: 'api/readiness/channels', method: 'DELETE' },
             getEvaluators: { url: 'api/readiness/evaluators', method: 'GET', isArray: true },
-            evaluateChannel: { url: 'api/readiness/channels/:id/evaluate', method: 'POST', params: { id: '@id' } }
-            //evaluateChannelProducts: { url: 'api/readiness/channels/:id/products/evaluate', method: 'POST', params: { id: '@id' } }
+            evaluateChannel: { url: 'api/readiness/channels/:id/evaluate', method: 'POST', params: { id: '@id' } },
+            evaluateChannelProducts: { url: 'api/readiness/channels/:id/products/evaluate', method: 'POST', params: { id: '@id' }, isArray: true }
         });
     }]);

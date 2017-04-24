@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.ui-grid.extension', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, gridOptionExtension, catalogPublishingApi) {
+    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', '$localStorage', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.ui-grid.extension', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, $localStorage, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, gridOptionExtension, catalogPublishingApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
 
@@ -50,13 +50,13 @@
         }
 
         $scope.selectCatalogItem = function (channel) {
+            $localStorage.catalogPublishingChannel = channel;
             bladeNavigationService.showBlade({
                 id: 'readinessCatalogItems',
-                title: '',
                 breadcrumbs: [],
                 filter: {
-                    keyword: 'readiness_' + channel.name + ':[0 TO 99]',
-                    searchedKeyword: 'readiness_' + channel.name + ':[0 TO 99]'
+                    keyword: 'readiness_' + channel.name.toLowerCase() + ':[0 TO 99]',
+                    searchedKeyword: 'readiness_' + channel.name.toLowerCase() + ':[0 TO 99]'
                 },
                 catalogId: channel.catalogId,
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',

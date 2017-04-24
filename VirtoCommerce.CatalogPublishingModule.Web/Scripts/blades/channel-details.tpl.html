@@ -11,6 +11,17 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.language' | translate"></label>
+                        <div class="form-input">
+                            <ui-select required ng-model="blade.currentEntity.language">
+                                <ui-select-match>{{ $select.selected }}</ui-select-match>
+                                <ui-select-choices repeat="language in languages">
+                                    <span ng-bind-html="language"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.pricelist' | translate"></label>
                         <div class="form-input">
                             <ui-select required ng-model="blade.currentEntity.pricelistId">

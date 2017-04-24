@@ -14,11 +14,18 @@
         "title": "Catalog publishing channel",
         "labels": {
           "name": "Name",
+          "language": "Language",
           "catalog": "Catalog",
           "pricelist": "Pricelist",
           "evaluator": "Evaluator type",
           "evaluate": "Evaluate",
           "name-pattern-error-message": "This field can contain only latin symbols and digits"
+        }
+      },
+      "channel-select": {
+        "title": "Select a channel",
+        "labels": {
+          "channels": "Select a channel"
         }
       }
     },
@@ -26,6 +33,11 @@
       "channel-delete": {
         "title": "Delete confirmation",
         "message": "Are you sure you want to delete selected Catalog Publishing Channels?"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "Publishing readiness for channel "
       }
     }
   }

@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.pricingModule.pricelists', 'virtoCommerce.catalogModule.catalogs', function ($scope, bladeNavigationService, catalogPublishingApi, pricingApi, catalogApi) {
+    .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.pricingModule.pricelists', 'virtoCommerce.catalogModule.catalogs', function ($scope, settings, bladeNavigationService, catalogPublishingApi, pricingApi, catalogApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
 
@@ -40,6 +40,12 @@
             take: 500
         }, function (response) {
             $scope.pricelists = response.results;
+        });
+        $scope.languages = [];
+        settings.getValues({
+            id: 'VirtoCommerce.Core.General.Languages'
+        }, function (response) {
+            $scope.languages = response;
         });
         $scope.catalogs = catalogApi.getCatalogs();
         $scope.evaluators = catalogPublishingApi.getEvaluators();
