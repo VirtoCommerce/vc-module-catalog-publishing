@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net.NetworkInformation;
 using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
@@ -10,12 +9,13 @@ using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model;
-using VirtoCommerce.Domain.Pricing.Model;
+using VirtoCommerce.Domain.Pricing.Model.Search;
 using VirtoCommerce.Domain.Pricing.Services;
 using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 using Property = VirtoCommerce.CatalogPublishingModule.Test.Model.Property;
 using PropertyValue = VirtoCommerce.CatalogPublishingModule.Test.Model.PropertyValue;
+using Price = VirtoCommerce.CatalogPublishingModule.Test.Model.Price;
 
 namespace VirtoCommerce.CatalogPublishingModule.Test
 {
@@ -25,7 +25,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private string catalogId;
         private CatalogProduct[] products;
         private string pricelistId;
-        private Pricelist pricelist;
+        private Price[] pricelistPrices;
         private string[] editorialReviewTypes;
 
         [Fact]
@@ -38,8 +38,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             // products
             Assert.Throws<ArgumentException>(() => evaluator.EvaluateReadiness(new ReadinessChannel(), null));
             Assert.Throws<ArgumentException>(() => evaluator.EvaluateReadiness(new ReadinessChannel(), new CatalogProduct[0]));
-            // pricelist
-            Assert.Throws<NullReferenceException>(() => evaluator.EvaluateReadiness(new ReadinessChannel(), new[] { new CatalogProduct() }));
         }
 
         [Fact]
@@ -119,14 +117,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     },
                     { PropertyValueType.Number, new[] { new PropertyValue { LanguageCode = "Valid", ValueType = PropertyValueType.Number, Value = -1m } } }
                 };
-
-                // Property Value may not contain info about product
-                foreach (var variant in new[] { null, new Property { Id = "Valid", Required = true, ValueType = PropertyValueType.ShortText, Dictionary = false, DictionaryValues = null } })
-                {
-                    yield return Prepend(TestCondition(variant,
-                            x => new PropertyValue { Property = x, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, x => 100, Mutable),
-                        new List<Property> { variant });
-                }
 
                 // Only required properties accounted
                 var property = new Property { Id = "Valid", ValueType = PropertyValueType.ShortText, Dictionary = false, DictionaryValues = null };
@@ -286,7 +276,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             get
             {
-                yield return new object[] { null, null, 0 };
                 foreach (var variant in new[] { null, new string[0] })
                 {
                     yield return Prepend(TestCondition(variant, x => new EditorialReview { LanguageCode = "Valid", Content = "Valid", ReviewType = "Valid" }, x => 100), new object[] { variant });
@@ -334,15 +323,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             get
             {
                 yield return new object[] { null, 0 };
-                foreach (var variant in new[] { null, string.Empty, "Invalid", "Valid" })
-                {
-                    yield return TestCondition(variant, x => new Price { ProductId = x, List = 1m }, x => x == "Valid" ? 100 : 0);
-                }
+                yield return new object[] { new Price[0], 0 };
                 foreach (var variant in new[] { -1m, 0m, 1m })
                 {
-                    yield return TestCondition(variant, x => new Price { ProductId = "Valid", List = x }, x => x == 1m ? 100 : 0);
+                    yield return TestCondition(variant, x => new Price { List = x }, x => x > 0 ? 100 : 0);
                 }
-                foreach (var data in TestAnyValid(new Price { ProductId = "Invalid", List = -1m }, new Price { ProductId = "Valid", List = 1m }))
+                foreach (var data in TestAnyValid(new Price { List = -1m }, new Price { List = 1m }))
                 {
                     yield return data;
                 }
@@ -355,8 +341,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             var evaluator = GetReadinessEvaluator();
             PrepareData();
-
-            pricelist.Prices = prices;
+            
+            pricelistPrices = prices;
             var readiness = evaluator.EvaluateReadiness(GetChannel(), products);
             Assert.True(readiness[0].Details.First(x => x.Name == "Prices").ReadinessPercent == readinessPercent);
         }
@@ -365,7 +351,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             get
             {
-                yield return new object[] { null, 0 };
                 foreach (var variant in new[] { null, string.Empty, "Invalid", "Valid" })
                 {
                     yield return TestCondition(variant, x => new SeoInfo { LanguageCode = x, SemanticUrl = "Valid" }, x => x == "Valid" ? 100 : 0);
@@ -406,7 +391,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private static IEnumerable<object[]> TestAnyValid<TObject>(TObject invalid, TObject valid)
             where TObject: class
         {
-            yield return new object[] { null, 0 };
             var variants = new[] { null, invalid, valid };
             foreach (var first in variants)
             {
@@ -452,6 +436,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private void PrepareData()
         {
+            catalogId = "Valid";
             products = new[]
             {
                 new CatalogProduct
@@ -464,7 +449,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 }
             };
             pricelistId = "Valid";
-            pricelist = new Pricelist { Id = pricelistId, Prices = new List<Price>() };
+            pricelistPrices = new Price[0];
             editorialReviewTypes = new[] { "Valid" };
         }
 
@@ -481,7 +466,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private DefaultReadinessEvaluator GetReadinessEvaluator()
         {
-            return new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingService(), GetSettingManager());
+            return new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(), GetSettingManager());
         }
 
         private IReadinessService GetReadinessService()
@@ -503,11 +488,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             return service.Object;
         }
 
-        private IPricingService GetPricingService()
+        private IPricingSearchService GetPricingSearchService()
         {
-            var service = new Mock<IPricingService>();
-            service.Setup(x => x.GetPricelistsById(It.Is<string[]>(ids => ids[0] == pricelistId)))
-                .Returns<string[]>(ids => new[] { pricelist });
+            var service = new Mock<IPricingSearchService>();
+            service.Setup(x => x.SearchPrices(It.IsAny<PricesSearchCriteria>()))
+                .Returns<PricesSearchCriteria>(c => new PricingSearchResult<Domain.Pricing.Model.Price> { Results = pricelistPrices });
+            return service.Object;
+        }
+
+        private IPropertyService GetPropertyService()
+        {
+            var service = new Mock<IPropertyService>();
+            service.Setup(x => x.Create(It.Is<Property>(y => y.Name == "readiness_Valid")));
             return service.Object;
         }
 
@@ -516,7 +508,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             const string editorialReviewTypesSettingName = "Catalog.EditorialReviewTypes";
             var service = new Mock<ISettingsManager>();
             service.Setup(x => x.GetSettingByName(It.Is<string>(n => n == editorialReviewTypesSettingName)))
-                .Returns<string>(x => new SettingEntry { AllowedValues = editorialReviewTypes });
+                .Returns<string>(x => new SettingEntry { ArrayValues = editorialReviewTypes });
             return service.Object;
         }
     }

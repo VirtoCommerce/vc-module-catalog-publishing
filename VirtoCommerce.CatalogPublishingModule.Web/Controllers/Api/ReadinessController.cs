@@ -153,7 +153,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             var notification = new EvaluateReadinessNotification(_userNameResolver.GetCurrentUserName(), notifyType)
             {
                 Title = notificationDescription,
-                Description = "Starting export..."
+                Description = "Starting evaluation..."
             };
             _pushNotifier.Upsert(notification);
 
@@ -193,7 +193,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             {
                 productIds = _catalogSearchService.Search(new SearchCriteria
                     {
-                        CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts
+                        CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts, Take = int.MaxValue
                     }).Products.Select(x => x.Id).ToArray();
             }
             var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo, channel.CatalogId);

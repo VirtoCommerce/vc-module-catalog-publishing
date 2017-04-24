@@ -6,7 +6,7 @@ using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
-using VirtoCommerce.Domain.Pricing.Model;
+using VirtoCommerce.Domain.Pricing.Model.Search;
 using VirtoCommerce.Domain.Pricing.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
@@ -17,14 +17,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
     {
         private readonly IReadinessService _readinessService;
         private readonly IItemService _productService;
-        private readonly IPricingService _pricingService;
+        private readonly IPricingSearchService _pricingSearchService;
+        private readonly IPropertyService _propertyService;
         private readonly ISettingsManager _settingsManager;
 
-        public DefaultReadinessEvaluator(IReadinessService readinessService, IItemService productService, IPricingService pricingService, ISettingsManager settingsManager)
+        public DefaultReadinessEvaluator(IReadinessService readinessService,
+            IItemService productService, IPricingSearchService pricingSearchService,
+            IPropertyService propertyService, ISettingsManager settingsManager)
         {
             _readinessService = readinessService;
             _productService = productService;
-            _pricingService = pricingService;
+            _pricingSearchService = pricingSearchService;
+            _propertyService = propertyService;
             _settingsManager = settingsManager;
         }
 
@@ -37,11 +41,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             if (products.IsNullOrEmpty())
             {
                 throw new ArgumentException("Products must be specified", "products");
-            }
-            var pricelist = _pricingService.GetPricelistsById(new[] { channel.PricelistId }).FirstOrDefault();
-            if (pricelist == null)
-            {
-                throw new NullReferenceException("pricelist");
             }
 
             var entries = new ReadinessEntry[products.Length];
@@ -62,14 +61,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                     {
                         ValidateProperties(channel, product),
                         ValidateDescriptions(channel, product),
-                        ValidatePrices(pricelist, product),
+                        ValidatePrices(channel, product),
                         ValidateSeo(channel, product),
                     }
                 };
                 entry.ReadinessPercent = (int) Math.Round((double) entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
                 entries[i] = entry;
 
-                UpdateReadinessProperty(channel.Name, product, entry.ReadinessPercent);
+                UpdateReadinessProperty(channel, product, entry.ReadinessPercent);
             }
 
             _readinessService.SaveEntries(entries);
@@ -78,17 +77,24 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             return entries;
         }
 
-        private void UpdateReadinessProperty(string channelName, CatalogProduct product, int readinessPercent)
+        private void UpdateReadinessProperty(ReadinessChannel channel, CatalogProduct product, int readinessPercent)
         {
-            var readinessPropertyName = "readiness_" + channelName;
-            var readinessProperty = product.Properties.FirstOrDefault(x => x != null && x.Name == readinessPropertyName);
+            var readinessPropertyName = "readiness_" + channel.Name;
+            var properties = _propertyService.GetAllProperties();
+            var readinessProperty = properties != null ? properties.FirstOrDefault(x => x != null && x.Name == readinessPropertyName) : null;
             if (readinessProperty == null)
             {
                 readinessProperty = new Property
                 {
                     Name = readinessPropertyName,
+                    CatalogId = channel.CatalogId,
+                    Type = PropertyType.Product,
                     ValueType = PropertyValueType.Number
                 };
+                _propertyService.Create(readinessProperty);
+            }
+            if (product.Properties.All(x => x.Name != readinessPropertyName))
+            {
                 product.Properties.Add(readinessProperty);
             }
             var readinessPropertyValue = product.PropertyValues.FirstOrDefault(x => x.PropertyName == readinessPropertyName);
@@ -97,7 +103,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 readinessPropertyValue = new PropertyValue();
                 product.PropertyValues.Add(readinessPropertyValue);
             }
-            readinessPropertyValue.Property = readinessProperty;
+            readinessPropertyValue.PropertyName = readinessPropertyName;
             readinessPropertyValue.Value = readinessPercent;
         }
 
@@ -190,12 +196,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         private ReadinessDetail ValidateDescriptions(ReadinessChannel channel, CatalogProduct product)
         {
             var retVal = new ReadinessDetail { Name = "Descriptions" };
-            var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").AllowedValues;
-            if (product.Reviews == null)
-            {
-                retVal.ReadinessPercent = 0;
-            }
-            else if (descriptionTypes.IsNullOrEmpty())
+            var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").ArrayValues;
+            if (descriptionTypes.IsNullOrEmpty())
             {
                 retVal.ReadinessPercent = 100;
             }
@@ -210,12 +212,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             return retVal;
         }
 
-        private ReadinessDetail ValidatePrices(Pricelist pricelist, CatalogProduct product)
+        private ReadinessDetail ValidatePrices(ReadinessChannel channel, CatalogProduct product)
         {
+            var prices = _pricingSearchService.SearchPrices(new PricesSearchCriteria { PriceListId = channel.PricelistId, ProductId = product.Id, Take = int.MaxValue }).Results;
             var retVal = new ReadinessDetail
             {
                 Name = "Prices",
-                ReadinessPercent = pricelist.Prices != null && pricelist.Prices.Any(x => x.ProductId == product.Id && x.List > 0) ? 100 : 0
+                ReadinessPercent = prices != null && prices.Any(x => x.List > 0) ? 100 : 0
             };
             return retVal;
         }
@@ -224,9 +227,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         {
             var retVal = new ReadinessDetail { Name = "Seo" };
             string pattern = @"[$+;=%{}[\]|\\\/@ ~#!^*&?:'<>,]";
-            retVal.ReadinessPercent = product.SeoInfos != null &&
-                                      product.SeoInfos.Any(x => x.LanguageCode == channel.Language && !string.IsNullOrEmpty(x.SemanticUrl) && !Regex.IsMatch(x.SemanticUrl, pattern))
-                                      ? 100 : 0;
+            retVal.ReadinessPercent = product.SeoInfos.Any(x => x.LanguageCode == channel.Language && !string.IsNullOrEmpty(x.SemanticUrl) && !Regex.IsMatch(x.SemanticUrl, pattern)) ? 100 : 0;
             return retVal;
         }
 
