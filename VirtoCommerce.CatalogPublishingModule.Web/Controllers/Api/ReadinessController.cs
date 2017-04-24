@@ -68,10 +68,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <remarks>Evaluate readiness for specified products</remarks>
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
-        [ResponseType(typeof(PushNotification))]
+        [ResponseType(typeof(ReadinessEntry[]))]
         public IHttpActionResult EvaluateReadiness(string id, [FromBody] string[] productIds)
         {
-            return EvaluateReadiness("EvaluateReadiness", "Evaluate readiness for some products task", notification => BackgroundJob.Enqueue(() => EvaluateReadinessJob(id, productIds, notification)));
+            return Ok(EvaluateReadinessWorker(id, productIds));
         }
 
         /// <summary>
@@ -165,32 +165,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [ApiExplorerSettings(IgnoreApi = true)]
         public void EvaluateReadinessJob(string channelId, string[] productIds, EvaluateReadinessNotification notification)
         {
-            var channel = _readinessService.GetChannelsByIds(new[] { channelId }).FirstOrDefault();
-            if (channel == null)
-            {
-                throw new NullReferenceException("channel");
-            }
-            if (productIds.IsNullOrEmpty())
-            {
-                productIds = _catalogSearchService.Search(new SearchCriteria
-                {
-                    CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts
-                }).Products.Select(x => x.Id).ToArray();
-            }
-            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo, channel.CatalogId);
-            if (products == null)
-            {
-                throw new NullReferenceException("products");
-            }
-
             try
             {
-                var evaluator = _readinessEvaluators.FirstOrDefault(x => channel.EvaluatorType == x.GetType().Name);
-                if (evaluator == null)
-                {
-                    throw new InvalidOperationException("Channel's evaluator type not found");
-                }
-                notification.Readiness = evaluator.EvaluateReadiness(channel, products);
+                notification.Readiness = EvaluateReadinessWorker(channelId, productIds);
             }
             catch (Exception ex)
             {
@@ -203,6 +180,34 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
                 notification.Finished = DateTime.UtcNow;
                 _pushNotifier.Upsert(notification);
             }
+        }
+
+        private ReadinessEntry[] EvaluateReadinessWorker(string channelId, string[] productIds)
+        {
+            var channel = _readinessService.GetChannelsByIds(new[] { channelId }).FirstOrDefault();
+            if (channel == null)
+            {
+                throw new NullReferenceException("channel");
+            }
+            if (productIds.IsNullOrEmpty())
+            {
+                productIds = _catalogSearchService.Search(new SearchCriteria
+                    {
+                        CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts
+                    }).Products.Select(x => x.Id).ToArray();
+            }
+            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo, channel.CatalogId);
+            if (products == null)
+            {
+                throw new NullReferenceException("products");
+            }
+
+            var evaluator = _readinessEvaluators.FirstOrDefault(x => channel.EvaluatorType == x.GetType().Name);
+            if (evaluator == null)
+            {
+                throw new InvalidOperationException("Channel's evaluator type not found");
+            }
+            return evaluator.EvaluateReadiness(channel, products);
         }
     }
 }
