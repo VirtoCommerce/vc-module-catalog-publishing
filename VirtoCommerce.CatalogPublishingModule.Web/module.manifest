@@ -7,7 +7,7 @@
         <dependency id="VirtoCommerce.Core" version="2.21.0" />
     </dependencies>
 
-    <title>Catalog publishing module</title>
+    <title>Catalog publishing module (preview)</title>
     <description>Allow you to see progress on filling in information about products and marks missed info.</description>
     <authors>
         <author>Alexey Antonov</author>
