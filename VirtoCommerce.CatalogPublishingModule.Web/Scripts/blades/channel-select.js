@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelSelectController', ['$scope', '$localStorage', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, $localStorage, catalogPublishingApi) {
+    .controller('virtoCommerce.catalogPublishingModule.channelSelectController', ['$scope', '$localStorage', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, $localStorage, bladeNavigationService, catalogPublishingApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
 
@@ -14,10 +14,10 @@
             executeMethod: function () {
                 var channel = _.find($scope.channels, function (c) { return c.id === $scope.channel.id });
                 $localStorage.catalogPublishingChannel = channel;
-                catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, [blade.productId],
-                    function (response) {
-                        $scope.readinessPercent = response.length? response[0].readinessPercent : 0;
-                    });
+                catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, [blade.productId]);
+                bladeNavigationService.closeBlade(blade);
+                bladeNavigationService.closeBlade(blade.parentBlade);
+                bladeNavigationService.showBlade(blade.parentBlade);
             }
         }];
 
