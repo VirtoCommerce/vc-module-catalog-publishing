@@ -75,7 +75,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private void TestEntry(IReadinessRepository repository, IReadinessService service, ReadinessEntry correctEntry)
         {
             service.SaveEntries(new[] { correctEntry });
-            var testEntryEntity = repository.Entries.Include(x => x.Details).FirstOrDefault();
+            var testEntryEntity = repository.Entries.Include(x => x.Details).FirstOrDefault(x => x.ChannelId == correctEntry.ChannelId);
             var testEntry = testEntryEntity != null ? testEntryEntity.ToModel(AbstractTypeFactory<ReadinessEntry>.TryCreateInstance()) : null;
             Assert.True(CompareEntries(testEntry, correctEntry));
 
