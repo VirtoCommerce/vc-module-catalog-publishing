@@ -133,7 +133,6 @@
             gridOptions.columnDefs.push({
                 name: 'readinessPercent',
                 displayName: 'catalog-publishing.blades.channel-list.labels.readiness-percent'
-                //cellTemplate: '<div ng-controller="virtoCommerce.catalogPublishingModule.readinessCatalogItemCellController" ng-bind="readinessPercent"></div>'
             });
         });
     }]);
