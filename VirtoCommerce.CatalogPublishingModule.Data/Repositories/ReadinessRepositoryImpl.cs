@@ -8,6 +8,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 {
     public class ReadinessRepositoryImpl : EFRepositoryBase, IReadinessRepository
     {
+        public ReadinessRepositoryImpl()
+        {
+        }
+
         public ReadinessRepositoryImpl(string nameOrConnectionString, params IInterceptor[] interceptors)
             : base(nameOrConnectionString, null, interceptors)
         {
