@@ -118,7 +118,8 @@
         gridOptionExtension.registerExtension('catalog-item-select-grid', function (gridOptions) {
             gridOptions.columnDefs.push({
                 name: 'readinessPercent',
-                displayName: 'catalog-publishing.blades.channel-list.labels.readiness-percent'
+                displayName: 'catalog-publishing.blades.channel-list.labels.readiness-percent',
+                cellTemplate: '<div ng-controller="virtoCommerce.catalogPublishingModule.readinessCatalogItemCellController" ng-bind="readinessPercent"></div>'
             });
         });
     }]);

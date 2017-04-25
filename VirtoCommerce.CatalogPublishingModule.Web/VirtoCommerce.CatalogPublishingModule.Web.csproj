@@ -155,6 +155,7 @@
     <Content Include="Scripts\blades\channel-list.tpl.html" />
     <Content Include="Scripts\blades\channel-select.js" />
     <Content Include="Scripts\blades\channel-select.tpl.html" />
+    <Content Include="Scripts\blades\readiness-catalog-item-cell.js" />
     <Content Include="Scripts\catalog-publishing.js" />
     <Content Include="Scripts\resources\catalog-publishing.js" />
     <Content Include="Scripts\widgets\catalog-publishing-widget.js" />
