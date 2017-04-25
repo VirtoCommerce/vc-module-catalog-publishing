@@ -71,7 +71,21 @@
                 },
                 catalogId: channel.catalogId,
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
-                template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html'
+                template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html',
+                onItemsLoaded: function (items) {
+                    var itemIds = _.map(items, function (i) { return i.id });
+                    catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, itemIds,
+                        function (response) {
+                            _.each(response, function (entry) {
+                                var item = _.find(items, function (i) { return i.id === entry.productId });
+                                if (item) {
+                                    item.readinessPercent = entry.readinessPercent;
+                                } else {
+                                    item.readinessPercent = 0;
+                                }
+                            });
+                        });
+                }
             }, blade);
         }
 
@@ -118,8 +132,8 @@
         gridOptionExtension.registerExtension('catalog-item-select-grid', function (gridOptions) {
             gridOptions.columnDefs.push({
                 name: 'readinessPercent',
-                displayName: 'catalog-publishing.blades.channel-list.labels.readiness-percent',
-                cellTemplate: '<div ng-controller="virtoCommerce.catalogPublishingModule.readinessCatalogItemCellController" ng-bind="readinessPercent"></div>'
+                displayName: 'catalog-publishing.blades.channel-list.labels.readiness-percent'
+                //cellTemplate: '<div ng-controller="virtoCommerce.catalogPublishingModule.readinessCatalogItemCellController" ng-bind="readinessPercent"></div>'
             });
         });
     }]);
