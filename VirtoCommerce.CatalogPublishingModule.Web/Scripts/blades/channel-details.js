@@ -66,7 +66,8 @@
                     blade.isLoading = false;
                 });
             } else {
-                catalogPublishingApi.addChannel(blade.currentEntity, function () {
+                catalogPublishingApi.addChannel(blade.currentEntity, function (response) {
+                    blade.currentEntity = response;
                     blade.parentBlade.refresh();
                     blade.isLoading = false;
                 });
