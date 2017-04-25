@@ -27,7 +27,18 @@
                 return blade.currentEntity && blade.currentEntity.id && $scope.formChannel && $scope.formChannel.$valid;
             },
             executeMethod: function () {
-                catalogPublishingApi.evaluateChannel({ id: blade.currentEntity.id });
+                catalogPublishingApi.evaluateChannel({
+                    id: blade.currentEntity.id
+                }, function (response) {
+                    var newBlade = {
+                        id: 'evaluateProgress',
+                        title: 'catalog-publishing.blades.channel-evaluate-details.title',
+                        notification: response,
+                        controller: 'virtoCommerce.catalogPublishingModule.channelEvaluateDetailsController',
+                        template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-evaluate-details.tpl.html'
+                    }
+                    bladeNavigationService.showBlade(newBlade, blade);
+                });
             }
         }];
 

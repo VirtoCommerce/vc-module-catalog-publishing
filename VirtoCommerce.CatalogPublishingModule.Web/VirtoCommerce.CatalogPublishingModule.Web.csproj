@@ -149,6 +149,8 @@
   <ItemGroup>
     <Content Include="Scripts\blades\channel-details.js" />
     <Content Include="Scripts\blades\channel-details.tpl.html" />
+    <Content Include="Scripts\blades\channel-evaluate-details.js" />
+    <Content Include="Scripts\blades\channel-evaluate-details.tpl.html" />
     <Content Include="Scripts\blades\channel-list.js" />
     <Content Include="Scripts\blades\channel-list.tpl.html" />
     <Content Include="Scripts\blades\channel-select.js" />

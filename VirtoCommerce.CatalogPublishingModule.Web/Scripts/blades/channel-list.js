@@ -29,7 +29,18 @@
         }
 
         $scope.evaluateChannel = function (channel) {
-            catalogPublishingApi.evaluateChannel({ id: channel.id });
+            catalogPublishingApi.evaluateChannel({
+                id: channel.id
+            }, function (response) {
+                var newBlade = {
+                    id: 'evaluateProgress',
+                    title: 'catalog-publishing.blades.channel-evaluate-details.title',
+                    notification: response,
+                    controller: 'virtoCommerce.catalogPublishingModule.channelEvaluateDetailsController',
+                    template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-evaluate-details.tpl.html'
+                }
+                bladeNavigationService.showBlade(newBlade, blade);
+            });
         }
 
         $scope.deleteChannels = function (selectedItems) {
