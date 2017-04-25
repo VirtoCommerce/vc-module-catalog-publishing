@@ -27,6 +27,9 @@
         "labels": {
           "channels": "Select a channel"
         }
+      },
+      "channel-evaluate-details": {
+        "title": "Channel evaluate progress"
       }
     },
     "dialogs": {
