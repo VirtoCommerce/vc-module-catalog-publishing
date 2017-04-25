@@ -5,6 +5,7 @@
     <platformVersion>2.13.2</platformVersion>
     <dependencies>
         <dependency id="VirtoCommerce.Core" version="2.21.0" />
+        <dependency id="VirtoCommerce.Search" version="2.14.0" />
     </dependencies>
 
     <title>Catalog publishing module (preview)</title>

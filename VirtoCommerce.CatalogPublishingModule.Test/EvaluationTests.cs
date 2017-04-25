@@ -327,9 +327,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 yield return new object[] { new Price[0], 0 };
                 foreach (var variant in new[] { -1m, 0m, 1m })
                 {
-                    yield return TestCondition(variant, x => new Price { List = x }, x => x > 0 ? 100 : 0);
+                    yield return TestCondition(variant, x => new Price { ProductId = "Valid", List = x }, x => x > 0 ? 100 : 0);
                 }
-                foreach (var data in TestAnyValid(new Price { List = -1m }, new Price { List = 1m }))
+                foreach (var data in TestAnyValid(new Price { ProductId = "Valid", List = -1m }, new Price { ProductId = "Valid", List = 1m }))
                 {
                     yield return data;
                 }
@@ -373,20 +373,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             _product.SeoInfos = seoInfos;
             var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Seo").ReadinessPercent == readinessPercent);
-        }
-
-        [Fact]
-        public void ReadinessPropertyCreationOrUpdate()
-        {
-            var evaluator = new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(false), GetSettingManager());
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
-            Assert.True(_product.Properties.Any(CheckReadinessProperty));
-            Assert.True(_product.PropertyValues.Any(v => v.PropertyName == "readiness_Valid" && ((decimal)v.Value) == readiness.Sum(x => x.ReadinessPercent)));
-
-            evaluator = new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(true), GetSettingManager());
-            readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
-            Assert.True(_product.Properties.Any(CheckReadinessProperty));
-            Assert.True(_product.PropertyValues.Any(v => v.PropertyName == "readiness_Valid" && ((decimal)v.Value) == readiness.Sum(x => x.ReadinessPercent)));
         }
 
         private bool CheckReadinessProperty(Domain.Catalog.Model.Property readinessProperty)
@@ -466,7 +452,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private DefaultReadinessEvaluator GetReadinessEvaluator()
         {
-            return new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(true), GetSettingManager());
+            return new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetSettingManager());
         }
 
         private IReadinessService GetReadinessService()
@@ -493,17 +479,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             var service = new Mock<IPricingSearchService>();
             service.Setup(x => x.SearchPrices(It.IsAny<PricesSearchCriteria>()))
                 .Returns<PricesSearchCriteria>(c => new PricingSearchResult<Domain.Pricing.Model.Price> { Results = _pricelistPrices });
-            return service.Object;
-        }
-
-        private IPropertyService GetPropertyService(bool existsProperty)
-        {
-            var service = new Mock<IPropertyService>();
-            service.Setup(x => x.Create(It.Is<Property>(y => y.Name == "readiness_Valid")));
-            service.Setup(x => x.GetAllProperties())
-                .Returns(existsProperty
-                    ? new[] { new Property { Name = "readiness_Valid", CatalogId = _catalogId, Type = PropertyType.Product, ValueType = PropertyValueType.Number } }
-                    : new Property[0]);
             return service.Object;
         }
 
