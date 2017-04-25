@@ -59,6 +59,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         {
             if (channel == null)
                 throw new ArgumentNullException("channel");
+            if (pkMap == null)
+                throw new ArgumentNullException("pkMap");
 
             pkMap.AddPair(channel, this);
 

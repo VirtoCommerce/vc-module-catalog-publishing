@@ -22,17 +22,23 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
     [Trait("Category", "CI")]
     public class EvaluationTests
     {
-        private string catalogId;
-        private CatalogProduct[] products;
-        private string pricelistId;
-        private Price[] pricelistPrices;
-        private string[] editorialReviewTypes;
+        private readonly string _catalogId = "Valid";
+        private readonly CatalogProduct _product = new CatalogProduct
+        {
+            Id = "Valid",
+            Properties = new List<Property>().Cast<Domain.Catalog.Model.Property>().ToList(),
+            PropertyValues = new List<PropertyValue>().Cast<Domain.Catalog.Model.PropertyValue>().ToList(),
+            Reviews = new List<EditorialReview>(),
+            SeoInfos = new List<SeoInfo>()
+        };
+        private readonly string _pricelistId = "Valid";
+        private Price[] _pricelistPrices = new Price[0];
+        private string[] _editorialReviewTypes = new[] { "Valid" };
 
         [Fact]
         public void InvalidParameters()
         {
             var evaluator = GetReadinessEvaluator();
-
             // catalog
             Assert.Throws<ArgumentNullException>(() => evaluator.EvaluateReadiness(null, new[] { new CatalogProduct() }));
             // products
@@ -44,7 +50,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void PartiallyLoadedProducts()
         {
             var evaluator = GetReadinessEvaluator();
-            PrepareData();
             evaluator.EvaluateReadiness(GetChannel(), new[] { new CatalogProduct { Id = "Valid" } });
         }
 
@@ -264,11 +269,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void PropertiesValidation(List<Property> properties, List<PropertyValue> values, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
-            PrepareData();
-
-            products[0].Properties = properties.Cast<Domain.Catalog.Model.Property>().ToList();
-            products[0].PropertyValues = values.Cast<Domain.Catalog.Model.PropertyValue>().ToList();
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), products);
+            _product.Properties = properties.Cast<Domain.Catalog.Model.Property>().ToList();
+            _product.PropertyValues = values.Cast<Domain.Catalog.Model.PropertyValue>().ToList();
+            var readiness = evaluator.EvaluateReadiness(GetChannel(), new [] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Properties").ReadinessPercent == readinessPercent);
         }
 
@@ -310,11 +313,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void DescriptionsValidation(string[] descriptionTypes, EditorialReview[] descriptions, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
-            PrepareData();
-
-            editorialReviewTypes = descriptionTypes;
-            products[0].Reviews = descriptions;
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), products);
+            _editorialReviewTypes = descriptionTypes;
+            _product.Reviews = descriptions;
+            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Descriptions").ReadinessPercent == readinessPercent);
         }
         
@@ -340,10 +341,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void PricesValidation(Price[] prices, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
-            PrepareData();
-            
-            pricelistPrices = prices;
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), products);
+            _pricelistPrices = prices;
+            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Prices").ReadinessPercent == readinessPercent);
         }
 
@@ -371,11 +370,38 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void SeoValidation(SeoInfo[] seoInfos, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
-            PrepareData();
-
-            products[0].SeoInfos = seoInfos;
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), products);
+            _product.SeoInfos = seoInfos;
+            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Seo").ReadinessPercent == readinessPercent);
+        }
+
+        [Fact]
+        public void ReadinessPropertyCreationOrUpdate()
+        {
+            var evaluator = new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(false), GetSettingManager());
+            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
+            Assert.True(_product.Properties.Any(CheckReadinessProperty));
+            Assert.True(_product.PropertyValues.Any(v => v.PropertyName == "readiness_Valid" && ((decimal)v.Value) == readiness.Sum(x => x.ReadinessPercent)));
+
+            evaluator = new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(true), GetSettingManager());
+            readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
+            Assert.True(_product.Properties.Any(CheckReadinessProperty));
+            Assert.True(_product.PropertyValues.Any(v => v.PropertyName == "readiness_Valid" && ((decimal)v.Value) == readiness.Sum(x => x.ReadinessPercent)));
+        }
+
+        private bool CheckReadinessProperty(Domain.Catalog.Model.Property readinessProperty)
+        {
+            return readinessProperty.Name == "readiness_Valid" &&
+                   readinessProperty.CatalogId == _catalogId &&
+                   readinessProperty.Type == PropertyType.Product &&
+                   readinessProperty.ValueType == PropertyValueType.Number;
+        }
+
+        private static object[] Prepend(object[] original, params object[] additional)
+        {
+            var list = additional.ToList();
+            list.AddRange(original);
+            return list.ToArray();
         }
 
         private static object[] TestCondition<TVariant, TObject>(TVariant variant, Func<TVariant, TObject> factory, Func<TVariant, int> test, bool mutable = false)
@@ -427,46 +453,20 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             }
         }
 
-        private static object[] Prepend(object[] original, params object[] additional)
-        {
-            var list = additional.ToList();
-            list.AddRange(original);
-            return list.ToArray();
-        }
-
-        private void PrepareData()
-        {
-            catalogId = "Valid";
-            products = new[]
-            {
-                new CatalogProduct
-                {
-                    Id = "Valid",
-                    Properties = new List<Property>().Cast<Domain.Catalog.Model.Property>().ToList(),
-                    PropertyValues = new List<PropertyValue>().Cast<Domain.Catalog.Model.PropertyValue>().ToList(),
-                    Reviews = new List<EditorialReview>(),
-                    SeoInfos = new List<SeoInfo>()
-                }
-            };
-            pricelistId = "Valid";
-            pricelistPrices = new Price[0];
-            editorialReviewTypes = new[] { "Valid" };
-        }
-
         private ReadinessChannel GetChannel()
         {
             return new ReadinessChannel
             {
                 Name = "Valid",
                 Language = "Valid",
-                PricelistId = pricelistId,
-                CatalogId = catalogId
+                PricelistId = _pricelistId,
+                CatalogId = _catalogId
             };
         }
 
         private DefaultReadinessEvaluator GetReadinessEvaluator()
         {
-            return new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(), GetSettingManager());
+            return new DefaultReadinessEvaluator(GetReadinessService(), GetProductService(), GetPricingSearchService(), GetPropertyService(true), GetSettingManager());
         }
 
         private IReadinessService GetReadinessService()
@@ -480,11 +480,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             var service = new Mock<IItemService>();
             service.Setup(x => x.GetById(
-                    It.Is<string>(id => products.Any(p => id == p.Id)),
+                    It.Is<string>(id => _product.Id == id),
                     It.Is<ItemResponseGroup>(r => r.HasFlag(ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo)),
-                    It.Is<string>(id => id == catalogId)))
-                .Returns<string, ItemResponseGroup, string>((pId, r, cId) => products.First(x => x.Id == pId));
-            service.Setup(x => x.Update(It.Is<CatalogProduct[]>(p => p == products)));
+                    It.Is<string>(id => id == _catalogId)))
+                .Returns<string, ItemResponseGroup, string>((pId, r, cId) => _product);
+            service.Setup(x => x.Update(It.Is<CatalogProduct[]>(p => p.Contains(_product))));
             return service.Object;
         }
 
@@ -492,14 +492,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             var service = new Mock<IPricingSearchService>();
             service.Setup(x => x.SearchPrices(It.IsAny<PricesSearchCriteria>()))
-                .Returns<PricesSearchCriteria>(c => new PricingSearchResult<Domain.Pricing.Model.Price> { Results = pricelistPrices });
+                .Returns<PricesSearchCriteria>(c => new PricingSearchResult<Domain.Pricing.Model.Price> { Results = _pricelistPrices });
             return service.Object;
         }
 
-        private IPropertyService GetPropertyService()
+        private IPropertyService GetPropertyService(bool existsProperty)
         {
             var service = new Mock<IPropertyService>();
             service.Setup(x => x.Create(It.Is<Property>(y => y.Name == "readiness_Valid")));
+            service.Setup(x => x.GetAllProperties())
+                .Returns(existsProperty
+                    ? new[] { new Property { Name = "readiness_Valid", CatalogId = _catalogId, Type = PropertyType.Product, ValueType = PropertyValueType.Number } }
+                    : new Property[0]);
             return service.Object;
         }
 
@@ -508,7 +512,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             const string editorialReviewTypesSettingName = "Catalog.EditorialReviewTypes";
             var service = new Mock<ISettingsManager>();
             service.Setup(x => x.GetSettingByName(It.Is<string>(n => n == editorialReviewTypesSettingName)))
-                .Returns<string>(x => new SettingEntry { ArrayValues = editorialReviewTypes });
+                .Returns<string>(x => new SettingEntry { ArrayValues = _editorialReviewTypes });
             return service.Object;
         }
     }
