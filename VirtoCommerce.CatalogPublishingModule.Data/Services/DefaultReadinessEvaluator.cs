@@ -81,7 +81,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         {
             var readinessPropertyName = "readiness_" + channel.Name;
             var properties = _propertyService.GetAllProperties();
-            var readinessProperty = properties != null ? properties.FirstOrDefault(x => x != null && x.Name == readinessPropertyName) : null;
+            var readinessProperty = properties != null ? properties.FirstOrDefault(x => x.Name == readinessPropertyName) : null;
             if (readinessProperty == null)
             {
                 readinessProperty = new Property
@@ -104,7 +104,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 product.PropertyValues.Add(readinessPropertyValue);
             }
             readinessPropertyValue.PropertyName = readinessPropertyName;
-            readinessPropertyValue.Value = readinessPercent;
+            readinessPropertyValue.Value = (decimal)readinessPercent;
         }
 
         private ReadinessDetail ValidateProperties(ReadinessChannel channel, CatalogProduct product)
