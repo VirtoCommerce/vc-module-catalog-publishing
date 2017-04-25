@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-    .controller('virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController', ['$scope', '$localStorage', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($scope, $localStorage, bladeNavigationService, catalogPublishingApi, widgetMapperService) {
+    .controller('virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController', ['$scope', '$localStorage', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($scope, $localStorage, widgetService, bladeNavigationService, catalogPublishingApi, widgetMapperService) {
         var blade = $scope.blade;
         var channel = $localStorage.catalogPublishingChannel;
 
@@ -25,13 +25,9 @@
                     _.each(entry.details, function (detail) {
                         var widgetControllerName = widgetMapperService.get(detail.name);
                         if (widgetControllerName) {
-                            var widgetElements = angular.element.find('[ng-controller="' + widgetControllerName + '"]');
-                            if (widgetElements && widgetElements.length) {
-                                if (detail.readinessPercent < 100) {
-                                    widgetElements[0].parentElement.classList.add('error');
-                                } else {
-                                    widgetElements[0].parentElement.classList.remove('error');
-                                }
+                            var widget = _.find(widgetService.widgetsMap['itemDetail'], function (w) { return w.controller === widgetControllerName });
+                            if (widget && detail.readinessPercent < 100) {
+                                widget.UIclass = 'error';
                             }
                         }
                     });
