@@ -15,9 +15,12 @@
                 var channel = _.find($scope.channels, function (c) { return c.id === $scope.channel.id });
                 $localStorage.catalogPublishingChannel = channel;
                 catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, [blade.productId]);
-                bladeNavigationService.closeBlade(blade);
-                bladeNavigationService.closeBlade(blade.parentBlade);
-                bladeNavigationService.showBlade(blade.parentBlade);
+                bladeNavigationService.closeBlade(blade.parentBlade, function () {
+                    var newBlade = angular.extend({}, blade, { disableOpenAnimation: true });
+                    var newParentBlade = angular.extend({}, blade.parentBlade, { disableOpenAnimation: true });
+                    bladeNavigationService.showBlade(newParentBlade, blade.parentBlade.parentBlade);
+                    bladeNavigationService.showBlade(newBlade, newParentBlade);
+                });
             }
         }];
 
