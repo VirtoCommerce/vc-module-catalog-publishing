@@ -74,17 +74,19 @@
                 template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html',
                 onItemsLoaded: function (items) {
                     var itemIds = _.map(_.where(items, { type: 'product' }), function (i) { return i.id });
-                    catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, itemIds,
-                        function (response) {
-                            _.each(response, function (entry) {
-                                var item = _.find(items, function (i) { return i.id === entry.productId });
-                                if (item) {
-                                    item.readinessPercent = entry.readinessPercent;
-                                } else {
-                                    item.readinessPercent = 0;
-                                }
+                    if (itemIds && itemIds.length) {
+                        catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, itemIds,
+                            function (response) {
+                                _.each(response, function (entry) {
+                                    var item = _.find(items, function (i) { return i.id === entry.productId });
+                                    if (item) {
+                                        item.readinessPercent = entry.readinessPercent;
+                                    } else {
+                                        item.readinessPercent = 0;
+                                    }
+                                });
                             });
-                        });
+                    }
                 }
             }, blade);
         }
