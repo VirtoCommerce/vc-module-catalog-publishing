@@ -73,7 +73,7 @@
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
                 template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html',
                 onItemsLoaded: function (items) {
-                    var itemIds = _.map(items, function (i) { return i.id });
+                    var itemIds = _.map(_.where(items, { type: 'product' }), function (i) { return i.id });
                     catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, itemIds,
                         function (response) {
                             _.each(response, function (entry) {
