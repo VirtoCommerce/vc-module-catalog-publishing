@@ -26,7 +26,8 @@
 
         catalogPublishingApi.searchChannels({
             skip: 0,
-            take: 1000
+            take: 1000,
+            catalogId: $localStorage.catalogPublishingChannel.catalogId
         }, function (response) {
             $scope.channels = response.results;
         });
