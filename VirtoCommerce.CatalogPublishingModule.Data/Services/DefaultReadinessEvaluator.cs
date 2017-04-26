@@ -45,6 +45,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 PriceListId = channel.PricelistId, ProductIds = products.Select(x => x.Id).ToArray(), Take = int.MaxValue
             }).Results;
 
+            products = products.Where(x => x.CatalogId == channel.CatalogId).ToArray();
+
             var entries = new ReadinessEntry[products.Length];
 
             for (var i = 0; i < products.Length; i++)
