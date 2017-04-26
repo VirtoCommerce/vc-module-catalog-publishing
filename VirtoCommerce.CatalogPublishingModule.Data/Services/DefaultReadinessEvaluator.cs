@@ -52,7 +52,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 var product = products[i];
                 if (product.Properties.IsNullOrEmpty() || product.Reviews.IsNullOrEmpty() || product.SeoInfos.IsNullOrEmpty())
                 {
-                    product = _productService.GetById(product.Id, ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo, channel.CatalogId);
+                    product = _productService.GetById(product.Id, ItemResponseGroup.ItemLarge, channel.CatalogId);
                 }
 
                 var entry = new ReadinessEntry
