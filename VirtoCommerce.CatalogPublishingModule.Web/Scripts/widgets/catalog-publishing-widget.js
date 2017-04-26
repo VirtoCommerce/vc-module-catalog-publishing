@@ -28,6 +28,8 @@
                             var widget = _.find(widgetService.widgetsMap['itemDetail'], function (w) { return w.controller === widgetControllerName });
                             if (widget && detail.readinessPercent < 100) {
                                 widget.UIclass = 'error';
+                            } else {
+                                widget.UIclass = null;
                             }
                         }
                     });
