@@ -22,10 +22,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
     [Trait("Category", "CI")]
     public class EvaluationTests
     {
-        private readonly string _catalogId = "Valid";
+        private const string CatalogId = "Valid";
         private readonly CatalogProduct _product = new CatalogProduct
         {
             Id = "Valid",
+            CatalogId = CatalogId,
             Properties = new List<Property>().Cast<Domain.Catalog.Model.Property>().ToList(),
             PropertyValues = new List<PropertyValue>().Cast<Domain.Catalog.Model.PropertyValue>().ToList(),
             Reviews = new List<EditorialReview>(),
@@ -166,7 +167,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     currentProperty.DictionaryValues = variant;
                     yield return Prepend(TestCondition(variant,
                             x => new PropertyValue { Property = currentProperty, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, x => 100, Mutable),
-                            new List<Property> { currentProperty });
+                        new List<Property> { currentProperty });
                 }
 
                 var propertyIds = new[] { "Valid1", "Valid2" };
@@ -245,7 +246,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 {
                     yield return Prepend(data, properties);
                 }
-                
+
                 // Check correct percentage calculation for usual properties
                 properties = propertyIds.Select(id => new Property
                     {
@@ -318,7 +319,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Descriptions").ReadinessPercent == readinessPercent);
         }
-        
+
         public static IEnumerable<object[]> Prices
         {
             get
@@ -327,9 +328,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 yield return new object[] { new Price[0], 0 };
                 foreach (var variant in new[] { -1m, 0m, 1m })
                 {
-                    yield return TestCondition(variant, x => new Price { List = x }, x => x > 0 ? 100 : 0);
+                    yield return TestCondition(variant, x => new Price { ProductId = "Valid", List = x }, x => x > 0 ? 100 : 0);
                 }
-                foreach (var data in TestAnyValid(new Price { List = -1m }, new Price { List = 1m }))
+                foreach (var data in TestAnyValid(new Price { ProductId = "Valid", List = -1m }, new Price { ProductId = "Valid", List = 1m }))
                 {
                     yield return data;
                 }
@@ -392,7 +393,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private bool CheckReadinessProperty(Domain.Catalog.Model.Property readinessProperty)
         {
             return readinessProperty.Name == "readiness_Valid" &&
-                   readinessProperty.CatalogId == _catalogId &&
+                   readinessProperty.CatalogId == CatalogId &&
                    readinessProperty.Type == PropertyType.Product &&
                    readinessProperty.ValueType == PropertyValueType.Number;
         }
@@ -460,7 +461,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 Name = "Valid",
                 Language = "Valid",
                 PricelistId = _pricelistId,
-                CatalogId = _catalogId
+                CatalogId = CatalogId
             };
         }
 
@@ -482,7 +483,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             service.Setup(x => x.GetById(
                     It.Is<string>(id => _product.Id == id),
                     It.Is<ItemResponseGroup>(r => r.HasFlag(ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo)),
-                    It.Is<string>(id => id == _catalogId)))
+                    It.Is<string>(id => id == CatalogId)))
                 .Returns<string, ItemResponseGroup, string>((pId, r, cId) => _product);
             service.Setup(x => x.Update(It.Is<CatalogProduct[]>(p => p.Contains(_product))));
             return service.Object;
@@ -502,7 +503,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             service.Setup(x => x.Create(It.Is<Property>(y => y.Name == "readiness_Valid")));
             service.Setup(x => x.GetAllProperties())
                 .Returns(existsProperty
-                    ? new[] { new Property { Name = "readiness_Valid", CatalogId = _catalogId, Type = PropertyType.Product, ValueType = PropertyValueType.Number } }
+                    ? new[] { new Property { Name = "readiness_Valid", CatalogId = CatalogId, Type = PropertyType.Product, ValueType = PropertyValueType.Number } }
                     : new Property[0]);
             return service.Object;
         }
