@@ -21,20 +21,25 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 
         public void UpdateDocuments(IList<IDocument> documents, IList<CatalogProduct> items, object context)
         {
-            var productIndexes = items.Select((x, i) => new KeyValuePair<string, int>(x.Id, i)).ToDictionary(x => x.Key, x => x.Value);
-            var productByCatalogId = items.GroupBy(x => x.CatalogId);
-            foreach (var productGroup in productByCatalogId)
+            var documentsByProductId = documents.Select((x, i) => new KeyValuePair<string, IDocument>(items[i].Id, x)).ToDictionary(x => x.Key, x => x.Value);
+            var productsByCatalogId = items.GroupBy(x => x.CatalogId);
+            foreach (var productsPerCatalog in productsByCatalogId)
             {
-                var channelsSearch = _readinessService.SearchChannels(new ReadinessChannelSearchCriteria { CatalogId = productGroup.Key, Take = int.MaxValue });
-                foreach (var channel in channelsSearch.Results)
+                var channelsSearch = _readinessService.SearchChannels(new ReadinessChannelSearchCriteria { CatalogId = productsPerCatalog.Key, Take = int.MaxValue });
+                if (!channelsSearch.Results.IsNullOrEmpty())
                 {
-                    var evaluator = _readinessEvaluators.FirstOrDefault(x => x.GetType().Name == channel.EvaluatorType);
-                    var readinessEntries = evaluator?.EvaluateReadiness(channel, productGroup.Select(x => x).ToArray());
-                    if (!readinessEntries.IsNullOrEmpty())
+                    foreach (var channel in channelsSearch.Results)
                     {
-                        foreach (var readinessEntry in readinessEntries)
+                        var evaluator = _readinessEvaluators.FirstOrDefault(x => x.GetType().Name == channel.EvaluatorType);
+                        var readinessEntries = evaluator?.EvaluateReadiness(channel, productsPerCatalog.Select(x => x).ToArray());
+                        if (!readinessEntries.IsNullOrEmpty())
                         {
-                            documents[productIndexes[readinessEntry.ProductId]].Add(new DocumentField("readiness_" + channel.Name.ToLower(), readinessEntry.ReadinessPercent, new[] { IndexStore.Yes, IndexType.NotAnalyzed }));
+                            foreach (var readinessEntry in readinessEntries)
+                            {
+                                documentsByProductId[readinessEntry.ProductId]
+                                    .Add(new DocumentField("readiness_" + channel.Name.ToLower(), readinessEntry.ReadinessPercent,
+                                        new[] { IndexStore.Yes, IndexType.NotAnalyzed }));
+                            }
                         }
                     }
                 }
