@@ -1,6 +1,7 @@
 ﻿angular.module('virtoCommerce.marketingModule')
     .controller('virtoCommerce.catalogPublishingModule.channelEvaluateDetailsController', ['$rootScope', '$scope', function ($rootScope, $scope) {
         var blade = $scope.blade;
+        blade.headIcon = 'fa fa-calculator';
         blade.isLoading = false;
 
         $scope.$on('new-notification-event', function (event, notification) {
