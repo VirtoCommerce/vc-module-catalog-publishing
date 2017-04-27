@@ -104,7 +104,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             using (var repository = _repositoryFactory())
             {
                 var query = repository.Channels;
-                if (criteria.CatalogIds.IsNullOrEmpty())
+                if (!criteria.CatalogIds.IsNullOrEmpty())
                 {
                     query = query.Where(x => criteria.CatalogIds.Contains(x.CatalogId));
                 }
