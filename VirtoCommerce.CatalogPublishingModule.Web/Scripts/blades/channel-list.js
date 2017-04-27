@@ -17,6 +17,8 @@
         }
 
         $scope.selectNode = function (entity) {
+            $scope.selectedNodeId = entity.id;
+            console.log(entity.id);
             bladeNavigationService.showBlade({
                 id: 'catalogPublishingChannel',
                 title: entity ? 'catalog-publishing.blades.channel-details.title' : 'catalog-publishing.blades.channel-details.new-title',
@@ -62,6 +64,7 @@
         }
 
         $scope.selectCatalogItem = function (channel) {
+            $scope.selectedNodeId = channel.id;
             $localStorage.catalogPublishingChannel = channel;
             bladeNavigationService.showBlade({
                 id: 'readinessCatalogItems',
