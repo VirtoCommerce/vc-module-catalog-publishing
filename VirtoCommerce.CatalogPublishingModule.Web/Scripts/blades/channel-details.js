@@ -83,6 +83,8 @@
         }
 
         function saveChanges() {
+            var catalog = _.find($scope.catalogs, function (c) { return c.id === blade.currentEntity.catalogId });
+            blade.currentEntity.catalogName = catalog.name;
             blade.isLoading = true;
             if (!blade.isNew) {
                 catalogPublishingApi.updateChannel(blade.currentEntity, function () {

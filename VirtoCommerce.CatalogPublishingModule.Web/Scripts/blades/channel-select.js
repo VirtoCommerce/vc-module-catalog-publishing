@@ -24,10 +24,19 @@
             }
         }];
 
+        var product = blade.parentBlade.currentEntity;
+        var catalogIds = [];
+        _.each(product.outlines, function (outline) {
+            var catalogItem = _.find(outline.items, function (item) { return item.seoObjectType === 'Catalog' });
+            if (catalogItem) {
+                catalogIds.push(catalogItem.id);
+            }
+        });
+
         catalogPublishingApi.searchChannels({
             skip: 0,
             take: 1000,
-            catalogId: $localStorage.catalogPublishingChannel.catalogId
+            catalogIds: catalogIds,
         }, function (response) {
             $scope.channels = response.results;
         });

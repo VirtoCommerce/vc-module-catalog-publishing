@@ -6,6 +6,7 @@
         "title": "Catalog publishing channels",
         "labels": {
           "name": "Name",
+          "catalog": "Catalog",
           "readiness-percent": "Readiness percent"
         }
       },

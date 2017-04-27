@@ -17,8 +17,7 @@
         }
 
         $scope.selectNode = function (entity) {
-            $scope.selectedNodeId = entity.id;
-            console.log(entity.id);
+            $scope.selectedNodeId = entity ? entity.id : null;
             bladeNavigationService.showBlade({
                 id: 'catalogPublishingChannel',
                 title: entity ? 'catalog-publishing.blades.channel-details.title' : 'catalog-publishing.blades.channel-details.new-title',
