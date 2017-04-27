@@ -23,6 +23,7 @@
                 headIcon: 'fa fa-tasks',
                 currentEntity: angular.copy(entity),
                 originalEntity: angular.copy(entity),
+                parentSelectNode: $scope.selectNode,
                 controller: 'virtoCommerce.catalogPublishingModule.channelDetailsController',
                 template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-details.tpl.html'
             }, blade);
