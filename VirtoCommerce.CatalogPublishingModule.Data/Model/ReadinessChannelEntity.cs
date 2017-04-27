@@ -21,6 +21,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         [StringLength(128)]
         public string CatalogId { get; set; }
 
+        [Required]
+        [StringLength(128)]
+        public string CatalogName { get; set; }
+
         public string Language { get; set; }
 
         [StringLength(128)]
@@ -43,6 +47,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 
             channel.Name = Name;
             channel.CatalogId = CatalogId;
+            channel.CatalogName = CatalogName;
             channel.Language = Language;
             channel.PricelistId = PricelistId;
             channel.EvaluatorType = EvaluatorType;
@@ -68,6 +73,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 
             Name = channel.Name;
             CatalogId = channel.CatalogId;
+            CatalogName = channel.CatalogName;
             Language = channel.Language;
             PricelistId = channel.PricelistId;
             EvaluatorType = channel.EvaluatorType;
@@ -87,6 +93,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 
             channel.Name = Name;
             channel.CatalogId = CatalogId;
+            channel.CatalogName = CatalogName;
             channel.Language = Language;
             channel.PricelistId = PricelistId;
             channel.EvaluatorType = EvaluatorType;

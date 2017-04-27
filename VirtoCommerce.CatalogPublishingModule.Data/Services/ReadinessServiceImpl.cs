@@ -32,13 +32,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             {
                 using (var repository = _repositoryFactory())
                 {
-                    var channels = repository.GetChannelsByIds(ids);
-                    var t = channels.Select(x => x.CatalogId).Distinct().ToArray();
-                    var catalogs = _catalogSearchService.Search(new SearchCriteria { CatalogIds = t }).Catalogs;
-                    retVal = channels.Select(x =>
+                    retVal = repository.GetChannelsByIds(ids).Select(x =>
                     {
                         var channel = x.ToModel(AbstractTypeFactory<ReadinessChannel>.TryCreateInstance());
-                        channel.CatalogName = catalogs.FirstOrDefault(c => c.Id == channel.CatalogId)?.Name;
                         channel.ReadinessPercent = x.Entries.Count > 0 ? (int) Math.Round((double) x.Entries.Sum(y => y.ReadinessPercent) / x.Entries.Count) : 0;
                         return channel;
                     }).ToArray();

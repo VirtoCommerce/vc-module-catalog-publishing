@@ -184,6 +184,10 @@
     <Compile Include="Migrations\201704171549277_Initial.Designer.cs">
       <DependentUpon>201704171549277_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704271201355_CatalogName.cs" />
+    <Compile Include="Migrations\201704271201355_CatalogName.Designer.cs">
+      <DependentUpon>201704271201355_CatalogName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\ReadinessChannelEntity.cs" />
     <Compile Include="Model\ReadinessDetailEntity.cs" />
@@ -208,6 +212,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201704171549277_Initial.resx">
       <DependentUpon>201704171549277_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704271201355_CatalogName.resx">
+      <DependentUpon>201704271201355_CatalogName.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
