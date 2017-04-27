@@ -40,7 +40,7 @@ angular.module(moduleName, [])
         };
         return retVal;
     })
-    .run(['$rootScope', '$state', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($rootScope, $state, mainMenuService, widgetService, widgetMapperService) {
+    .run(['$rootScope', '$state', 'platformWebApp.mainMenuService', 'platformWebApp.pushNotificationTemplateResolver', 'platformWebApp.widgetService', 'virtoCommerce.catalogPublishingModule.widgetMapperService', 'platformWebApp.bladeNavigationService', function ($rootScope, $state, mainMenuService, pushNotificationTemplateResolver, widgetService, widgetMapperService, bladeNavigationService) {
         mainMenuService.addMenuItem({
             path: 'browse/publishing-channels',
             icon: 'fa fa-tasks',
@@ -54,9 +54,36 @@ angular.module(moduleName, [])
             controller: 'virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController',
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/widgets/catalog-publishing-widget.tpl.html'
         }, 'itemDetail');
-
+        
         widgetMapperService.map("Properties", "virtoCommerce.catalogModule.itemPropertyWidgetController");
         widgetMapperService.map("Descriptions", "virtoCommerce.catalogModule.editorialReviewWidgetController");
         widgetMapperService.map("Prices", "virtoCommerce.pricingModule.itemPricesWidgetController");
         widgetMapperService.map("Seo", "virtoCommerce.coreModule.seo.seoWidgetController");
+
+        var menuExportTemplate = {
+            priority: 900,
+            satisfy: function (notify, place) { return place == 'menu' && (notify.notifyType == 'EvaluateReadiness'); },
+            template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/notifications/menuEvaluation.tpl.html',
+            action: function (notify) { $state.go('workspace.pushNotificationsHistory', notify) }
+        };
+        pushNotificationTemplateResolver.register(menuExportTemplate);
+
+        var historyExportTemplate = {
+            priority: 900,
+            satisfy: function (notify, place) {
+                return place == 'history' && (notify.notifyType == 'EvaluateReadiness');
+            },
+            template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/notifications/historyEvaluation.tpl.html',
+            action: function (notify) {
+                var blade = {
+                    id: 'evaluateProgress',
+                    title: 'catalog-publishing.blades.channel-evaluate-details.title',
+                    notification: notify,
+                    controller: 'virtoCommerce.catalogPublishingModule.channelEvaluateDetailsController',
+                    template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-evaluate-details.tpl.html'
+                };
+                bladeNavigationService.showBlade(blade);
+            }
+        };
+        pushNotificationTemplateResolver.register(historyExportTemplate);
     }]);

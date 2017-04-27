@@ -12,6 +12,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
 
         public string CatalogId { get; set; }
 
+        public string CatalogName { get; set; }
+
         public string EvaluatorType { get; set; }
 
         public int ReadinessPercent { get; set; }

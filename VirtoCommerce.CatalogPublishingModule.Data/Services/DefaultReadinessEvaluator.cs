@@ -43,6 +43,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 throw new ArgumentException("Products must be specified", "products");
             }
 
+            products = products.Where(x => x.CatalogId == channel.CatalogId).ToArray();
+
             var entries = new ReadinessEntry[products.Length];
 
             for (var i = 0; i < products.Length; i++)

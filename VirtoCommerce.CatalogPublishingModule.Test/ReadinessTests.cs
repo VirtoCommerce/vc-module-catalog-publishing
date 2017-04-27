@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
+using VirtoCommerce.Domain.Catalog.Model;
+using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 using Xunit;
@@ -19,7 +22,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         [Fact]
         public void ChannelTest()
         {
-            var service = GetService();
+            var service = GetReadinessService();
             var channel = GetChannel();
             ReadinessChannel testChannel;
 
@@ -43,7 +46,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         [Fact]
         public void EntryTest()
         {
-            var service = GetService();
+            var service = GetReadinessService();
             var channel = GetChannel();
             var entry = GetEntry();
             ReadinessChannel testChannel;
@@ -88,7 +91,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         [Fact]
         private void DetailsTest()
         {
-            var service = GetService();
+            var service = GetReadinessService();
             var channel = GetChannel();
             var entry = GetEntry();
 
@@ -134,6 +137,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 Language = "en",
                 PricelistId = "Test",
                 CatalogId = "Test",
+                CatalogName = "Test",
                 EvaluatorType = "DefaultEvaluatorType",
                 ReadinessPercent = 50,
                 CreatedDate = DateTime.Now,
@@ -197,9 +201,19 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                    first.ReadinessPercent == second.ReadinessPercent;
         }
 
-        private IReadinessService GetService()
+        private ICatalogSearchService GetCatalogSearchService()
         {
-            return new ReadinessServiceImpl(GetRepository);
+            var service = new Mock<ICatalogSearchService>();
+            service.Setup(x => x.Search(It.IsAny<SearchCriteria>()))
+                .Returns<SearchCriteria>(c => new SearchResult { Catalogs = new Catalog[0] });
+            service.Setup(x => x.Search(It.Is<SearchCriteria>(c => c.CatalogIds.Length == 1 && c.CatalogIds.Contains("Test"))))
+                .Returns<SearchCriteria>(c => new SearchResult { Catalogs = new[] { new Catalog { Id = "Test", Name = "Test" } } });
+            return service.Object;
+        }
+
+        private IReadinessService GetReadinessService()
+        {
+            return new ReadinessServiceImpl(GetRepository, GetCatalogSearchService());
         }
 
         private static IReadinessRepository GetRepository()
