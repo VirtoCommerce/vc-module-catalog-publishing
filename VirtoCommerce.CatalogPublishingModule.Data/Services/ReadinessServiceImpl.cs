@@ -108,9 +108,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             using (var repository = _repositoryFactory())
             {
                 var query = repository.Channels;
-                if (!string.IsNullOrEmpty(criteria.CatalogId))
+                if (criteria.CatalogIds.IsNullOrEmpty())
                 {
-                    query = query.Where(x => criteria.CatalogId == x.CatalogId);
+                    query = query.Where(x => criteria.CatalogIds.Contains(x.CatalogId));
                 }
 
                 var sortInfos = criteria.SortInfos;

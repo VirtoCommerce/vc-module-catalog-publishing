@@ -55,8 +55,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private IReadinessService GetReadinessService()
         {
             var service = new Mock<IReadinessService>();
-            service.Setup(x => x.SearchChannels(It.Is<ReadinessChannelSearchCriteria>(c => c.CatalogId == FirstCatalogId || c.CatalogId == SecondCatalogId)))
-                .Returns<ReadinessChannelSearchCriteria>(x => new GenericSearchResult<ReadinessChannel> { Results = new[] { GetChannelByCatalogId(x.CatalogId) }});
+            service.Setup(x => x.SearchChannels(It.Is<ReadinessChannelSearchCriteria>(c => c.CatalogIds.Any(id => id == FirstCatalogId || id == SecondCatalogId))))
+                .Returns<ReadinessChannelSearchCriteria>(x => new GenericSearchResult<ReadinessChannel> { Results = x.CatalogIds.Select(GetChannelByCatalogId).ToArray() });
             return service.Object;
         }
 

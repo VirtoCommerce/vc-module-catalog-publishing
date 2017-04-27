@@ -4,6 +4,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model.Search
 {
     public class ReadinessChannelSearchCriteria : SearchCriteriaBase
     {
-        public string CatalogId { get; set; }
+        public string[] CatalogIds { get; set; }
     }
 }

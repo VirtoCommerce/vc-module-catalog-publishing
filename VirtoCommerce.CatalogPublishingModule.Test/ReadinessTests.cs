@@ -35,7 +35,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             testChannel = service.GetChannelsByIds(new[] { channel.Id }).FirstOrDefault();
             Assert.True(CompareChannels(channel, testChannel));
 
-            testChannel = service.SearchChannels(new ReadinessChannelSearchCriteria { CatalogId = "Test" }).Results.FirstOrDefault();
+            testChannel = service.SearchChannels(new ReadinessChannelSearchCriteria { CatalogIds = new [] { "Test" } }).Results.FirstOrDefault();
             Assert.True(CompareChannels(channel, testChannel));
 
             service.DeleteChannels(new[] { channel.Id });

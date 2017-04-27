@@ -22,13 +22,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         public void UpdateDocuments(IList<IDocument> documents, IList<CatalogProduct> items, object context)
         {
             var documentsByProductId = documents.Select((x, i) => new KeyValuePair<string, IDocument>(items[i].Id, x)).ToDictionary(x => x.Key, x => x.Value);
-            var productsByCatalogId = items.GroupBy(x => x.CatalogId);
-            foreach (var productsPerCatalog in productsByCatalogId)
+            var productsByCatalogId = items.GroupBy(x => x.CatalogId).ToArray();
+            var channels =  _readinessService.SearchChannels(new ReadinessChannelSearchCriteria { CatalogIds = productsByCatalogId.Select(x => x.Key).ToArray(), Take = int.MaxValue }).Results;
+            if (!channels.IsNullOrEmpty())
             {
-                var channelsSearch = _readinessService.SearchChannels(new ReadinessChannelSearchCriteria { CatalogId = productsPerCatalog.Key, Take = int.MaxValue });
-                if (!channelsSearch.Results.IsNullOrEmpty())
+                foreach (var productsPerCatalog in productsByCatalogId)
                 {
-                    foreach (var channel in channelsSearch.Results)
+                    foreach (var channel in channels.Where(x => x.CatalogId == productsPerCatalog.Key))
                     {
                         var evaluator = _readinessEvaluators.FirstOrDefault(x => x.GetType().Name == channel.EvaluatorType);
                         var readinessEntries = evaluator?.EvaluateReadiness(channel, productsPerCatalog.Select(x => x).ToArray());
