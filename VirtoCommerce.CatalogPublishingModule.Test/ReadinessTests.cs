@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
-using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
-using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 using Xunit;
@@ -65,7 +62,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             using (var repository = GetRepository())
             {
                 Array.ForEach(entry.Details, x => x.ReadinessPercent = 15);
-                entry.ReadinessPercent = entry.Details.Sum(x => x.ReadinessPercent);
+                entry.ReadinessPercent = (int)Math.Round((double)entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
 
                 service.SaveEntries(new[] { entry });
 
@@ -201,19 +198,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                    first.ReadinessPercent == second.ReadinessPercent;
         }
 
-        private ICatalogSearchService GetCatalogSearchService()
-        {
-            var service = new Mock<ICatalogSearchService>();
-            service.Setup(x => x.Search(It.IsAny<SearchCriteria>()))
-                .Returns<SearchCriteria>(c => new SearchResult { Catalogs = new Catalog[0] });
-            service.Setup(x => x.Search(It.Is<SearchCriteria>(c => c.CatalogIds.Length == 1 && c.CatalogIds.Contains("Test"))))
-                .Returns<SearchCriteria>(c => new SearchResult { Catalogs = new[] { new Catalog { Id = "Test", Name = "Test" } } });
-            return service.Object;
-        }
-
         private IReadinessService GetReadinessService()
         {
-            return new ReadinessServiceImpl(GetRepository, GetCatalogSearchService());
+            return new ReadinessServiceImpl(GetRepository);
         }
 
         private static IReadinessRepository GetRepository()

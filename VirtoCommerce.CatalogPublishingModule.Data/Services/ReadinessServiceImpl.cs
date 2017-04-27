@@ -6,8 +6,6 @@ using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
-using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
@@ -17,12 +15,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
     public class ReadinessServiceImpl : ServiceBase, IReadinessService
     {
         private readonly Func<IReadinessRepository> _repositoryFactory;
-        private readonly ICatalogSearchService _catalogSearchService;
 
-        public ReadinessServiceImpl(Func<IReadinessRepository> repositoryFactory, ICatalogSearchService catalogSearchService)
+        public ReadinessServiceImpl(Func<IReadinessRepository> repositoryFactory)
         {
             _repositoryFactory = repositoryFactory;
-            _catalogSearchService = catalogSearchService;
         }
 
         public ReadinessChannel[] GetChannelsByIds(string[] ids)
@@ -35,7 +31,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                     retVal = repository.GetChannelsByIds(ids).Select(x =>
                     {
                         var channel = x.ToModel(AbstractTypeFactory<ReadinessChannel>.TryCreateInstance());
-                        channel.ReadinessPercent = x.Entries.Count > 0 ? (int) Math.Round((double) x.Entries.Sum(y => y.ReadinessPercent) / x.Entries.Count) : 0;
+                        channel.ReadinessPercent = (int)Math.Round(repository.Entries.Where(e => e.ChannelId == x.Id).Average(e => (int?)e.ReadinessPercent) ?? 0);
                         return channel;
                     }).ToArray();
                 }

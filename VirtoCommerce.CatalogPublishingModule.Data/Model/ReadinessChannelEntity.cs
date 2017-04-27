@@ -8,11 +8,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 {
     public class ReadinessChannelEntity : AuditableEntity
     {
-        public ReadinessChannelEntity()
-        {
-            Entries = new NullCollection<ReadinessEntryEntity>();
-        }
-
         [Required]
         [StringLength(128)]
         public string Name { get; set; }
@@ -31,12 +26,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public string PricelistId { get; set; }
 
         public string EvaluatorType { get; set; }
-
-        #region Navigation properties
-
-        public virtual ObservableCollection<ReadinessEntryEntity> Entries { get; set; }
-
-        #endregion
 
         public virtual ReadinessChannel ToModel(ReadinessChannel channel)
         {
