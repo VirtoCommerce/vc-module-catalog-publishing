@@ -69,7 +69,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                         ValidateSeo(channel, product),
                     }
                 };
-                entry.ReadinessPercent = (int) Math.Round((double) entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
+                entry.ReadinessPercent = (int) Math.Round(entry.Details.Average(x => x.ReadinessPercent));
                 entries[i] = entry;
             }
 
