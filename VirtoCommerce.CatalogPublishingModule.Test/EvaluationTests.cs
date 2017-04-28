@@ -31,7 +31,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             Properties = new List<Property>().Cast<Domain.Catalog.Model.Property>().ToList(),
             PropertyValues = new List<PropertyValue>().Cast<Domain.Catalog.Model.PropertyValue>().ToList(),
             Reviews = new List<EditorialReview>(),
-            SeoInfos = new List<SeoInfo>()
+            SeoInfos = new List<SeoInfo>(),
+            Outlines = new List<Outline>
+            {
+                new Outline { Items = new List<OutlineItem>
+                {
+                    new OutlineItem { Id = "Valid" }
+                } }
+            }
         };
         private Price[] _pricelistPrices = new Price[0];
         private string[] _editorialReviewTypes = new[] { "Valid" };
@@ -465,7 +472,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             var service = new Mock<IItemService>();
             service.Setup(x => x.GetByIds(
                     It.Is<string[]>(ids => ids.Length == 1 && ids.Contains(_product.Id)),
-                    It.Is<ItemResponseGroup>(r => r.HasFlag(ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo)),
+                    It.Is<ItemResponseGroup>(r => r.HasFlag(ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo | ItemResponseGroup.Outlines)),
                     It.Is<string>(id => id == null)))
                 .Returns<string[], ItemResponseGroup, string>((pId, r, cId) => new[] { _product });
             service.Setup(x => x.Update(It.Is<CatalogProduct[]>(p => p.Contains(_product))));

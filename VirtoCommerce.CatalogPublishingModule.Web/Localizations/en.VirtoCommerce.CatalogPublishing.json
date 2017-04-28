@@ -1,9 +1,9 @@
 ﻿{
   "catalog-publishing": {
-    "main-menu-title": "Catalog publishing",
+    "main-menu-title": "Channels",
     "blades": {
       "channel-list": {
-        "title": "Catalog publishing channels",
+        "title": "Channels",
         "labels": {
           "name": "Name",
           "catalog": "Catalog",
@@ -11,8 +11,8 @@
         }
       },
       "channel-details": {
-        "new-title": "New catalog publishing channel",
-        "title": "Catalog publishing channel",
+        "new-title": "New channel",
+        "title": "Channel",
         "labels": {
           "name": "Name",
           "name-description": "This field accepts latin symbols, digits and underscore symbol",

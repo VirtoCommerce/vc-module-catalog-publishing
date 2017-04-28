@@ -196,7 +196,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
                         CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts, Take = int.MaxValue
                     }).Products.Select(x => x.Id).ToArray();
             }
-            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo, channel.CatalogId);
+            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemInfo);
             if (products == null)
             {
                 throw new NullReferenceException("products");

@@ -42,8 +42,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 PriceListId = channel.PricelistId, ProductIds = products.Select(x => x.Id).ToArray(), Take = int.MaxValue
             }).Results;
 
-            products = _productService.GetByIds(products.Where(x => x.CatalogId == channel.CatalogId).Select(i => i.Id).ToArray(),
-                    ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo).ToArray();
+            products = _productService.GetByIds(products.Select(x => x.Id).ToArray(),
+                ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo | ItemResponseGroup.Outlines).ToArray();
+            products = products.Where(x => x.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == channel.CatalogId )).ToArray();
 
             var retVal = new List<ReadinessEntry>(products.Length);
             
