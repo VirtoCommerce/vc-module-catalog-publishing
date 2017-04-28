@@ -22,16 +22,17 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         public void UpdateDocuments(IList<IDocument> documents, IList<CatalogProduct> items, object context)
         {
             var documentsByProductId = documents.Select((x, i) => new KeyValuePair<string, IDocument>(items[i].Id, x)).ToDictionary(x => x.Key, x => x.Value);
-            var productsByCatalogId = items.GroupBy(x => x.CatalogId).ToArray();
-            var channels =  _readinessService.SearchChannels(new ReadinessChannelSearchCriteria { CatalogIds = productsByCatalogId.Select(x => x.Key).ToArray(), Take = int.MaxValue }).Results;
+            var catalogIds = items.SelectMany(x => x.Outlines.Select(o => o.Items.FirstOrDefault()?.Id)).Distinct().ToArray();
+            var productsByCatalogId = catalogIds.ToDictionary(x => x, x => items.Where(i => i.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == x)));
+            var channels =  _readinessService.SearchChannels(new ReadinessChannelSearchCriteria { CatalogIds = catalogIds, Take = int.MaxValue }).Results;
             if (!channels.IsNullOrEmpty())
             {
-                foreach (var productsPerCatalog in productsByCatalogId)
+                foreach (var catalogId in catalogIds)
                 {
-                    foreach (var channel in channels.Where(x => x.CatalogId == productsPerCatalog.Key))
+                    foreach (var channel in channels.Where(x => x.CatalogId == catalogId))
                     {
                         var evaluator = _readinessEvaluators.FirstOrDefault(x => x.GetType().Name == channel.EvaluatorType);
-                        var readinessEntries = evaluator?.EvaluateReadiness(channel, productsPerCatalog.Select(x => x).ToArray());
+                        var readinessEntries = evaluator?.EvaluateReadiness(channel, productsByCatalogId[catalogId].ToArray());
                         if (!readinessEntries.IsNullOrEmpty())
                         {
                             foreach (var readinessEntry in readinessEntries)

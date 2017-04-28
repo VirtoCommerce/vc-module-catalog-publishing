@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
@@ -16,26 +17,27 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private const string FirstCatalogId = "Test1";
         private const string SecondCatalogId = "Test2";
 
-        private CatalogProduct[] _products = {
+        private CatalogProduct[] _products =
+        {
             new CatalogProduct
             {
                 Id = "First",
-                CatalogId = FirstCatalogId
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = FirstCatalogId } } } }
             },
             new CatalogProduct
             {
                 Id = "Second",
-                CatalogId = FirstCatalogId
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = FirstCatalogId } } } }
             },
             new CatalogProduct
             {
                 Id = "Third",
-                CatalogId = SecondCatalogId
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = SecondCatalogId } } } }
             },
             new CatalogProduct
             {
                 Id = "Fourth",
-                CatalogId = SecondCatalogId
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = SecondCatalogId } } } }
             }
         };
 
@@ -43,12 +45,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void Test()
         {
             var documentBuilder = new ProductReadinessDocumentBuilder(GetReadinessService(), new []{ GetReadinessEvaluator() });
-            var documents = Enumerable.Repeat(new ResultDocument() as IDocument, _products.Length).ToList();
+            var documents = _products.Select(x => new ResultDocument() as IDocument).ToArray();
             documentBuilder.UpdateDocuments(documents, _products, null);
-            for (var i = 0; i < documents.Count; i++)
+            for (var i = 0; i < documents.Length; i++)
             {
                 var document = documents[i];
-                Assert.True((int) document["readiness_" + _products[i].CatalogId].Value == 50);
+                Assert.True(document.FieldCount == 1 && (int) document["readiness_" + _products[i].Outlines.FirstOrDefault()?.Items.FirstOrDefault()?.Id.ToLower()].Value == 50);
             }
         }
 
