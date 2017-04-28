@@ -26,7 +26,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual ReadinessDetail ToModel(ReadinessDetail detail)
         {
             if (detail == null)
-                throw new ArgumentNullException("detail");
+                throw new ArgumentNullException(nameof(detail));
             
             detail.Name = Name;
             detail.ReadinessPercent = ReadinessPercent;
@@ -37,7 +37,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual ReadinessDetailEntity FromModel(ReadinessDetail detail)
         {
             if (detail == null)
-                throw new ArgumentNullException("detail");
+                throw new ArgumentNullException(nameof(detail));
 
             Name = detail.Name;
             ReadinessPercent = detail.ReadinessPercent;
@@ -48,7 +48,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual void Patch(ReadinessDetailEntity detail)
         {
             if (detail == null)
-                throw new ArgumentNullException("detail");
+                throw new ArgumentNullException(nameof(detail));
 
             detail.Name = Name;
             detail.ReadinessPercent = ReadinessPercent;

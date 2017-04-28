@@ -1,5 +1,7 @@
 ﻿using Microsoft.Practices.Unity;
+using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Model.Details;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Domain.Catalog.Model;
@@ -35,8 +37,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
             _container.RegisterType<IReadinessRepository>(new InjectionFactory(c => new ReadinessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
             _container.RegisterType<IReadinessService, ReadinessServiceImpl>();
-            _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>(nameof(DefaultReadinessEvaluator));
             _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductReadinessDocumentBuilder>(nameof(ProductReadinessDocumentBuilder));
+            _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>(nameof(DefaultReadinessEvaluator));
+            _container.RegisterType<DefaultReadinessDetail, PropertiesDetail>(nameof(PropertiesDetail));
+            _container.RegisterType<DefaultReadinessDetail, DescriptionsDetail>(nameof(DescriptionsDetail));
+            _container.RegisterType<DefaultReadinessDetail, PricesDetail>(nameof(PricesDetail));
+            _container.RegisterType<DefaultReadinessDetail, SeoDetail>(nameof(SeoDetail));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
@@ -30,7 +29,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual ReadinessChannel ToModel(ReadinessChannel channel)
         {
             if (channel == null)
-                throw new ArgumentNullException("channel");
+                throw new ArgumentNullException(nameof(channel));
 
             channel.Id = Id;
 
@@ -52,9 +51,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual ReadinessChannelEntity FromModel(ReadinessChannel channel, PrimaryKeyResolvingMap pkMap)
         {
             if (channel == null)
-                throw new ArgumentNullException("channel");
+                throw new ArgumentNullException(nameof(channel));
             if (pkMap == null)
-                throw new ArgumentNullException("pkMap");
+                throw new ArgumentNullException(nameof(pkMap));
 
             pkMap.AddPair(channel, this);
 
@@ -78,7 +77,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual void Patch(ReadinessChannelEntity channel)
         {
             if (channel == null)
-                throw new ArgumentNullException("channel");
+                throw new ArgumentNullException(nameof(channel));
 
             channel.Name = Name;
             channel.CatalogId = CatalogId;

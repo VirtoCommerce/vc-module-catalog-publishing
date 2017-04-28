@@ -3,6 +3,7 @@ using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Model.Details;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Commerce.Model.Search;
@@ -16,7 +17,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private const string FirstCatalogId = "Test1";
         private const string SecondCatalogId = "Test2";
 
-        private CatalogProduct[] _products = {
+        private readonly CatalogProduct[] _products = {
             new CatalogProduct
             {
                 Id = "First",
@@ -92,12 +93,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private ReadinessDetail[] GetDetails()
         {
-            return new[]
+            return new DefaultReadinessDetail[]
             {
-                new ReadinessDetail { Name = "Properties", ReadinessPercent = 25 },
-                new ReadinessDetail { Name = "Descriptions", ReadinessPercent = 25 },
-                new ReadinessDetail { Name = "Prices", ReadinessPercent = 25 },
-                new ReadinessDetail { Name = "Seo", ReadinessPercent = 25 },
+                new PropertiesDetail{ ReadinessPercent = 25 },
+                new DescriptionsDetail(null) { ReadinessPercent = 25 },
+                new PricesDetail { ReadinessPercent = 25 },
+                new SeoDetail { ReadinessPercent = 25 },
             };
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -35,7 +34,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual ReadinessEntry ToModel(ReadinessEntry entry)
         {
             if (entry == null)
-                throw new ArgumentNullException("entry");
+                throw new ArgumentNullException(nameof(entry));
 
             entry.ChannelId = ChannelId;
             entry.ProductId = ProductId;
@@ -48,7 +47,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual ReadinessEntryEntity FromModel(ReadinessEntry entry)
         {
             if (entry == null)
-                throw new ArgumentNullException("entry");
+                throw new ArgumentNullException(nameof(entry));
 
             ChannelId = entry.ChannelId;
             ProductId = entry.ProductId;
@@ -64,7 +63,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         public virtual void Patch(ReadinessEntryEntity entry)
         {
             if (entry == null)
-                throw new ArgumentNullException("entry");
+                throw new ArgumentNullException(nameof(entry));
 
             entry.ChannelId = ChannelId;
             entry.ProductId = ProductId;

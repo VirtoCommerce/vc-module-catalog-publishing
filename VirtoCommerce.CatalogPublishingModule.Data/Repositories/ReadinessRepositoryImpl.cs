@@ -62,7 +62,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
         public void DeleteChannels(string[] ids)
         {
             var queryPattern = @"DELETE FROM ReadinessChannel WHERE Id IN ({0})";
-            var query = string.Format(queryPattern, string.Join(", ", ids.Select(x => string.Format("'{0}'", x))));
+            var query = string.Format(queryPattern, string.Join(", ", ids.Select(x => $"'{x}'")));
             ObjectContext.ExecuteStoreCommand(query);
         }
     }

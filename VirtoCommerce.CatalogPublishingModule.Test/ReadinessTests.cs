@@ -5,6 +5,7 @@ using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
+using VirtoCommerce.CatalogPublishingModule.Data.Model.Details;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Platform.Core.Common;
@@ -117,7 +118,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             Assert.Throws<ArgumentNullException>(() => channel.Patch(null));
 
             Assert.Throws<ArgumentNullException>(() => entry.ToModel(null));
-            Assert.Throws<ArgumentNullException>(() => entry.FromModel(null)); ;
+            Assert.Throws<ArgumentNullException>(() => entry.FromModel(null));
             Assert.Throws<ArgumentNullException>(() => entry.Patch(null));
 
             Assert.Throws<ArgumentNullException>(() => detail.ToModel(null));
@@ -145,7 +146,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private bool CompareChannels(ReadinessChannel first, ReadinessChannel second)
         {
             // Do not include ReadinessPercent here, because it calculated in runtime and not saved to database
-            return Equals(first, second) ||
+            return first == null && second == null || first != null && second != null &&
                    first.Id == second.Id &&
                    first.Name == second.Name &&
                    first.Language == second.Language &&
@@ -161,16 +162,22 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 ChannelId = "Test",
                 ProductId = "Test",
                 ReadinessPercent = 50,
-                Details = new[]
+                Details = new DefaultReadinessDetail[]
                 {
-                    new ReadinessDetail
+                    new PropertiesDetail
                     {
-                        Name = "Test",
                         ReadinessPercent = 25
                     },
-                    new ReadinessDetail
+                    new DescriptionsDetail(null)
                     {
-                        Name = "Test2",
+                        ReadinessPercent = 25
+                    },
+                    new PricesDetail
+                    {
+                        ReadinessPercent = 25
+                    },
+                    new SeoDetail
+                    {
                         ReadinessPercent = 25
                     }
                 }
@@ -179,7 +186,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private bool CompareEntries(ReadinessEntry first, ReadinessEntry second)
         {
-            return Equals(first, second) ||
+            return first == null && second == null || first != null && second != null &&
                    first.ChannelId == second.ChannelId &&
                    first.ProductId == second.ProductId &&
                    first.ReadinessPercent == second.ReadinessPercent &&
@@ -193,9 +200,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private bool CompareDetail(ReadinessDetail first, ReadinessDetail second)
         {
-            return Equals(first, second) ||
-                   first.Name == second.Name &&
-                   first.ReadinessPercent == second.ReadinessPercent;
+            return first == null && second == null || first != null && second != null && first.Name == second.Name && first.ReadinessPercent == second.ReadinessPercent;
         }
 
         private IReadinessService GetReadinessService()

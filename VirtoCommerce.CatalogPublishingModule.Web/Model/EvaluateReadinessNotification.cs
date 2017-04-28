@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.Platform.Core.PushNotifications;
@@ -24,7 +23,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Model
         {
             get
             {
-                return Errors != null ? Errors.Count() : 0;
+                return Errors != null ? Errors.Count : 0;
             }
         }
 
