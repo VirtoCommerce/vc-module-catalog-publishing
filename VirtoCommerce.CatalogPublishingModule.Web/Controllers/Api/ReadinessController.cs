@@ -75,6 +75,19 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         }
 
         /// <summary>
+        /// Save evaluated readiness
+        /// </summary>
+        /// <param name="entries">Evaluated entries</param>
+        [HttpPut]
+        [Route("entries")]
+        [ResponseType(typeof(void))]
+        public IHttpActionResult SaveEntries(ReadinessEntry[] entries)
+        {
+            _readinessService.SaveEntries(entries);
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        /// <summary>
         /// Get channel
         /// </summary>
         /// <param name="id">Channel id</param>

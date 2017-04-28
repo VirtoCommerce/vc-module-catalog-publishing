@@ -14,14 +14,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 {
     public class DefaultReadinessEvaluator : IReadinessEvaluator
     {
-        private readonly IReadinessService _readinessService;
         private readonly Func<DefaultReadinessDetail[]> _detailFactory;
         private readonly IItemService _productService;
         private readonly IPricingSearchService _pricingSearchService;
 
-        public DefaultReadinessEvaluator(IReadinessService readinessService, Func<DefaultReadinessDetail[]> detailFactory, IItemService productService, IPricingSearchService pricingSearchService)
+        public DefaultReadinessEvaluator(Func<DefaultReadinessDetail[]> detailFactory, IItemService productService, IPricingSearchService pricingSearchService)
         {
-            _readinessService = readinessService;
             _detailFactory = detailFactory;
             _productService = productService;
             _pricingSearchService = pricingSearchService;
@@ -63,8 +61,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 entry.ReadinessPercent = (int) Math.Round(entry.Details.Average(x => x.ReadinessPercent));
                 retVal.Add(entry);
             }
-
-            _readinessService.SaveEntries(retVal.ToArray());
 
             return retVal.ToArray();
         }

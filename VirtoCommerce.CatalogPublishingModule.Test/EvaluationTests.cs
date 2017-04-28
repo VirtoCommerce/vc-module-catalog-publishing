@@ -454,17 +454,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private DefaultReadinessEvaluator GetReadinessEvaluator()
         {
-            return new DefaultReadinessEvaluator(GetReadinessService(), () => new DefaultReadinessDetail[]
+            return new DefaultReadinessEvaluator(() => new DefaultReadinessDetail[]
             {
                 new PropertiesDetail(), new DescriptionsDetail(GetSettingManager()), new PricesDetail(), new SeoDetail()
             }, GetProductService(), GetPricingSearchService());
-        }
-
-        private IReadinessService GetReadinessService()
-        {
-            var service = new Mock<IReadinessService>();
-            service.Setup(x => x.SaveEntries(It.IsAny<ReadinessEntry[]>()));
-            return service.Object;
         }
 
         private IItemService GetProductService()
