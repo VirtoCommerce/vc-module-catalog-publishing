@@ -3,12 +3,21 @@
         var blade = $scope.blade;
         var channel = $localStorage.catalogPublishingChannel;
 
+        var catalogIds = [];
+        _.each(blade.currentEntity.outlines, function (outline) {
+            var catalogItem = _.find(outline.items, function (item) { return item.seoObjectType === 'Catalog' });
+            if (catalogItem) {
+                catalogIds.push(catalogItem.id);
+            }
+        });
+
         catalogPublishingApi.searchChannels({
             skip: 0,
-            take: 1000
+            take: 1000,
+            catalogIds: catalogIds
         }, function (response) {
             var allChannels = response.results;
-            var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id && c.catalogId === blade.currentEntity.catalogId });
+            var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
             if (existingChannel) {
                 $scope.channel = existingChannel;
                 $scope.openChannelSelectBlade = function () {
