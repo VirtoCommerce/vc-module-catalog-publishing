@@ -121,7 +121,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="VirtoCommerce.SearchModule.Core, Version=2.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.0-rc7\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
+      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.0-rc10\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -138,15 +138,15 @@
       <DependentUpon>201704271201355_CatalogName.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-      <Compile Include="Model\Details\DefaultReadinessDetail.cs" />
-      <Compile Include="Model\Details\DescriptionsDetail.cs" />
-      <Compile Include="Model\Details\PricesDetail.cs" />
-      <Compile Include="Model\Details\PropertiesDetail.cs" />
-      <Compile Include="Model\Details\SeoDetail.cs" />
-      <Compile Include="Model\ReadinessChannelEntity.cs" />
-      <Compile Include="Model\ReadinessDetailEntity.cs" />
-      <Compile Include="Model\ReadinessEntryEntity.cs" />
-      <Compile Include="Model\ReadinessHelper.cs" />
+    <Compile Include="Model\Details\DefaultReadinessDetail.cs" />
+    <Compile Include="Model\Details\DescriptionsDetail.cs" />
+    <Compile Include="Model\Details\PricesDetail.cs" />
+    <Compile Include="Model\Details\PropertiesDetail.cs" />
+    <Compile Include="Model\Details\SeoDetail.cs" />
+    <Compile Include="Model\ReadinessChannelEntity.cs" />
+    <Compile Include="Model\ReadinessDetailEntity.cs" />
+    <Compile Include="Model\ReadinessEntryEntity.cs" />
+    <Compile Include="Model\ReadinessHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IReadinessRepository.cs" />
     <Compile Include="Repositories\ReadinessRepositoryImpl.cs" />
