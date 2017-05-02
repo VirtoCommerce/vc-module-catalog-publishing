@@ -121,7 +121,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="VirtoCommerce.SearchModule.Core, Version=2.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.0-rc10\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
+      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.0\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
