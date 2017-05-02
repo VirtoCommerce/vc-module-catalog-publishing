@@ -39,7 +39,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             entry.ChannelId = ChannelId;
             entry.ProductId = ProductId;
             entry.ReadinessPercent = ReadinessPercent;
-            entry.Details = Details.Select(x => x.ToModel(AbstractTypeFactory<ReadinessDetail>.TryCreateInstance())).ToArray();
+            entry.Details = Details.Select(x =>
+            {
+                var detail = x.ToModel(AbstractTypeFactory<ReadinessDetail>.TryCreateInstance());
+                detail.ProductId = ProductId;
+                return detail;
+            }).ToArray();
 
             return entry;
         }

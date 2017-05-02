@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Model
+namespace VirtoCommerce.CatalogPublishingModule.Data.Common
 {
     public static class ReadinessHelper
     {

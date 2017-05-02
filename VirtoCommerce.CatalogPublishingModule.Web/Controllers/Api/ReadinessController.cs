@@ -52,8 +52,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// Evaluate readiness
+        /// Evaluate readiness 
         /// </summary>
+        /// <remarks>Evaluate readiness for specified channel. Result will be saved to database.</remarks>
         [HttpPost]
         [Route("channels/{id}/evaluate")]
         [ResponseType(typeof(PushNotification))]

@@ -4,7 +4,6 @@ using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
-using VirtoCommerce.CatalogPublishingModule.Data.Model.Details;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Commerce.Model.Search;
@@ -96,12 +95,28 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private ReadinessDetail[] GetDetails()
         {
-            return new DefaultReadinessDetail[]
+            return new[]
             {
-                new PropertiesDetail{ ReadinessPercent = 25 },
-                new DescriptionsDetail(null) { ReadinessPercent = 25 },
-                new PricesDetail { ReadinessPercent = 25 },
-                new SeoDetail { ReadinessPercent = 25 },
+                new ReadinessDetail
+                {
+                    Name= "Test1",
+                    ReadinessPercent = 25
+                },
+                new ReadinessDetail
+                {
+                    Name= "Test2",
+                    ReadinessPercent = 25
+                },
+                new ReadinessDetail
+                {
+                    Name= "Test3",
+                    ReadinessPercent = 25
+                },
+                new ReadinessDetail
+                {
+                    Name= "Test4",
+                    ReadinessPercent = 25
+                }
             };
         }
     }

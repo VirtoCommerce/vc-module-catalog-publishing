@@ -2,6 +2,9 @@
 
 namespace VirtoCommerce.CatalogPublishingModule.Core.Model
 {
+    /// <summary>
+    /// Readiness channel is a provider of readiness of specified catalog
+    /// </summary>
     public class ReadinessChannel : AuditableEntity
     {
         public string Name { get; set; }

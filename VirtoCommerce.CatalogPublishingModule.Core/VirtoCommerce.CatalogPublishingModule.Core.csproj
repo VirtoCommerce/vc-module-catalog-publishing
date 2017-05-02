@@ -60,6 +60,7 @@
     <Compile Include="Model\ReadinessEntry.cs" />
     <Compile Include="Model\Search\ReadinessChannelSearchCriteria.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IReadinessDetailEvaluator.cs" />
     <Compile Include="Services\IReadinessEvaluator.cs" />
     <Compile Include="Services\IReadinessService.cs" />
   </ItemGroup>

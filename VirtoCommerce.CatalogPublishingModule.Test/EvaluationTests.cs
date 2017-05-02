@@ -4,9 +4,8 @@ using System.Globalization;
 using System.Linq;
 using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Core.Services;
-using VirtoCommerce.CatalogPublishingModule.Data.Model.Details;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model;
@@ -40,8 +39,15 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 } }
             }
         };
-        private Price[] _pricelistPrices = new Price[0];
+        private Price[] _prices = new Price[0];
         private string[] _editorialReviewTypes = new[] { "Valid" };
+        private readonly ReadinessChannel _channel = new ReadinessChannel
+        {
+            Name = "Valid",
+            Language = "Valid",
+            PricelistId = "Valid",
+            CatalogId = "Valid"
+        };
 
         [Fact]
         public void InvalidParameters()
@@ -58,7 +64,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void PartiallyLoadedProducts()
         {
             var evaluator = GetReadinessEvaluator();
-            evaluator.EvaluateReadiness(GetChannel(), new[] { new CatalogProduct { Id = "Valid" } });
+            evaluator.EvaluateReadiness(_channel, new[] { new CatalogProduct { Id = "Valid" } });
         }
 
         private const bool Mutable = true;
@@ -277,7 +283,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             var evaluator = GetReadinessEvaluator();
             _product.Properties = properties.Cast<Domain.Catalog.Model.Property>().ToList();
             _product.PropertyValues = values.Cast<Domain.Catalog.Model.PropertyValue>().ToList();
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), new [] { _product });
+            var readiness = evaluator.EvaluateReadiness(_channel, new [] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Properties").ReadinessPercent == readinessPercent);
         }
 
@@ -321,7 +327,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             var evaluator = GetReadinessEvaluator();
             _editorialReviewTypes = descriptionTypes;
             _product.Reviews = descriptions;
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
+            var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Descriptions").ReadinessPercent == readinessPercent);
         }
 
@@ -351,8 +357,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void PricesValidation(Price[] prices, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
-            _pricelistPrices = prices;
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
+            _prices = prices;
+            var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Prices").ReadinessPercent == readinessPercent);
         }
 
@@ -381,7 +387,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             var evaluator = GetReadinessEvaluator();
             _product.SeoInfos = seoInfos;
-            var readiness = evaluator.EvaluateReadiness(GetChannel(), new[] { _product });
+            var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Seo").ReadinessPercent == readinessPercent);
         }
 
@@ -441,23 +447,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             }
         }
 
-        private ReadinessChannel GetChannel()
-        {
-            return new ReadinessChannel
-            {
-                Name = "Valid",
-                Language = "Valid",
-                PricelistId = "Valid",
-                CatalogId = "Valid"
-            };
-        }
-
         private DefaultReadinessEvaluator GetReadinessEvaluator()
         {
-            return new DefaultReadinessEvaluator(() => new DefaultReadinessDetail[]
+            return new DefaultReadinessEvaluator(new DefaultReadinessDetailEvaluator[]
             {
-                new PropertiesDetail(), new DescriptionsDetail(GetSettingManager()), new PricesDetail(), new SeoDetail()
-            }, GetProductService(), GetPricingSearchService());
+                new PropertiesReadinessDetailEvaluator(), new DescriptionsReadinessDetailEvaluator(GetSettingManager()), new PricesReadinessDetailEvaluator(GetPricingSearchService()), new SeoReadinessDetailEvaluator()
+            }, GetProductService());
         }
 
         private IItemService GetProductService()
@@ -465,7 +460,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             var service = new Mock<IItemService>();
             service.Setup(x => x.GetByIds(
                     It.Is<string[]>(ids => ids.Length == 1 && ids.Contains(_product.Id)),
-                    It.Is<ItemResponseGroup>(r => r.HasFlag(ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews | ItemResponseGroup.Seo | ItemResponseGroup.Outlines)),
+                    It.Is<ItemResponseGroup>(r => r == ItemResponseGroup.ItemLarge),
                     It.Is<string>(id => id == null)))
                 .Returns<string[], ItemResponseGroup, string>((pId, r, cId) => new[] { _product });
             service.Setup(x => x.Update(It.Is<CatalogProduct[]>(p => p.Contains(_product))));
@@ -476,7 +471,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             var service = new Mock<IPricingSearchService>();
             service.Setup(x => x.SearchPrices(It.IsAny<PricesSearchCriteria>()))
-                .Returns<PricesSearchCriteria>(c => new PricingSearchResult<Domain.Pricing.Model.Price> { Results = _pricelistPrices });
+                .Returns<PricesSearchCriteria>(c => new PricingSearchResult<Domain.Pricing.Model.Price> { Results = _prices?.Where(p => p.PricelistId == c.PriceListId).ToArray() });
             return service.Object;
         }
 

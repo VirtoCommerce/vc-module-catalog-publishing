@@ -1,9 +1,8 @@
 ﻿using Microsoft.Practices.Unity;
-using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
-using VirtoCommerce.CatalogPublishingModule.Data.Model.Details;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Data.Infrastructure;
@@ -39,10 +38,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             _container.RegisterType<IReadinessService, ReadinessServiceImpl>();
             _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductReadinessDocumentBuilder>(nameof(ProductReadinessDocumentBuilder));
             _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>(nameof(DefaultReadinessEvaluator));
-            _container.RegisterType<DefaultReadinessDetail, PropertiesDetail>(nameof(PropertiesDetail));
-            _container.RegisterType<DefaultReadinessDetail, DescriptionsDetail>(nameof(DescriptionsDetail));
-            _container.RegisterType<DefaultReadinessDetail, PricesDetail>(nameof(PricesDetail));
-            _container.RegisterType<DefaultReadinessDetail, SeoDetail>(nameof(SeoDetail));
+            _container.RegisterType<DefaultReadinessDetailEvaluator, PropertiesReadinessDetailEvaluator>(nameof(PropertiesReadinessDetailEvaluator));
+            _container.RegisterType<DefaultReadinessDetailEvaluator, DescriptionsReadinessDetailEvaluator>(nameof(DescriptionsReadinessDetailEvaluator));
+            _container.RegisterType<DefaultReadinessDetailEvaluator, PricesReadinessDetailEvaluator>(nameof(PricesReadinessDetailEvaluator));
+            _container.RegisterType<DefaultReadinessDetailEvaluator, SeoReadinessDetailEvaluator>(nameof(SeoReadinessDetailEvaluator));
         }
     }
 }

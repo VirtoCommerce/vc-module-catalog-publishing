@@ -5,7 +5,6 @@ using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Model.Details;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Platform.Core.Common;
@@ -162,22 +161,26 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 ChannelId = "Test",
                 ProductId = "Test",
                 ReadinessPercent = 50,
-                Details = new DefaultReadinessDetail[]
+                Details = new[]
                 {
-                    new PropertiesDetail
+                    new ReadinessDetail
                     {
+                        Name= "Test1",
                         ReadinessPercent = 25
                     },
-                    new DescriptionsDetail(null)
+                    new ReadinessDetail
                     {
+                        Name= "Test2",
                         ReadinessPercent = 25
                     },
-                    new PricesDetail
+                    new ReadinessDetail
                     {
+                        Name= "Test3",
                         ReadinessPercent = 25
                     },
-                    new SeoDetail
+                    new ReadinessDetail
                     {
+                        Name= "Test4",
                         ReadinessPercent = 25
                     }
                 }

@@ -2,6 +2,9 @@
 
 namespace VirtoCommerce.CatalogPublishingModule.Core.Model
 {
+    /// <summary>
+    /// Readiness entriy is a value of readiness per product
+    /// </summary>
     public class ReadinessEntry: ValueObject<ReadinessEntry>
     {
         public string ChannelId { get; set; }

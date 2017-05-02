@@ -1,48 +1,47 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using VirtoCommerce.CatalogPublishingModule.Core.Model;
+using VirtoCommerce.CatalogPublishingModule.Data.Common;
 using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Pricing.Model;
 using VirtoCommerce.Platform.Core.Common;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Model.Details
+namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
 {
-    public class PropertiesDetail : DefaultReadinessDetail
+    public class PropertiesReadinessDetailEvaluator : DefaultReadinessDetailEvaluator
     {
-        public PropertiesDetail()
+        public override ReadinessDetail[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
         {
-            Name = "Properties";
-        }
-
-        public override void Evaluate(CatalogProduct product, string pricelistId, Price[] productPrices, string language)
-        {
-            int readinessPercent;
-            if (product.Properties.IsNullOrEmpty())
+            return products.Select(x =>
             {
-                readinessPercent = 100;
-            }
-            else
-            {
-                var properties = product.Properties.Where(x => x != null && x.Required).ToArray();
-                var invalidProperties = properties.Where(p =>
+                var detail = new ReadinessDetail { Name = "Properties", ProductId = x.Id };
+                if (x.Properties.IsNullOrEmpty())
                 {
-                    var values = product.PropertyValues.Where(x => x.Property != null && x.Property.Id == p.Id).ToArray();
-                    return IsInvalidProperty(p, values, language);
-                });
-                readinessPercent = ReadinessHelper.CalculateReadiness(properties.Length, invalidProperties.Count());
-            }
-            ReadinessPercent = readinessPercent;
+                    detail.ReadinessPercent = 100;
+                }
+                else
+                {
+                    var properties = x.Properties.Where(p => p != null && p.Required).ToArray();
+                    var invalidProperties = properties.Where(p =>
+                    {
+                        var values = x.PropertyValues.Where(v => v.Property != null && v.Property.Id == p.Id).ToArray();
+                        return IsInvalidProperty(p, values, channel.Language);
+                    });
+                    detail.ReadinessPercent = ReadinessHelper.CalculateReadiness(properties.Length, invalidProperties.Count());
+                }
+                return detail;
+            }).ToArray();
         }
 
-        private bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode)
+        private static bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode)
         {
             var retVal = values.IsNullOrEmpty();
             if (!retVal)
             {
                 if (property.Dictionary)
                 {
-                    retVal = values.Any(x => !property.DictionaryValues.IsNullOrEmpty() && (x.LanguageCode != languageCode ||
-                                                                                            !property.DictionaryValues.Any(y => IsEqualValues(x.ValueType, y.Value, x.Value))));
+                    retVal = values.Any(x => !property.DictionaryValues.IsNullOrEmpty() &&
+                                             (x.LanguageCode != languageCode || !property.DictionaryValues.Any(y => IsEqualValues(x.ValueType, y.Value, x.Value))));
                 }
                 else
                 {
