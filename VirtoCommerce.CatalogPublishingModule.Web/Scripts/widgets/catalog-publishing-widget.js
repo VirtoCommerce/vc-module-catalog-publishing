@@ -17,32 +17,33 @@
             }, blade);
         }
 
-        catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, [blade.currentEntityId],
-            function (response) {
-                if (response.length) {
-                    var entry = response[0];
-                    $scope.readinessPercent = entry.readinessPercent;
-                    _.each(entry.details, function (detail) {
-                        var widgetControllerName = widgetMapperService.get(detail.name);
-                        if (widgetControllerName) {
-                            var widgetElements = angular.element.find('[ng-controller="' + widgetControllerName + '"]');
-                            if (widgetElements && widgetElements.length) {
-                                if (detail.readinessPercent < 100) {
-                                    widgetElements[0].parentElement.classList.add('error');
+        evaluate(channel.id, blade.currentEntityId);
+
+        $scope.$on('product-saved', function (event, product) {
+            evaluate(channel.id, product.id);
+        });
+
+        function evaluate(channelId, productId) {
+            catalogPublishingApi.evaluateChannelProducts({ id: channelId }, [productId],
+                function (response) {
+                    if (response.length) {
+                        var entry = response[0];
+                        $scope.readinessPercent = entry.readinessPercent;
+                        _.each(entry.details, function (detail) {
+                            var widgetControllerName = widgetMapperService.get(detail.name);
+                            if (widgetControllerName) {
+                                var widget = _.find($scope.widgets, function (w) { return w.controller === widgetControllerName });
+                                if (widget && detail.readinessPercent < 100) {
+                                    widget.UIclass = 'error';
                                 } else {
-                                    widgetElements[0].parentElement.classList.remove('error');
+                                    widget.UIclass = null;
                                 }
                             }
-                            //var widget = _.find(widgetService.widgetsMap['itemDetail'], function (w) { return w.controller === widgetControllerName });
-                            //if (widget && detail.readinessPercent < 100) {
-                            //    widget.UIclass = 'error';
-                            //} else {
-                            //    widget.UIclass = null;
-                            //}
-                        }
-                    });
-                } else {
-                    $scope.readinessPercent = 0;
-                }
-            });
+                        });
+                    } else {
+                        $scope.readinessPercent = 0;
+                    }
+                });
+
+        }
     }]);
