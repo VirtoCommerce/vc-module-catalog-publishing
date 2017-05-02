@@ -43,7 +43,8 @@
     },
     "widgets": {
       "catalog-publishing": {
-        "title": "Publishing readiness for channel "
+        "title": "Publishing readiness for channel ",
+        "no-channels-message": "No channels available"
       }
     }
   }

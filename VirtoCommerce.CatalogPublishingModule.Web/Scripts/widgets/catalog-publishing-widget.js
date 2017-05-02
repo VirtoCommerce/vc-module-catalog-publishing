@@ -3,27 +3,34 @@
         var blade = $scope.blade;
         var channel = $localStorage.catalogPublishingChannel;
 
-        $scope.channel = channel;
-
-        $scope.openChannelSelectBlade = function () {
-            bladeNavigationService.showBlade({
-                id: 'channelSelectBlade',
-                title: 'catalog-publishing.blades.channel-select.title',
-                headIcon: 'fa fa-tasks',
-                channel: channel,
-                productId: blade.currentEntityId,
-                controller: 'virtoCommerce.catalogPublishingModule.channelSelectController',
-                template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-select.tpl.html'
-            }, blade);
-        }
-
-        evaluate(channel.id, blade.currentEntityId);
-
-        $scope.$on('product-saved', function (event, product) {
-            evaluate(channel.id, product.id);
+        catalogPublishingApi.searchChannels({
+            skip: 0,
+            take: 1000
+        }, function (response) {
+            var allChannels = response.results;
+            var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id && c.catalogId === blade.currentEntity.catalogId });
+            if (existingChannel) {
+                $scope.channel = existingChannel;
+                $scope.openChannelSelectBlade = function () {
+                    bladeNavigationService.showBlade({
+                        id: 'channelSelectBlade',
+                        title: 'catalog-publishing.blades.channel-select.title',
+                        headIcon: 'fa fa-tasks',
+                        channel: existingChannel,
+                        productId: blade.currentEntityId,
+                        controller: 'virtoCommerce.catalogPublishingModule.channelSelectController',
+                        template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-select.tpl.html'
+                    }, blade);
+                }
+                evaluate(existingChannel.id, blade.currentEntityId);
+            }
         });
 
-        function evaluate(channelId, productId) {
+        $scope.$on('product-saved', function (event, product) {
+            evaluate(channel.id, product.id, true);
+        });
+
+        function evaluate(channelId, productId, saveEntities) {
             catalogPublishingApi.evaluateChannelProducts({ id: channelId }, [productId],
                 function (response) {
                     if (response.length) {
@@ -40,6 +47,9 @@
                                 }
                             }
                         });
+                        if (saveEntities) {
+                            catalogPublishingApi.saveEntries([entry]);
+                        }
                     } else {
                         $scope.readinessPercent = 0;
                     }
