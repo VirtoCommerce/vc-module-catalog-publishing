@@ -13,6 +13,7 @@ using Xunit;
 
 namespace VirtoCommerce.CatalogPublishingModule.Test
 {
+    [Trait("Category", "CI")]
     public class IndexationTests
     {
         private const string FirstCatalogId = "Test1";

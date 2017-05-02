@@ -99,7 +99,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 service.SaveEntries(new[] { entry });
 
                 var testEntryEntity = repository.Entries.Include(x => x.Details).FirstOrDefault(x => x.ChannelId == entry.ChannelId);
-                var testDetailsEntities = repository.Details.Include(x => x.ReadinessEntry).ToArray().Where(x => x.ReadinessEntryId == (testEntryEntity != null ? testEntryEntity.Id : null)).ToArray();
+                var testDetailsEntities = repository.Details.ToArray().Where(x => x.ReadinessEntryId == (testEntryEntity != null ? testEntryEntity.Id : null)).ToArray();
                 var testDetails = testDetailsEntities.Select(x => x.ToModel(AbstractTypeFactory<ReadinessDetail>.TryCreateInstance())).ToArray();
                 Assert.True(CompareDetails(entry.Details, testDetails));
             }
