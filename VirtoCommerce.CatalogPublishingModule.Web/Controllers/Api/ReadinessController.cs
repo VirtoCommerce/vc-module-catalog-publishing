@@ -181,7 +181,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         {
             try
             {
-                notification.Readiness = EvaluateReadinessWorker(channelId, productIds);
+                var entries = EvaluateReadinessWorker(channelId, productIds);
+                notification.Readiness = entries;
+                _readinessService.SaveEntries(entries);
             }
             catch (Exception ex)
             {
