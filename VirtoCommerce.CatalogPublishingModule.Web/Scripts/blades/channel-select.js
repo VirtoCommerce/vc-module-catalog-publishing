@@ -3,7 +3,7 @@
         var blade = $scope.blade;
         blade.isLoading = false;
 
-        $scope.channel = $localStorage.catalogPublishingChannel;
+        $scope.channel = blade.channel || $localStorage.catalogPublishingChannel;
 
         blade.toolbarCommands = [{
             name: 'platform.commands.save',

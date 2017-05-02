@@ -18,21 +18,21 @@
                 catalogIds: catalogIds
             }, function (response) {
                 var allChannels = response.results;
-                var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
-                if (existingChannel) {
-                    $scope.channel = existingChannel;
+                if (allChannels && allChannels.length) {
+                    var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
+                    $scope.channel = existingChannel || allChannels[0];
                     $scope.openChannelSelectBlade = function () {
                         bladeNavigationService.showBlade({
                             id: 'channelSelectBlade',
                             title: 'catalog-publishing.blades.channel-select.title',
                             headIcon: 'fa fa-tasks',
-                            channel: existingChannel,
+                            channel: $scope.channel,
                             productId: blade.currentEntityId,
                             controller: 'virtoCommerce.catalogPublishingModule.channelSelectController',
                             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-select.tpl.html'
                         }, blade);
                     }
-                    evaluate(existingChannel.id, blade.currentEntityId);
+                    evaluate($scope.channel.id, blade.currentEntityId);
                 }
             });
         });
