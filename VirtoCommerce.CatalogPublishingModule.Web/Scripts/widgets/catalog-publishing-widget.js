@@ -3,36 +3,38 @@
         var blade = $scope.blade;
         var channel = $localStorage.catalogPublishingChannel;
 
-        var catalogIds = [];
-        _.each(blade.currentEntity.outlines, function (outline) {
-            var catalogItem = _.find(outline.items, function (item) { return item.seoObjectType === 'Catalog' });
-            if (catalogItem) {
-                catalogIds.push(catalogItem.id);
-            }
-        });
-
-        catalogPublishingApi.searchChannels({
-            skip: 0,
-            take: 1000,
-            catalogIds: catalogIds
-        }, function (response) {
-            var allChannels = response.results;
-            var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
-            if (existingChannel) {
-                $scope.channel = existingChannel;
-                $scope.openChannelSelectBlade = function () {
-                    bladeNavigationService.showBlade({
-                        id: 'channelSelectBlade',
-                        title: 'catalog-publishing.blades.channel-select.title',
-                        headIcon: 'fa fa-tasks',
-                        channel: existingChannel,
-                        productId: blade.currentEntityId,
-                        controller: 'virtoCommerce.catalogPublishingModule.channelSelectController',
-                        template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-select.tpl.html'
-                    }, blade);
+        $scope.$on('product-loaded', function (event, product) {
+            var catalogIds = [];
+            _.each(blade.currentEntity.outlines, function (outline) {
+                var catalogItem = _.find(outline.items, function (item) { return item.seoObjectType === 'Catalog' });
+                if (catalogItem) {
+                    catalogIds.push(catalogItem.id);
                 }
-                evaluate(existingChannel.id, blade.currentEntityId);
-            }
+            });
+
+            catalogPublishingApi.searchChannels({
+                skip: 0,
+                take: 1000,
+                catalogIds: catalogIds
+            }, function (response) {
+                var allChannels = response.results;
+                var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
+                if (existingChannel) {
+                    $scope.channel = existingChannel;
+                    $scope.openChannelSelectBlade = function () {
+                        bladeNavigationService.showBlade({
+                            id: 'channelSelectBlade',
+                            title: 'catalog-publishing.blades.channel-select.title',
+                            headIcon: 'fa fa-tasks',
+                            channel: existingChannel,
+                            productId: blade.currentEntityId,
+                            controller: 'virtoCommerce.catalogPublishingModule.channelSelectController',
+                            template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-select.tpl.html'
+                        }, blade);
+                    }
+                    evaluate(existingChannel.id, blade.currentEntityId);
+                }
+            });
         });
 
         $scope.$on('product-saved', function (event, product) {
