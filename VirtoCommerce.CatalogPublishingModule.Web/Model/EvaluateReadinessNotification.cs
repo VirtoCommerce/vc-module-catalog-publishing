@@ -18,6 +18,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Model
         [JsonProperty("finished")]
         public DateTime? Finished { get; set; }
 
+        [JsonProperty("totalCount")]
+        public long TotalCount { get; set; }
+
+        [JsonProperty("processedCount")]
+        public long ProcessedCount { get; set; }
+
         [JsonProperty("errorCount")]
         public long ErrorCount
         {

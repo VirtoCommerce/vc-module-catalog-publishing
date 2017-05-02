@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Hangfire;
@@ -60,7 +62,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [ResponseType(typeof(PushNotification))]
         public IHttpActionResult EvaluateReadiness(string id)
         {
-            return EvaluateReadiness("EvaluateReadiness", "Evaluate readiness task", notification => BackgroundJob.Enqueue(() => EvaluateReadinessJob(id, null, notification)));
+            return EvaluateReadiness("EvaluateReadiness", "Evaluate readiness task", notification => BackgroundJob.Enqueue(() => EvaluateReadinessJob(id, notification)));
         }
 
         /// <summary>
@@ -72,7 +74,30 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [ResponseType(typeof(ReadinessEntry[]))]
         public IHttpActionResult EvaluateReadiness(string id, [FromBody] string[] productIds)
         {
-            return Ok(EvaluateReadinessWorker(id, productIds));
+            var channel = _readinessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
+            if (channel == null)
+            {
+                throw new ArgumentException("Channel with specified ID not found", nameof(id));
+            }
+
+            var evaluator = _readinessEvaluators.FirstOrDefault(x => channel.EvaluatorType == x.GetType().Name);
+            if (evaluator == null)
+            {
+                throw new InvalidOperationException("Channel's evaluator type not found");
+            }
+
+            if (productIds.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException(nameof(productIds));
+            }
+
+            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemInfo);
+            if (products == null)
+            {
+                throw new ArgumentException("Products with specified IDs not found", nameof(productIds));
+            }
+
+            return Ok(evaluator.EvaluateReadiness(channel, products));
         }
 
         /// <summary>
@@ -177,45 +202,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public void EvaluateReadinessJob(string channelId, string[] productIds, EvaluateReadinessNotification notification)
-        {
-            try
-            {
-                var entries = EvaluateReadinessWorker(channelId, productIds);
-                notification.Readiness = entries;
-                _readinessService.SaveEntries(entries);
-            }
-            catch (Exception ex)
-            {
-                notification.Description = "Evaluation failed";
-                notification.Errors.Add(ex.ExpandExceptionMessage());
-            }
-            finally
-            {
-                notification.Description = "Evaluation finished";
-                notification.Finished = DateTime.UtcNow;
-                _pushNotifier.Upsert(notification);
-            }
-        }
-
-        private ReadinessEntry[] EvaluateReadinessWorker(string channelId, string[] productIds)
+        public void EvaluateReadinessJob(string channelId, EvaluateReadinessNotification notification)
         {
             var channel = _readinessService.GetChannelsByIds(new[] { channelId }).FirstOrDefault();
             if (channel == null)
             {
-                throw new NullReferenceException("channel");
-            }
-            if (productIds.IsNullOrEmpty())
-            {
-                productIds = _catalogSearchService.Search(new SearchCriteria
-                    {
-                        CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts, Take = int.MaxValue
-                    }).Products.Select(x => x.Id).ToArray();
-            }
-            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemInfo);
-            if (products == null)
-            {
-                throw new NullReferenceException("products");
+                throw new ArgumentException("Channel with specified ID not found", nameof(channelId));
             }
 
             var evaluator = _readinessEvaluators.FirstOrDefault(x => channel.EvaluatorType == x.GetType().Name);
@@ -223,7 +215,44 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             {
                 throw new InvalidOperationException("Channel's evaluator type not found");
             }
-            return evaluator.EvaluateReadiness(channel, products);
+            
+            try
+            {
+                const int productsPerIterationCount = 50;
+                notification.TotalCount = _catalogSearchService
+                    .Search(new SearchCriteria { CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts, Take = 0 })
+                    .ProductsTotalCount;
+                do
+                {
+                    var products = _catalogSearchService
+                        .Search(new SearchCriteria
+                        {
+                            CatalogId = channel.CatalogId,
+                            SearchInChildren = true,
+                            ResponseGroup = SearchResponseGroup.WithProducts,
+                            Skip = (int)notification.ProcessedCount,
+                            Take = productsPerIterationCount
+                        }).Products;
+
+                    var entries = evaluator.EvaluateReadiness(channel, products.ToArray());
+                    notification.Readiness = entries;
+                    _readinessService.SaveEntries(entries);
+
+                    notification.ProcessedCount += products.Count;
+                    _pushNotifier.Upsert(notification);
+                } while (notification.ProcessedCount < notification.TotalCount);
+            }
+            catch (Exception ex)
+            {
+                //notification.Description = "Evaluation failed";
+                notification.Errors.Add(ex.ExpandExceptionMessage());
+            }
+            finally
+            {
+                //notification.Description = "Evaluation finished";
+                notification.Finished = DateTime.UtcNow;
+                _pushNotifier.Upsert(notification);
+            }
         }
     }
 }
