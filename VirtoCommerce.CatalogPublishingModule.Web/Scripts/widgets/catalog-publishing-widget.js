@@ -19,7 +19,10 @@
             }, function (response) {
                 var allChannels = response.results;
                 if (allChannels && allChannels.length) {
-                    var existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
+                    var existingChannel = null;
+                    if (channel) {
+                        existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
+                    }
                     $scope.channel = existingChannel || allChannels[0];
                     $scope.openChannelSelectBlade = function () {
                         bladeNavigationService.showBlade({
