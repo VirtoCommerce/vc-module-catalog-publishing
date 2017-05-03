@@ -46,13 +46,15 @@ angular.module(moduleName, [])
             icon: 'fa fa-tasks',
             title: 'catalog-publishing.main-menu-title',
             prioritty: 0,
+            permission: 'channel:access',
             action: function () {
                 $state.go('workspace.catalogPublishingModule');
             }
         });
         widgetService.registerWidget({
             controller: 'virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController',
-            template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/widgets/catalog-publishing-widget.tpl.html'
+            template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/widgets/catalog-publishing-widget.tpl.html',
+            permission: 'channel:access'
         }, 'itemDetail');
         
         widgetMapperService.map("Properties", "virtoCommerce.catalogModule.itemPropertyWidgetController");

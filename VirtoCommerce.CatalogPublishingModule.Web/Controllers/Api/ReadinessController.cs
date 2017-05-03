@@ -10,12 +10,14 @@ using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Web.Model;
+using VirtoCommerce.CatalogPublishingModule.Web.Security;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.Platform.Data.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
@@ -60,6 +62,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/evaluate")]
         [ResponseType(typeof(PushNotification))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Evaluate)]
         public IHttpActionResult EvaluateReadiness(string id)
         {
             return EvaluateReadiness("EvaluateReadiness", "Evaluate readiness task", notification => BackgroundJob.Enqueue(() => EvaluateReadinessJob(id, notification)));
@@ -72,6 +75,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
         [ResponseType(typeof(ReadinessEntry[]))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Evaluate)]
         public IHttpActionResult EvaluateReadiness(string id, [FromBody] string[] productIds)
         {
             var channel = _readinessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
@@ -107,6 +111,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPut]
         [Route("entries")]
         [ResponseType(typeof(void))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Evaluate)]
         public IHttpActionResult SaveEntries(ReadinessEntry[] entries)
         {
             _readinessService.SaveEntries(entries);
@@ -154,6 +159,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels")]
         [ResponseType(typeof(ReadinessChannel))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Create)]
         public IHttpActionResult CreateChannel(ReadinessChannel channel)
         {
             _readinessService.SaveChannels(new[] { channel });
@@ -167,6 +173,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPut]
         [Route("channels")]
         [ResponseType(typeof(void))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Update)]
         public IHttpActionResult UpdateChannel(ReadinessChannel channel)
         {
             _readinessService.SaveChannels(new[] { channel });
@@ -181,6 +188,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpDelete]
         [Route("channels")]
         [ResponseType(typeof(void))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Delete)]
         public IHttpActionResult DeleteChannels([FromUri] string[] ids)
         {
             _readinessService.DeleteChannels(ids);

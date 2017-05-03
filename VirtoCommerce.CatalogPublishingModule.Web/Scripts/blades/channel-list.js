@@ -62,11 +62,12 @@
             dialogService.showConfirmationDialog(dialog);
         }
 
-        $scope.selectCatalogItem = function (channel) {
+        $scope.selectCatalogItem = function(channel) {
             $scope.selectedNodeId = channel.id;
             $localStorage.catalogPublishingChannel = channel;
             bladeNavigationService.showBlade({
                 id: 'readinessCatalogItems',
+                permission: 'catalog:read',
                 breadcrumbs: [],
                 filter: {
                     keyword: 'readiness_' + channel.name.toLowerCase() + ':[0 TO 99]',
@@ -76,13 +77,13 @@
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
                 template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html',
                 options: {
-                    onItemsLoaded: function (items) {
-                        var itemIds = _.map(_.where(items, { type: 'product' }), function (i) { return i.id });
+                    onItemsLoaded: function(items) {
+                        var itemIds = _.map(_.where(items, { type: 'product' }), function(i) { return i.id });
                         if (itemIds && itemIds.length) {
                             catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, itemIds,
-                                function (response) {
-                                    _.each(response, function (entry) {
-                                        var item = _.find(items, function (i) { return i.id === entry.productId });
+                                function(response) {
+                                    _.each(response, function(entry) {
+                                        var item = _.find(items, function(i) { return i.id === entry.productId });
                                         if (item) {
                                             item.readinessPercent = entry.readinessPercent;
                                         } else {
@@ -99,6 +100,7 @@
         blade.toolbarCommands = [{
             name: 'platform.commands.add',
             icon: 'fa fa-plus',
+            permission: 'channel:create',
             canExecuteMethod: function () {
                 return true;
             },
@@ -117,6 +119,7 @@
         }, {
             name: 'platform.commands.delete',
             icon: 'fa fa-trash-o',
+            permission: 'channel:delete',
             canExecuteMethod: function () {
                 return $scope.gridApi && _.any($scope.gridApi.selection.getSelectedRows());
             },

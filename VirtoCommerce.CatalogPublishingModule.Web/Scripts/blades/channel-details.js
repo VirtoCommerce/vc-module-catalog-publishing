@@ -3,6 +3,7 @@
         var blade = $scope.blade;
         blade.isLoading = false;
         blade.isNew = !blade.currentEntity || !blade.currentEntity.id;
+        blade.updatePermission = 'channel:update';
 
         blade.refresh = function () {
             catalogPublishingApi.getChannel({
@@ -16,6 +17,7 @@
             blade.toolbarCommands = [{
                 name: 'platform.commands.save',
                 icon: 'fa fa-save',
+                permission: blade.updatePermission,
                 canExecuteMethod: function () {
                     return canSave();
                 },
@@ -25,6 +27,7 @@
             }, {
                 name: 'catalog-publishing.blades.channel-details.labels.evaluate',
                 icon: 'fa fa-calculator',
+                permission: 'channel:evaluate',
                 canExecuteMethod: function () {
                     return blade.currentEntity && blade.currentEntity.id && $scope.formScope && $scope.formScope.$valid;
                 },
@@ -69,7 +72,7 @@
         }
 
         function isDirty() {
-            return !angular.equals(blade.currentEntity, blade.originalEntity);
+            return !angular.equals(blade.currentEntity, blade.originalEntity) && blade.hasUpdatePermission();
         }
 
         function canSave() {
