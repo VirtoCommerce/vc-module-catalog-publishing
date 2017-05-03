@@ -29,7 +29,7 @@
                     <li class="menu-item" ng-click="selectNode(contextMenuEntity)">
                         <i class="menu-ico fa fa-edit"></i> {{ 'platform.commands.manage' | translate }}
                     </li>
-                    <li class="menu-item" ng-click="evaluateChannel(contextMenuEntity)" va-permission="channel:evaluate">
+                    <li class="menu-item" ng-click="evaluateChannel(contextMenuEntity)" va-permission="channel:update">
                         <i class="menu-ico fa fa-calculator"></i> {{ 'catalog-publishing.blades.channel-details.labels.evaluate' | translate }}
                     </li>
                     <li class="menu-item" ng-click="deleteChannels([contextMenuEntity])" va-permission="channel:delete">

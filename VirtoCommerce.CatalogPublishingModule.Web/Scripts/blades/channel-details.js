@@ -27,7 +27,7 @@
             }, {
                 name: 'catalog-publishing.blades.channel-details.labels.evaluate',
                 icon: 'fa fa-calculator',
-                permission: 'channel:evaluate',
+                permission: 'channel:update',
                 canExecuteMethod: function () {
                     return blade.currentEntity && blade.currentEntity.id && $scope.formScope && $scope.formScope.$valid;
                 },

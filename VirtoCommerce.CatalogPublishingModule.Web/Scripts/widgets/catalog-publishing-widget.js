@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.sitemapsModule')
-    .controller('virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController', ['$scope', '$localStorage', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($scope, $localStorage, widgetService, bladeNavigationService, catalogPublishingApi, widgetMapperService) {
+    .controller('virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController', ['$scope', '$localStorage', 'platformWebApp.authService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($scope, $localStorage, authService, widgetService, bladeNavigationService, catalogPublishingApi, widgetMapperService) {
         var blade = $scope.blade;
         var channel = $localStorage.catalogPublishingChannel;
 
@@ -61,7 +61,7 @@
                                 }
                             }
                         });
-                        if (saveEntities) {
+                        if (saveEntities && authService.checkPermission('channel:update')) {
                             catalogPublishingApi.saveEntries([entry]);
                         }
                     } else {

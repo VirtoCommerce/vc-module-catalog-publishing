@@ -36,10 +36,9 @@
         <group name="CatalogPublishing">
             <permission id="channel:access" name="Open channels menu" description=""/>
             <permission id="channel:create" name="Create channel" description=""/>
-            <permission id="channel:read" name="View channel" description=""/>
+            <permission id="channel:read" name="View readiness of channel and channel products" description=""/>
             <permission id="channel:update" name="Update channel" description=""/>
             <permission id="channel:delete" name="Delete channel" description=""/>
-            <permission id="channel:evaluate" name="Evaluate readiness of products" description=""/>
         </group>
     </permissions>
 </module>

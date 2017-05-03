@@ -54,7 +54,7 @@ angular.module(moduleName, [])
         widgetService.registerWidget({
             controller: 'virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController',
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/widgets/catalog-publishing-widget.tpl.html',
-            permission: 'channel:access'
+            permission: 'channel:read'
         }, 'itemDetail');
         
         widgetMapperService.map("Properties", "virtoCommerce.catalogModule.itemPropertyWidgetController");

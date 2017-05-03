@@ -6,7 +6,6 @@
             Create = "channel:create",
             Read = "channel:read",
             Update = "channel:update",
-            Delete = "channel:delete",
-            Evaluate = "channel:evaluate";
+            Delete = "channel:delete";
     }
 }

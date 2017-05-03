@@ -67,7 +67,6 @@
             $localStorage.catalogPublishingChannel = channel;
             bladeNavigationService.showBlade({
                 id: 'readinessCatalogItems',
-                permission: 'catalog:read',
                 breadcrumbs: [],
                 filter: {
                     keyword: 'readiness_' + channel.name.toLowerCase() + ':[0 TO 99]',

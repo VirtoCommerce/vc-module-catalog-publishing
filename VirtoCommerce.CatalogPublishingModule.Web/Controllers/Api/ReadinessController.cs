@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Hangfire;
@@ -62,7 +60,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/evaluate")]
         [ResponseType(typeof(PushNotification))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Evaluate)]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Update)]
         public IHttpActionResult EvaluateReadiness(string id)
         {
             return EvaluateReadiness("EvaluateReadiness", "Evaluate readiness task", notification => BackgroundJob.Enqueue(() => EvaluateReadinessJob(id, notification)));
@@ -75,7 +73,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
         [ResponseType(typeof(ReadinessEntry[]))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Evaluate)]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Read)]
         public IHttpActionResult EvaluateReadiness(string id, [FromBody] string[] productIds)
         {
             var channel = _readinessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
@@ -111,7 +109,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPut]
         [Route("entries")]
         [ResponseType(typeof(void))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Evaluate)]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Update)]
         public IHttpActionResult SaveEntries(ReadinessEntry[] entries)
         {
             _readinessService.SaveEntries(entries);
@@ -223,7 +221,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             {
                 throw new InvalidOperationException("Channel's evaluator type not found");
             }
-            
+
             try
             {
                 const int productsPerIterationCount = 50;
@@ -252,12 +250,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             }
             catch (Exception ex)
             {
-                //notification.Description = "Evaluation failed";
+                notification.Description = "Evaluation failed";
                 notification.Errors.Add(ex.ExpandExceptionMessage());
             }
             finally
             {
-                //notification.Description = "Evaluation finished";
+                notification.Description = "Evaluation finished";
                 notification.Finished = DateTime.UtcNow;
                 _pushNotifier.Upsert(notification);
             }
