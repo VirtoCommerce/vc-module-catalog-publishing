@@ -21,7 +21,8 @@
                 displayName: 'catalog-publishing.blades.channel-list.labels.catalog'
             }, {
                 name: 'readinessPercent',
-                displayName: 'catalog-publishing.blades.channel-list.labels.readiness-percent'
+                displayName: 'catalog-publishing.blades.channel-list.labels.completeness-percent',
+                cellTemplate: 'completeness.cell.html'
             }]})">
                 <div class="table-wrapper" ng-if="blade.currentEntities.length">
                 <div ui-grid="gridOptions" ui-grid-auto-resize ui-grid-save-state ui-grid-selection ui-grid-resize-columns ui-grid-move-columns ui-grid-pinning ui-grid-height></div>
@@ -59,4 +60,8 @@
     <div class="ui-grid-actions" left-click-menu="grid.appScope.contextMenuEntity = row.entity" data-target="prl_menu">
         <i class="fa context-menu"></i>
     </div>
+</script>
+
+<script type="text/ng-template" id="completeness.cell.html">
+    <div class="ui-grid-cell-contents">{{row.entity.readinessPercent}}%</div>
 </script>
