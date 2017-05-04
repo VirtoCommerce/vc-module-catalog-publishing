@@ -73,7 +73,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
         [ResponseType(typeof(ReadinessEntry[]))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Read)]
         public IHttpActionResult EvaluateReadiness(string id, [FromBody] string[] productIds)
         {
             var channel = _readinessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
@@ -123,6 +122,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpGet]
         [Route("channels/{id}")]
         [ResponseType(typeof(ReadinessChannel))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Read)]
         public IHttpActionResult GetChannel(string id)
         {
             var channel = _readinessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
@@ -140,6 +140,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/search")]
         [ResponseType(typeof(GenericSearchResult<ReadinessChannel>))]
+        [CheckPermission(Permission = ChannelPredefinedPermissions.Read)]
         public IHttpActionResult SearchChannel(ReadinessChannelSearchCriteria criteria)
         {
             if (criteria == null)

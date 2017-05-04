@@ -41,7 +41,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                                     .Add(new DocumentField("readiness_" + channel.Name.ToLower(), readinessEntry.ReadinessPercent,
                                         new[] { IndexStore.Yes, IndexType.NotAnalyzed }));
                             }
-                            _readinessService.SaveEntries(readinessEntries);
                         }
                     }
                 }
