@@ -42,7 +42,7 @@ angular.module(moduleName, [])
     })
     .run(['$rootScope', '$state', 'platformWebApp.mainMenuService', 'platformWebApp.pushNotificationTemplateResolver', 'platformWebApp.widgetService', 'virtoCommerce.catalogPublishingModule.widgetMapperService', 'platformWebApp.bladeNavigationService', function ($rootScope, $state, mainMenuService, pushNotificationTemplateResolver, widgetService, widgetMapperService, bladeNavigationService) {
         mainMenuService.addMenuItem({
-            path: 'browse/channels',
+            path: 'configuration/channels',
             icon: 'fa fa-tasks',
             title: 'catalog-publishing.main-menu-title',
             prioritty: 0,
