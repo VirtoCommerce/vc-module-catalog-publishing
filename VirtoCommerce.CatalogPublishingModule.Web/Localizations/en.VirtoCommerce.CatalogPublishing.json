@@ -16,13 +16,17 @@
         "labels": {
           "name": "Name",
           "name-description": "This field accepts latin symbols, digits and underscore symbol",
-          "language": "Language",
+          "languages": "Languages",
           "catalog": "Catalog",
-          "pricelist": "Pricelist",
+          "currencies": "Currencies",
           "evaluator": "Evaluator type",
           "evaluator-description": "The set of algorithms to evaluate product publishing readiness",
           "evaluate": "Evaluate",
           "name-pattern-error-message": "This field can contain only latin symbols and digits"
+        },
+        "placeholders": {
+          "currencies": "Select at least one currency for this channel",
+          "languages": "Select at least one language for this channel"
         }
       },
       "channel-select": {

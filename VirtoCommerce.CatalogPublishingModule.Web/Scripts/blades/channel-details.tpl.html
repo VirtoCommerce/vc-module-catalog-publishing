@@ -13,23 +13,27 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.language' | translate"></label>
-                        <div class="form-input">
-                            <ui-select required ng-model="blade.currentEntity.language">
-                                <ui-select-match>{{ $select.selected }}</ui-select-match>
-                                <ui-select-choices repeat="language in languages">
-                                    <span ng-bind-html="language"></span>
+                        <label class="form-label">
+                            {{ 'catalog-publishing.blades.channel-details.labels.languages' | translate }} <a href="" ng-click="openLanguagesDictionarySettingManagement()" class="form-edit" va-permission="platform:setting:update"><i class="form-ico fa fa-pencil"></i></a>
+                        </label>
+                        <div class="form-input" data-role="input-control">
+                            <ui-select required multiple ng-model="blade.currentEntity.languages">
+                                <ui-select-match placeholder="{{ 'catalog-publishing.blades.channel-details.placeholders.languages' | translate }}">{{$item}}</ui-select-match>
+                                <ui-select-choices repeat="x in languages | filter: $select.search">
+                                    <span ng-bind-html="x | highlight: $select.search"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" ng-bind="'catalog-publishing.blades.channel-details.labels.pricelist' | translate"></label>
-                        <div class="form-input">
-                            <ui-select required ng-model="blade.currentEntity.pricelistId">
-                                <ui-select-match>{{ $select.selected.name }}</ui-select-match>
-                                <ui-select-choices repeat="x.id as x in pricelists | filter: { name: $select.search }">
-                                    <span ng-bind-html="x.name | highlight: $select.search"></span>
+                        <label class="form-label">
+                            {{ 'catalog-publishing.blades.channel-details.labels.currencies' | translate }} <a href="" ng-click="currencyUtils.editCurrencies(blade)" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
+                        </label>
+                        <div class="form-input" data-role="input-control">
+                            <ui-select required multiple ng-model="blade.currentEntity.currencies">
+                                <ui-select-match placeholder="{{ 'catalog-publishing.blades.channel-details.placeholders.currencies' | translate }}">{{$item.code}}</ui-select-match>
+                                <ui-select-choices repeat="x.code as x in currencies | filter: $select.search">
+                                    <span ng-bind-html="x.code | highlight: $select.search"></span>
                                 </ui-select-choices>
                             </ui-select>
                         </div>

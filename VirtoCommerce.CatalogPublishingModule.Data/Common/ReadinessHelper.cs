@@ -17,7 +17,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Common
             }
             else
             {
-                retVal = (int)Math.Round((totalCount - invalidCount) / (double)totalCount * 100);
+                retVal = (int)Math.Floor((totalCount - invalidCount) / (double)totalCount * 100);
             }
             return retVal;
         }

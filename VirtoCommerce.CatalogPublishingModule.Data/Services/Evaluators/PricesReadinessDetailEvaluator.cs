@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
+using VirtoCommerce.CatalogPublishingModule.Data.Common;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Pricing.Model.Search;
 using VirtoCommerce.Domain.Pricing.Services;
+using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
 {
@@ -19,15 +21,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
         {
             var prices = _pricingSearchService.SearchPrices(new PricesSearchCriteria
             {
-                PriceListId = channel.PricelistId,
                 ProductIds = products.Select(x => x.Id).ToArray(),
                 Take = int.MaxValue
             }).Results;
             return products.Select(x =>
             {
                 var detail = new ReadinessDetail { Name = "Prices", ProductId = x.Id };
-                var productPrices = prices?.Where(p => p.ProductId == x.Id).ToArray();
-                detail.ReadinessPercent = productPrices != null && productPrices.Any(p => p.List > 0) ? 100 : 0;
+                var currenciesWithoutValidPrice = channel.Currencies.Where(c =>
+                {
+                    var productPricesForCurrency = prices?.Where(p => p.ProductId == x.Id && p.Currency == c).ToArray();
+                    return productPricesForCurrency.IsNullOrEmpty() || productPricesForCurrency.All(p => p.List <= 0);
+                });
+                detail.ReadinessPercent = ReadinessHelper.CalculateReadiness(channel.Currencies.Count, currenciesWithoutValidPrice.Count());
                 return detail;
             }).ToArray();
         }

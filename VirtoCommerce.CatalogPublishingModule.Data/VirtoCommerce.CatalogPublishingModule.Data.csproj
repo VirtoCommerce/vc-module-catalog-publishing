@@ -137,9 +137,15 @@
     <Compile Include="Migrations\201704271201355_CatalogName.Designer.cs">
       <DependentUpon>201704271201355_CatalogName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.cs" />
+    <Compile Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.Designer.cs">
+      <DependentUpon>201705050747364_MultipleLanguagesAndCurrencies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\ReadinessChannelCurrencyEntity.cs" />
+    <Compile Include="Model\ReadinessChannelLanguageEntity.cs" />
     <Compile Include="Services\DefaultReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\Evaluators\DescriptionsDetail.cs" />
+    <Compile Include="Services\Evaluators\DescriptionsDetailEvaluator.cs" />
     <Compile Include="Services\Evaluators\PricesReadinessDetailEvaluator.cs" />
     <Compile Include="Services\Evaluators\PropertiesReadinessDetailEvaluator.cs" />
     <Compile Include="Services\Evaluators\SeoReadinessDetailEvaluator.cs" />
@@ -170,6 +176,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704271201355_CatalogName.resx">
       <DependentUpon>201704271201355_CatalogName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.resx">
+      <DependentUpon>201705050747364_MultipleLanguagesAndCurrencies.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

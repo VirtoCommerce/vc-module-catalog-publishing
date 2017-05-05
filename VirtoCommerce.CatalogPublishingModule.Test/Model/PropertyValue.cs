@@ -4,7 +4,7 @@
     {
         public override string ToString()
         {
-            return string.Format("{{ LanguageCode: {0}, ValueType: {1}, Value: {2} }}", LanguageCode, ValueType, Value);
+            return $"{{ Property: {Property.Id}, LanguageCode: {LanguageCode}, ValueType: {ValueType}, Value: {Value} }}";
         }
     }
 }

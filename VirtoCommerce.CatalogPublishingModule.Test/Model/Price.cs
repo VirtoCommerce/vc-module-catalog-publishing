@@ -4,7 +4,7 @@
     {
         public override string ToString()
         {
-            return string.Format("{{ ProductId: {0}, PricelistId: {1}, List: {2} }}", ProductId, PricelistId, List);
+            return $"{{ ProductId: {ProductId}, PricelistId: {PricelistId}, List: {List} }}";
         }
     }
 }

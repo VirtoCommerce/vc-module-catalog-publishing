@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.pricingModule.pricelists', 'virtoCommerce.catalogModule.catalogs', function ($scope, settings, bladeNavigationService, catalogPublishingApi, pricingApi, catalogApi) {
+    .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.coreModule.currency.currencyApi', 'virtoCommerce.coreModule.currency.currencyUtils', 'virtoCommerce.catalogModule.catalogs', function ($scope, settings, bladeNavigationService, catalogPublishingApi, currencyApi, currencyUtils, catalogApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
         blade.isNew = !blade.currentEntity || !blade.currentEntity.id;
@@ -52,11 +52,9 @@
             $scope.formScope = form;
         }
 
-        pricingApi.search({
-            skip: 0,
-            take: 500
-        }, function (response) {
-            $scope.pricelists = response.results;
+        $scope.currencyUtils = currencyUtils;
+        currencyApi.query(function (response) {
+            $scope.currencies = response;
         });
         $scope.languages = [];
         settings.getValues({
@@ -66,6 +64,18 @@
         });
         $scope.catalogs = catalogApi.getCatalogs();
         $scope.evaluators = catalogPublishingApi.getEvaluators();
+
+        $scope.openLanguagesDictionarySettingManagement = function () {
+            var newBlade = {
+                id: 'settingDetailChild',
+                isApiSave: true,
+                currentEntityId: 'VirtoCommerce.Core.General.Languages',
+                parentRefresh: function (data) { $scope.languages = data; },
+                controller: 'platformWebApp.settingDictionaryController',
+                template: '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html'
+            };
+            bladeNavigationService.showBlade(newBlade, blade);
+        };
 
         $scope.saveChanges = function () {
             saveChanges();

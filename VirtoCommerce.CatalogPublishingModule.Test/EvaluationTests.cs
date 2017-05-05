@@ -14,7 +14,9 @@ using VirtoCommerce.Domain.Pricing.Services;
 using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 using Property = VirtoCommerce.CatalogPublishingModule.Test.Model.Property;
+using PropertyDictionaryValue = VirtoCommerce.CatalogPublishingModule.Test.Model.PropertyDictionaryValue;
 using PropertyValue = VirtoCommerce.CatalogPublishingModule.Test.Model.PropertyValue;
+using EditorialReview = VirtoCommerce.CatalogPublishingModule.Test.Model.EditorialReview;
 using Price = VirtoCommerce.CatalogPublishingModule.Test.Model.Price;
 
 namespace VirtoCommerce.CatalogPublishingModule.Test
@@ -29,7 +31,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             CatalogId = "Valid",
             Properties = new List<Property>().Cast<Domain.Catalog.Model.Property>().ToList(),
             PropertyValues = new List<PropertyValue>().Cast<Domain.Catalog.Model.PropertyValue>().ToList(),
-            Reviews = new List<EditorialReview>(),
+            Reviews = new List<EditorialReview>().Cast<Domain.Catalog.Model.EditorialReview>().ToList(),
             SeoInfos = new List<SeoInfo>(),
             Outlines = new List<Outline>
             {
@@ -44,8 +46,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private readonly ReadinessChannel _channel = new ReadinessChannel
         {
             Name = "Valid",
-            Language = "Valid",
-            PricelistId = "Valid",
+            Languages = new List<string> { "Valid", },
+            Currencies = new List<string> { "Valid", },
             CatalogId = "Valid"
         };
 
@@ -137,15 +139,17 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     { PropertyValueType.Number, new[] { new PropertyValue { LanguageCode = "Valid", ValueType = PropertyValueType.Number, Value = -1m } } }
                 };
 
+                var languages = new[] { "Valid" };
+
                 // Only required properties accounted
                 var property = new Property { Id = "Valid", ValueType = PropertyValueType.ShortText, Dictionary = false, DictionaryValues = null };
-                foreach (var variant in new[] { false, true })
+                foreach (var required in new[] { false, true })
                 {
                     var currentProperty = property;
-                    currentProperty.Required = variant;
-                    yield return Prepend(TestCondition(variant,
-                            x => new PropertyValue { Property = currentProperty, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, x => 100, Mutable),
-                        new List<Property> { currentProperty });
+                    currentProperty.Required = required;
+                    yield return Prepend(TestCondition(required,
+                            r => new PropertyValue { Property = currentProperty, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, r => 100, Mutable),
+                        languages, new List<Property> { currentProperty });
                 }
 
                 // Only property values with language same as channel language accounted
@@ -161,24 +165,24 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     },
                     new Property { Id = "Valid2", Required = true, ValueType = PropertyValueType.ShortText, Dictionary = false, DictionaryValues = null }
                 };
-                foreach (var variant in new[] { null, string.Empty, "Invalid", "Valid" })
+                foreach (var language in new[] { null, string.Empty, "Invalid", "Valid" })
                 {
                     for (var i = 0; i < 2; i++)
                     {
-                        var value = new PropertyValue { LanguageCode = variant, ValueType = PropertyValueType.ShortText, Property = properties[i], Value = i == 0 ? "Valid1" : "Valid" };
-                        yield return Prepend(TestCondition(variant, x => value, x => x == "Valid" ? 100 : 0, Mutable), new List<Property> { properties[i] });
+                        var value = new PropertyValue { LanguageCode = language, ValueType = PropertyValueType.ShortText, Property = properties[i], Value = i == 0 ? "Valid1" : "Valid" };
+                        yield return Prepend(TestCondition(language, l => value, l => l == "Valid" ? 100 : 0, Mutable), languages, new List<Property> { properties[i] });
                     }
                 }
 
                 // Check case when property is dicrionary, but there is no dictionary values
                 property = new Property { Id = "Valid", Required = true, ValueType = PropertyValueType.ShortText, Dictionary = true };
-                foreach (var variant in new[] { null, new PropertyDictionaryValue[0] })
+                foreach (var dictionaryValue in new[] { null, new PropertyDictionaryValue[0] })
                 {
                     var currentProperty = property;
-                    currentProperty.DictionaryValues = variant;
-                    yield return Prepend(TestCondition(variant,
-                            x => new PropertyValue { Property = currentProperty, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, x => 100, Mutable),
-                        new List<Property> { currentProperty });
+                    currentProperty.DictionaryValues = dictionaryValue;
+                    yield return Prepend(TestCondition(dictionaryValue,
+                            dv => new PropertyValue { Property = currentProperty, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, dv => 100, Mutable),
+                        languages, new List<Property> { currentProperty });
                 }
 
                 var propertyIds = new[] { "Valid1", "Valid2" };
@@ -199,18 +203,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
                     var validValues = properties
                         .Select((p, i) => new PropertyValue { Property = p, LanguageCode = "Valid", ValueType = type, Value = dictionaryValues[type][i] })
-                        .ToList();
+                        .ToArray();
                     var invalidValues = properties
                         .Select((p, i) => new PropertyValue { Property = p, LanguageCode = "Valid", ValueType = type, Value = valuesNotInDictionary[type][i] })
-                        .ToList();
+                        .ToArray();
 
-                    foreach (var data in TestAll(validValues[0], validValues[1], 100, Mutable))
+                    foreach (var data in TestAll(validValues, 100, Mutable))
                     {
-                        yield return Prepend(data, properties);
+                        yield return Prepend(data, languages, properties);
                     }
-                    foreach (var data in TestAll(invalidValues[0], invalidValues[1], 0, Mutable))
+                    foreach (var data in TestAll(invalidValues, 0, Mutable))
                     {
-                        yield return Prepend(data, properties);
+                        yield return Prepend(data, languages, properties);
                     }
 
                     // Check correct validation of usual properties
@@ -227,7 +231,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     {
                         var value = validPropertyValues[type][i];
                         value.Property = properties[i];
-                        yield return Prepend(TestCondition(value, x => value, x => 100, Mutable), new List<Property> { properties[i] });
+                        yield return Prepend(TestCondition(value, x => value, x => 100, Mutable), languages, new List<Property> { properties[i] });
                     }
                     if (invalidPropertyValues.ContainsKey(type))
                     {
@@ -235,31 +239,34 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                         {
                             var value = invalidPropertyValues[type][i];
                             value.Property = properties[i];
-                            yield return Prepend(TestCondition(value, x => value, x => 0, Mutable), new List<Property> { properties[i] });
+                            yield return Prepend(TestCondition(value, x => value, x => 0, Mutable), languages, new List<Property> { properties[i] });
                         }
                     }
                 }
 
-                // Check correct percentage calculation for properties with dicrionaries
-                properties = propertyIds.Select(id => new Property
+                languages = new[] { "Valid1", "Valid2" };
+                
+                // Check correct percentage calculation for properties with dictionaries
+                var dictionaryTestingProperties = propertyIds.Select(id => new Property
                     {
                         Id = id,
                         Required = true,
                         ValueType = PropertyValueType.ShortText,
                         Dictionary = true,
-                        DictionaryValues = dictionaryValues[PropertyValueType.ShortText]
-                            .Select((x, i) => new PropertyDictionaryValue { LanguageCode = "Valid", Value = dictionaryPropertyValues[PropertyValueType.ShortText][i] })
+                        DictionaryValues = languages.SelectMany(l => dictionaryValues[PropertyValueType.ShortText]
+                            .Select((x, i) => new PropertyDictionaryValue { LanguageCode = l, Value = dictionaryPropertyValues[PropertyValueType.ShortText][i] }))
                             .ToArray()
                     })
                     .ToList();
-                foreach (var data in TestAll(new PropertyValue { Property = properties[0], LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid1" },
-                    new PropertyValue { Property = properties[1], LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid2" }, 100, Mutable))
+                foreach (var data in TestAll(languages.SelectMany(l => dictionaryTestingProperties.Select(p =>
+                        new PropertyValue { Property = p, LanguageCode = l, ValueType = PropertyValueType.ShortText, Value = dictionaryPropertyValues[PropertyValueType.ShortText][0] }
+                    )).ToArray(), 100, Mutable))
                 {
-                    yield return Prepend(data, properties);
+                    yield return Prepend(data, languages, dictionaryTestingProperties);
                 }
 
                 // Check correct percentage calculation for usual properties
-                properties = propertyIds.Select(id => new Property
+                var testingProperties = propertyIds.Select(id => new Property
                     {
                         Id = id,
                         Required = true,
@@ -268,19 +275,20 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                         DictionaryValues = null
                     })
                     .ToList();
-                foreach (var data in TestAll(new PropertyValue { Property = properties[0], LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid1" },
-                    new PropertyValue { Property = properties[1], LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid2" }, 100, Mutable))
+                foreach (var data in TestAll(languages.SelectMany(l => testingProperties.Select(p =>
+                        new PropertyValue { Property = p, LanguageCode = l, ValueType = PropertyValueType.ShortText, Value = "Valid" }
+                    )).ToArray(), 100, Mutable))
                 {
-                    yield return Prepend(data, properties);
+                    yield return Prepend(data, languages, testingProperties);
                 }
-            }
-        }
+            }}
 
         [Theory]
         [MemberData(nameof(Properties))]
-        public void PropertiesValidation(List<Property> properties, List<PropertyValue> values, int readinessPercent)
+        public void PropertiesValidation(string[] languages, List<Property> properties, List<PropertyValue> values, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
+            _channel.Languages = languages;
             _product.Properties = properties.Cast<Domain.Catalog.Model.Property>().ToList();
             _product.PropertyValues = values.Cast<Domain.Catalog.Model.PropertyValue>().ToList();
             var readiness = evaluator.EvaluateReadiness(_channel, new [] { _product });
@@ -291,40 +299,42 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             get
             {
-                foreach (var variant in new[] { null, new string[0] })
+                foreach (var emptyReviewTypes in new[] { null, new string[0] })
                 {
-                    yield return Prepend(TestCondition(variant, x => new EditorialReview { LanguageCode = "Valid", Content = "Valid", ReviewType = "Valid" }, x => 100), new object[] { variant });
+                    yield return Prepend(TestCondition(emptyReviewTypes, x => new EditorialReview { LanguageCode = "Valid", Content = "Valid", ReviewType = "Valid" }, x => 100), new[] { "Valid" }, emptyReviewTypes);
                 }
+                var languages = new[] { "Valid" };
                 var types = new[] { "Valid" };
                 foreach (var variant in new[] { null, string.Empty, "Invalid", "Valid" })
                 {
                     yield return Prepend(TestCondition(variant,
-                        x => new EditorialReview { LanguageCode = x, Content = "Valid", ReviewType = "Valid" }, x => x == "Valid" ? 100 : 0), new object[] { types });
+                        l => new EditorialReview { LanguageCode = l, Content = "Valid", ReviewType = "Valid" }, l => l == "Valid" ? 100 : 0), languages, types);
                 }
                 foreach (var variant in new[] { null, string.Empty, "Valid" })
                 {
                     yield return Prepend(TestCondition(variant,
-                        x => new EditorialReview { LanguageCode = "Valid", Content = x, ReviewType = "Valid" }, x => x == "Valid" ? 100 : 0), new object[] { types });
+                        c => new EditorialReview { LanguageCode = "Valid", Content = c, ReviewType = "Valid" }, c => c == "Valid" ? 100 : 0), languages, types);
                 }
                 foreach (var data in TestAnyValid(new EditorialReview { LanguageCode = "Invalid", Content = "Invalid", ReviewType = "Invalid" },
                     new EditorialReview { LanguageCode = "Valid", Content = "Valid", ReviewType = "Valid" }))
                 {
-                    yield return Prepend(data, new object[] { types });
+                    yield return Prepend(data, languages, types);
                 }
+                languages = new[] { "Valid1", "Valid2" };
                 types = new[] { "Valid1", "Valid2" };
-                foreach (var data in TestAll(new EditorialReview { LanguageCode = "Valid", Content = "Valid", ReviewType = "Valid1" },
-                    new EditorialReview { LanguageCode = "Valid", Content = "Valid", ReviewType = "Valid2" }, 100))
+                foreach (var data in TestAll(languages.SelectMany(l => types.Select(t => new EditorialReview { LanguageCode = l, Content = "Valid", ReviewType = t })).ToArray(), 100))
                 {
-                    yield return Prepend(data, new object[] { types });
+                    yield return Prepend(data, languages, types);
                 }
             }
         }
 
         [Theory]
         [MemberData(nameof(Descriptions))]
-        public void DescriptionsValidation(string[] descriptionTypes, EditorialReview[] descriptions, int readinessPercent)
+        public void DescriptionsValidation(string[] languages, string[] descriptionTypes, EditorialReview[] descriptions, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
+            _channel.Languages = languages;
             _editorialReviewTypes = descriptionTypes;
             _product.Reviews = descriptions;
             var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
@@ -335,28 +345,36 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             get
             {
-                yield return new object[] { null, 0 };
-                yield return new object[] { new Price[0], 0 };
-                foreach (var variant in new[] { "Invalid", "Valid" })
+                yield return new object[] { new[] { "Valid" }, null, 0 };
+                yield return new object[] { new[] { "Valid" }, new Price[0], 0 };
+
+                var currencies = new[] { "Valid" };
+                foreach (var currency in new[] { "Invalid", "Valid" })
                 {
-                    yield return TestCondition(variant, x => new Price { ProductId = "Valid", PricelistId = variant, List = 1m }, x => x == "Valid" ? 100 : 0);
+                    yield return Prepend(TestCondition(currency, c => new Price { ProductId = "Valid", Currency = c, List = 1m }, c => c == "Valid" ? 100 : 0), new object[] { currencies });
                 }
-                foreach (var variant in new[] { -1m, 0m, 1m })
+                foreach (var list in new[] { -1m, 0m, 1m })
                 {
-                    yield return TestCondition(variant, x => new Price { ProductId = "Valid", PricelistId = "Valid", List = x }, x => x > 0 ? 100 : 0);
+                    yield return Prepend(TestCondition(list, l => new Price { ProductId = "Valid", Currency = "Valid", List = l }, l => l > 0 ? 100 : 0), new object[] { currencies });
                 }
-                foreach (var data in TestAnyValid(new Price { ProductId = "Valid", PricelistId = "Valid", List = -1m }, new Price { ProductId = "Valid", PricelistId = "Valid", List = 1m }))
+                foreach (var data in TestAnyValid(new Price { ProductId = "Valid", Currency = "Valid", List = -1m }, new Price { ProductId = "Valid", Currency = "Valid", List = 1m }))
                 {
-                    yield return data;
+                    yield return Prepend(data, new object[] { currencies });
+                }
+                currencies = new[] { "Valid1", "Valid2" };
+                foreach (var data in TestAll(currencies.Select(c => new Price { ProductId = "Valid", Currency = c, List = 1m }).ToArray(), 100))
+                {
+                    yield return Prepend(data, new object[] { currencies });
                 }
             }
         }
 
         [Theory]
         [MemberData(nameof(Prices))]
-        public void PricesValidation(Price[] prices, int readinessPercent)
+        public void PricesValidation(string[] currencies, Price[] prices, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
+            _channel.Currencies = currencies;
             _prices = prices;
             var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Prices").ReadinessPercent == readinessPercent);
@@ -366,26 +384,35 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             get
             {
-                foreach (var variant in new[] { null, string.Empty, "Invalid", "Valid" })
+                yield return new object[] { new[] { "Valid" }, null, 0 };
+                yield return new object[] { new[] { "Valid" }, new SeoInfo[0], 0 };
+                var languages = new[] { "Valid" };
+                foreach (var language in new[] { null, string.Empty, "Invalid", "Valid" })
                 {
-                    yield return TestCondition(variant, x => new SeoInfo { LanguageCode = x, SemanticUrl = "Valid" }, x => x == "Valid" ? 100 : 0);
+                    yield return Prepend(TestCondition(language, l => new SeoInfo { LanguageCode = l, SemanticUrl = "Valid" }, l => l == "Valid" ? 100 : 0), new object[] { languages });
                 }
-                foreach (var variant in new[] { null, string.Empty, "Invalid!", "Valid" })
+                foreach (var semanticUrl in new[] { null, string.Empty, "Invalid!", "Valid" })
                 {
-                    yield return TestCondition(variant, x => new SeoInfo { LanguageCode = "Valid", SemanticUrl = x }, x => x == "Valid" ? 100 : 0);
+                    yield return Prepend(TestCondition(semanticUrl, u => new SeoInfo { LanguageCode = "Valid", SemanticUrl = u }, u => u == "Valid" ? 100 : 0), new object[] { languages });
                 }
                 foreach (var data in TestAnyValid(new SeoInfo { LanguageCode = "Invalid", SemanticUrl = "Invalid!" }, new SeoInfo { LanguageCode = "Valid", SemanticUrl = "Valid" }))
                 {
-                    yield return data;
+                    yield return Prepend(data, new object[] { languages });
+                }
+                languages = new[] { "Valid1", "Valid2" };
+                foreach (var data in TestAll(languages.Select(l => new SeoInfo { LanguageCode = l, SemanticUrl = "Valid" }).ToArray(), 100))
+                {
+                    yield return Prepend(data, new object[] { languages });
                 }
             }
         }
 
         [Theory]
         [MemberData(nameof(SeoInfos))]
-        public void SeoValidation(SeoInfo[] seoInfos, int readinessPercent)
+        public void SeoValidation(string[] languages, SeoInfo[] seoInfos, int readinessPercent)
         {
             var evaluator = GetReadinessEvaluator();
+            _channel.Languages = languages;
             _product.SeoInfos = seoInfos;
             var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
             Assert.True(readiness[0].Details.First(x => x.Name == "Seo").ReadinessPercent == readinessPercent);
@@ -434,15 +461,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             }
         }
 
-        private static IEnumerable<object[]> TestAll<TObject>(TObject first, TObject second, int readinessPercent, bool mutable = false)
+        private static IEnumerable<object[]> TestAll<TObject>(TObject[] objects, int readinessPercent, bool mutable = false)
         {
-            var variants = new[] { new TObject[0], new[] { first }, new[] { first, second } };
-            foreach (var variant in (mutable ? (IEnumerable<ICollection<TObject>>)variants.Select(x => x.ToList()) : variants))
+            var variants = new List<TObject[]>();
+            variants.AddRange(Enumerable.Range(0, objects.Count()).Select(i => objects.Take(i).ToArray()));
+            foreach (var variant in mutable ? (IEnumerable<ICollection<TObject>>)variants.Select(x => x.ToList()) : variants)
             {
                 yield return new object[]
                 {
                     variant,
-                    readinessPercent * variant.Count / 2
+                    readinessPercent * variant.Count / objects.Length
                 };
             }
         }

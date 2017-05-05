@@ -28,10 +28,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
                 }
                 else
                 {
-                    var missedDescriptionTypes = descriptionTypes.Except(x.Reviews.Where(r => r.LanguageCode == channel.Language && !string.IsNullOrEmpty(r.Content))
-                        .Select(t => t.ReviewType)
-                        .Distinct());
-                    detail.ReadinessPercent = ReadinessHelper.CalculateReadiness(descriptionTypes.Length, missedDescriptionTypes.Count());
+                    var missedDescriptionTypesPerLanguageCount = channel.Languages
+                        .Select(l => descriptionTypes.Except(x.Reviews.Where(r => r.LanguageCode == l && !string.IsNullOrEmpty(r.Content)).Select(r => r.ReviewType).Distinct()).Count())
+                        .Sum();
+                    detail.ReadinessPercent = ReadinessHelper.CalculateReadiness(descriptionTypes.Length * channel.Languages.Count, missedDescriptionTypesPerLanguageCount);
                 }
                 return detail;
             }).ToArray();

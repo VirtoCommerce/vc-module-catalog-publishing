@@ -1,4 +1,5 @@
-﻿using VirtoCommerce.Platform.Core.Common;
+﻿using System.Collections.Generic;
+using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Core.Model
 {
@@ -9,9 +10,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
     {
         public string Name { get; set; }
 
-        public string Language { get; set; }
+        public ICollection<string> Languages { get; set; }
 
-        public string PricelistId { get; set; }
+        public ICollection<string> Currencies { get; set; }
 
         public string CatalogId { get; set; }
 

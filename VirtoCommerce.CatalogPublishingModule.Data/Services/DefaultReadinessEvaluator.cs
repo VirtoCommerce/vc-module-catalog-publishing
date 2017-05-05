@@ -48,7 +48,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 .Select(x =>
                 {
                     var entry = new ReadinessEntry { ChannelId = channel.Id, ProductId = x.Key, Details = x.AsEnumerable().ToArray() };
-                    entry.ReadinessPercent = (int) Math.Round(entry.Details.Average(d => d.ReadinessPercent));
+                    entry.ReadinessPercent = (int) Math.Floor(entry.Details.Average(d => d.ReadinessPercent));
                     return entry;
                 });
 

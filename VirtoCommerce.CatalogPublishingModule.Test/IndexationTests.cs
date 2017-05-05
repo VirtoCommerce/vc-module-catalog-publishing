@@ -68,8 +68,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             return new ReadinessChannel
             {
                 Name = catalogId,
-                Language = "Test",
-                PricelistId = "Test",
+                Languages = new List<string> { "Test1", "Test2" },
+                Currencies = new List<string> { "Test1", "Test2" },
                 CatalogId = catalogId,
                 EvaluatorType = GetReadinessEvaluator().GetType().Name,
                 ReadinessPercent = 0

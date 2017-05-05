@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -7,6 +9,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 {
     public class ReadinessChannelEntity : AuditableEntity
     {
+        public ReadinessChannelEntity()
+        {
+            Languages = new NullCollection<ReadinessChannelLanguageEntity>();
+            Currencies = new NullCollection<ReadinessChannelCurrencyEntity>();
+        }
+
         [Required]
         [StringLength(128)]
         public string Name { get; set; }
@@ -19,12 +27,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         [StringLength(128)]
         public string CatalogName { get; set; }
 
-        public string Language { get; set; }
-
-        [StringLength(128)]
-        public string PricelistId { get; set; }
-
+        [Required]
         public string EvaluatorType { get; set; }
+
+        #region Navigation Properties
+        
+        public virtual ObservableCollection<ReadinessChannelLanguageEntity> Languages { get; set; }
+        
+        public virtual ObservableCollection<ReadinessChannelCurrencyEntity> Currencies { get; set; }
+
+        #endregion
 
         public virtual ReadinessChannel ToModel(ReadinessChannel channel)
         {
@@ -36,8 +48,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             channel.Name = Name;
             channel.CatalogId = CatalogId;
             channel.CatalogName = CatalogName;
-            channel.Language = Language;
-            channel.PricelistId = PricelistId;
+            channel.Languages = Languages.Select(x => x.LanguageCode).ToList();
+            channel.Currencies = Currencies.Select(x => x.CurrencyCode).ToList();
             channel.EvaluatorType = EvaluatorType;
 
             channel.CreatedBy = CreatedBy;
@@ -62,8 +74,20 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             Name = channel.Name;
             CatalogId = channel.CatalogId;
             CatalogName = channel.CatalogName;
-            Language = channel.Language;
-            PricelistId = channel.PricelistId;
+            if (channel.Languages != null)
+            {
+                Languages = new ObservableCollection<ReadinessChannelLanguageEntity>(channel.Languages.Select(x => new ReadinessChannelLanguageEntity
+                {
+                    LanguageCode = x
+                }));
+            }
+            if (channel.Currencies != null)
+            {
+                Currencies = new ObservableCollection<ReadinessChannelCurrencyEntity>(channel.Currencies.Select(x => new ReadinessChannelCurrencyEntity
+                {
+                    CurrencyCode = x
+                }));
+            }
             EvaluatorType = channel.EvaluatorType;
 
             CreatedBy = channel.CreatedBy;
@@ -82,8 +106,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             channel.Name = Name;
             channel.CatalogId = CatalogId;
             channel.CatalogName = CatalogName;
-            channel.Language = Language;
-            channel.PricelistId = PricelistId;
+            if (!Languages.IsNullCollection())
+            {
+                var languageComparer = AnonymousComparer.Create((ReadinessChannelLanguageEntity x) => x.LanguageCode);
+                Languages.Patch(channel.Languages, languageComparer, (sourceLang, targetLang) => targetLang.LanguageCode = sourceLang.LanguageCode);
+            }
+            if (!Currencies.IsNullCollection())
+            {
+                var currencyComparer = AnonymousComparer.Create((ReadinessChannelCurrencyEntity x) => x.CurrencyCode);
+                Currencies.Patch(channel.Currencies, currencyComparer, (sourceCurrency, targetCurrency) => targetCurrency.CurrencyCode = sourceCurrency.CurrencyCode);
+            }
             channel.EvaluatorType = EvaluatorType;
         }
     }

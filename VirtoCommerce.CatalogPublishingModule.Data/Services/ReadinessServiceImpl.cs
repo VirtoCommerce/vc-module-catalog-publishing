@@ -31,7 +31,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                     retVal = repository.GetChannelsByIds(ids).Select(x =>
                     {
                         var channel = x.ToModel(AbstractTypeFactory<ReadinessChannel>.TryCreateInstance());
-                        channel.ReadinessPercent = (int)Math.Round(repository.Entries.Where(e => e.ChannelId == x.Id).Average(e => (int?)e.ReadinessPercent) ?? 0);
+                        channel.ReadinessPercent = (int)Math.Floor(repository.Entries.Where(e => e.ChannelId == x.Id).Average(e => (int?)e.ReadinessPercent) ?? 0);
                         return channel;
                     }).ToArray();
                 }

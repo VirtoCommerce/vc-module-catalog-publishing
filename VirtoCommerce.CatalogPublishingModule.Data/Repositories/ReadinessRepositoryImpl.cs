@@ -28,6 +28,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
             modelBuilder.Entity<ReadinessEntryEntity>().HasRequired(x => x.Channel).WithMany().HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
             modelBuilder.Entity<ReadinessEntryEntity>().ToTable("ReadinessEntry");
 
+            modelBuilder.Entity<ReadinessChannelLanguageEntity>().HasKey(x => x.Id).Property(x => x.Id);
+            modelBuilder.Entity<ReadinessChannelLanguageEntity>().HasRequired(x => x.Channel).WithMany(x => x.Languages).HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<ReadinessChannelCurrencyEntity>().HasKey(x => x.Id).Property(x => x.Id);
+            modelBuilder.Entity<ReadinessChannelCurrencyEntity>().HasRequired(x => x.Channel).WithMany(x => x.Currencies).HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
+
             modelBuilder.Entity<ReadinessChannelEntity>().HasKey(x => x.Id).Property(x => x.Id);
             modelBuilder.Entity<ReadinessChannelEntity>().ToTable("ReadinessChannel");
 
@@ -46,7 +52,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 
         public IQueryable<ReadinessChannelEntity> Channels
         {
-            get { return GetAsQueryable<ReadinessChannelEntity>(); }
+            get { return GetAsQueryable<ReadinessChannelEntity>().Include(x => x.Languages).Include(x => x.Currencies); }
         }
 
         public ReadinessChannelEntity[] GetChannelsByIds(string[] ids)

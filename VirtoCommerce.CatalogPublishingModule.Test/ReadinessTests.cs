@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
@@ -62,7 +63,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             using (var repository = GetRepository())
             {
                 Array.ForEach(entry.Details, x => x.ReadinessPercent = 15);
-                entry.ReadinessPercent = (int)Math.Round((double)entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
+                entry.ReadinessPercent = (int)Math.Floor((double)entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
 
                 service.SaveEntries(new[] { entry });
 
@@ -131,8 +132,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             {
                 Id = "Test",
                 Name = "Test",
-                Language = "en",
-                PricelistId = "Test",
+                Languages = new List<string> { "Test1", "Test2" },
+                Currencies = new List<string> { "Test1", "Test2" },
                 CatalogId = "Test",
                 CatalogName = "Test",
                 EvaluatorType = "DefaultEvaluatorType",
@@ -148,8 +149,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             return first == null && second == null || first != null && second != null &&
                    first.Id == second.Id &&
                    first.Name == second.Name &&
-                   first.Language == second.Language &&
-                   first.PricelistId == second.PricelistId &&
+                   first.Languages.Count == second.Languages.Count && !first.Languages.Except(second.Languages).Any() &&
+                   first.Currencies.Count == second.Currencies.Count && !first.Currencies.Except(second.Currencies).Any() &&
                    first.CatalogId == second.CatalogId &&
                    first.EvaluatorType == second.EvaluatorType;
         }
