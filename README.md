@@ -16,7 +16,7 @@ Default completeness evaluator check the following statements:
     2. Value of type `Short text` & `Long text`: *is not null or empty*;
     3. Value of type `Number`: *is greater than or equal to zero*;
     4. *Any* value successfully parsed as `Date time` or `Boolean` is valid;
-2. Product has at least one description *per item description type per channel language*, which content *is not null or empty*.
+2. Product has description *per item description type per channel language*, which content *is not null or empty*.
 3. Product has at least one price *per channel currency*, which list price *is greater than zero*.
 4. Product has at least one SEO *per channel language*, `URL keyword` of which *is not null or empty* and *does not contains invalid symbols* (where invalid symbols is `$+;=%{}[]|\/@ ~#!^*&?:'<>,`)
 
