@@ -12,9 +12,9 @@ Installing the module:
 # Default completeness evaluation
 Default completeness evaluator check the following statements:
 1. All required properties of product has valid value (*per channel language* for multilingual properties), where valid value is:
-    1. Value is one of property *dictionary values* (for dictionary properties);
-    2. Value of type `Short text` & `Long text`: *is not null or empty*;
-    3. Value of type `Number`: *is greater than or equal to zero*;
+    1. One of property *dictionary values* (for dictionary properties);
+    2. For value of type `Short text` & `Long text`: *is not null or empty*;
+    3. For value of type `Number`: *is greater than or equal to zero*;
     4. *Any* value successfully parsed as `Date time` or `Boolean` is valid;
 2. Product has description *per item description type per channel language*, which content *is not null or empty*.
 3. Product has at least one price *per channel currency*, which list price *is greater than zero*.
