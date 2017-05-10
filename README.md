@@ -9,6 +9,156 @@ Installing the module:
 # Module configuration
 
 
+# Extensibility
+This module provide multiple points of evaluation extensibility to allow fully customize this process. Possible user cases and solutions for them are listed below.
+## Add new detail to default evaluation process
+Inherit your detail evaluator from `DefaultReadinessDetailEvaluator` class and override `EvaluateReadiness` method:
+```csharp
+public class CustomReadinessDetailEvaluator : DefaultReadinessDetailEvaluator
+{
+    public override ReadinessDetail[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
+    {
+    }
+}
+```
+Register this class as implementation of `DefaultReadinessDetailEvaluator` in Unity:
+```csharp
+_container.RegisterType<DefaultReadinessDetailEvaluator, CustomReadinessDetailEvaluator>(nameof(CustomReadinessDetailEvaluator));
+```
+After that, default product completeness evaluator will include your detail evaluator in evaluation process.
+## Define your own product completeness evaluator
+If you want, you may create you own product completeness evaluator implementation by implemening `IReadinessEvaluator` interface:
+```csharp
+public class CustomReadinessEvaluator : IReadinessEvaluator
+{
+    public ReadinessEntry[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
+    {
+    }
+}
+```
+... or customize default evaluation process by inheriting from `DefaultReadinessEvaluator` class and overring `EvaluateReadiness` method:
+```csharp
+
+public class CustomReadinessEvaluator : DefaultReadinessEvaluator
+{
+    public override ReadinessEntry[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
+    {
+    }
+}
+```
+In any case, you need to register your class as implementation of `IReadinessEvaluator` in Unity:
+```csharp
+_container.RegisterType<IReadinessEvaluator, CustomReadinessEvaluator>(nameof(CustomReadinessEvaluator));
+```
+After that, your product completeness evaluator will be available in module's RESTful API and UI.
+
+In section below, we will consider only cases when you don't want *define your own* product completeness evaluation process (by creating your own implementation of `IReadinessEvaluator` interface) and you want only *customize default* product completeness evaluation process used by your product completeness evaluator (inherit from `DefaultReadinessEvaluator`). If you want to *define your own* product completeness evaluation process, then you may implement same extensibility logic as our:
+```csharp
+public class CustomReadinessEvaluator : IReadinessEvaluator
+{
+    protected IReadOnlyCollection<IReadinessDetailEvaluator> DetailEvaluators { get; }
+        
+    public CustomReadinessEvaluator(CustomReadinessDetailEvaluator[] detailEvaluators, IItemService productService) :
+        this(detailEvaluators as IReadinessDetailEvaluator[], productService)
+    {
+    }
+
+    protected CustomReadinessEvaluator(IReadinessDetailEvaluator[] detailEvaluators, IItemService productService)
+    {
+        _productService = productService;
+        DetailEvaluators = detailEvaluators;
+    }
+        
+    public virtual ReadinessEntry[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
+    {
+    }
+}
+```
+## Define your own product completeness evaluator
+### ... with default detail evaluators
+Inject `DefaultReadinessDetailEvaluator` array to your constructor and pass it to protected constructor of `DefaultReadinessEvaluator` base class:
+```csharp
+public class CustomReadinessEvaluator : DefaultReadinessEvaluator
+{
+    private readonly IItemService _productService;
+
+    public CustomReadinessEvaluator(DefaultReadinessDetailEvaluator[] detailEvaluators, IItemService productService) :
+        base(detailEvaluators as IReadinessDetailEvaluator[], productService)
+    {
+    }
+}
+```
+### ... with custom detail evaluators
+Create your own (possible, abstract) base class for detail evaluators and inherit all your detail evaluators from it:
+```csharp
+public abstract class CustomReadinessDetailEvaluator : IReadinessDetailEvaluator
+{
+    public abstract ReadinessDetail[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products);
+}
+
+
+public class CustomReadinessDetailEvaluator1 : CustomReadinessDetailEvaluator
+{
+    public override ReadinessDetail[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
+    {
+    }
+}
+
+
+public class CustomReadinessDetailEvaluator2 : CustomReadinessDetailEvaluator
+{
+    public override ReadinessDetail[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
+    {
+    }
+}
+```
+Inject `CustomReadinessDetailEvaluator` array to constructor of your product completeness evaluator and pass this array to protected constructor of `DefaultReadinessEvaluator` base class:
+```csharp
+public class CustomReadinessEvaluator : DefaultReadinessEvaluator
+{
+    private readonly IItemService _productService;
+
+    public CustomReadinessEvaluator(CustomReadinessDetailEvaluator[] detailEvaluators, IItemService productService) :
+        base(detailEvaluators as IReadinessDetailEvaluator[], productService)
+    {
+    }
+}
+```
+Register your detail evaluators as implementation of `CustomReadinessEvaluator` class in Unity:
+```
+_container.RegisterType<CustomReadinessEvaluator, CustomReadinessEvaluator1>(nameof(CustomReadinessEvaluator1));
+_container.RegisterType<CustomReadinessEvaluator, CustomReadinessEvaluator2>(nameof(CustomReadinessEvaluator2));
+```
+### ... with both default and custom detail evaluators
+Inject both `DefaultReadinessDetailEvaluator` and `CustomReadinessDetailEvaluator` arrays (see code above) and then concatenate them and pass this array to protected constructor of `DefaultReadinessEvaluator` base class:
+
+```csharp
+public class CustomReadinessEvaluator : DefaultReadinessEvaluator
+{
+    private readonly IItemService _productService;
+
+    public CustomReadinessEvaluator(DefaultReadinessDetailEvaluator[] defaultDetailEvaluators, CustomReadinessDetailEvaluator[] customDetailEvaluators, IItemService productService) :
+        base(defaultDetailEvaluators.Concat<IReadinessDetailEvaluator>(customDetailEvaluators).ToArray(), productService)
+    {
+    }
+}
+```
+### ... with some default and all custom detail evaluators
+Create array of instances of default detail evaluators and inject `CustomReadinessDetailEvaluator` arrays (see code above), then concatenate them and pass this array to protected constructor of `DefaultReadinessEvaluator` base class:
+
+```csharp
+public class CustomReadinessEvaluator : DefaultReadinessEvaluator
+{
+    private readonly IItemService _productService;
+    private readonly IPricingSearchService _pricingSearchService;
+
+    public CustomReadinessEvaluator(CustomReadinessDetailEvaluator[] detailEvaluators, IItemService productService, IPricingSearchService pricingSearchService) :
+        base(new[] { new PropertiesReadinessDetailEvaluator(), new PricesReadinessDetailEvaluator(pricingSearchService) }.Concat<IReadinessDetailEvaluator>(customDetailEvaluators).ToArray(), productService)
+    {
+    }
+}
+```
+
 # License
 Copyright (c) Virtosoftware Ltd.  All rights reserved.
 
