@@ -22,22 +22,31 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
                 else
                 {
                     var properties = x.Properties.Where(p => p != null && p.Required).ToArray();
+                    var singleLanguageProperties = properties.Where(p => !p.Multilanguage).ToArray();
+                    var multiLanguageProperties = properties.Where(p => p.Multilanguage).ToArray();
+                    var invalidPropertiesCount = singleLanguageProperties.Where(p =>
+                        {
+                            var values = x.PropertyValues.Where(v => v.Property != null && v.Property.Id == p.Id).ToArray();
+                            return IsInvalidProperty(p, values, null, false);
+                        })
+                        .Count();
                     var invalidPropertiesPerLanguageCount = channel.Languages
-                        .Select(l => properties
+                        .Select(l => multiLanguageProperties
                             .Where(p =>
                             {
                                 var values = x.PropertyValues.Where(v => v.Property != null && v.Property.Id == p.Id).ToArray();
-                                return IsInvalidProperty(p, values, l);
+                                return IsInvalidProperty(p, values, l, true);
                             })
                             .Count())
                         .Sum();
-                    detail.ReadinessPercent = ReadinessHelper.CalculateReadiness(properties.Length * channel.Languages.Count, invalidPropertiesPerLanguageCount);
+                    detail.ReadinessPercent = ReadinessHelper.CalculateReadiness(singleLanguageProperties.Length + multiLanguageProperties.Length * channel.Languages.Count,
+                        invalidPropertiesCount + invalidPropertiesPerLanguageCount);
                 }
                 return detail;
             }).ToArray();
         }
 
-        private static bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode)
+        private static bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode, bool multilanguage)
         {
             var retVal = values.IsNullOrEmpty();
             if (!retVal)
@@ -45,11 +54,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
                 if (property.Dictionary)
                 {
                     retVal = values.All(pv => !property.DictionaryValues.IsNullOrEmpty() &&
-                                             (pv.LanguageCode != languageCode || !property.DictionaryValues.Any(dv => IsEqualValues(pv.ValueType, dv.Value, pv.Value))));
+                                             (multilanguage && pv.LanguageCode != languageCode || !property.DictionaryValues.Any(dv => IsEqualValues(pv.ValueType, dv.Value, pv.Value))));
                 }
                 else
                 {
-                    retVal = values.All(pv => pv.LanguageCode != languageCode || IsInvalidPropertyValue(pv.ValueType, pv.Value));
+                    retVal = values.All(pv => multilanguage && pv.LanguageCode != languageCode || IsInvalidPropertyValue(pv.ValueType, pv.Value));
                 }
             }
             return retVal;

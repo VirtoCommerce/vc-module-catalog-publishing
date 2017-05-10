@@ -6,7 +6,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test.Model
     {
         public override string ToString()
         {
-            return $"{{ Id: {Id}, Required: {Required}, Dictionary: {Dictionary}, " +
+            return $"{{ Id: {Id}, Required: {Required}, Multilanguage: {Multilanguage} Dictionary: {Dictionary}, " +
                    $"DicrionaryValues: [{(DictionaryValues != null ? string.Join(", ", DictionaryValues.Select(x => x.ToString())) : null)}], ValueType: {ValueType} }}";
         }
     }

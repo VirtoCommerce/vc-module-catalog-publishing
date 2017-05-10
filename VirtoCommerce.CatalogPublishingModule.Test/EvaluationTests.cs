@@ -42,7 +42,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             }
         };
         private Price[] _prices = new Price[0];
-        private string[] _editorialReviewTypes = new[] { "Valid" };
+        private string[] _editorialReviewTypes = { "Valid" };
         private readonly ReadinessChannel _channel = new ReadinessChannel
         {
             Name = "Valid",
@@ -148,11 +148,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     var currentProperty = property;
                     currentProperty.Required = required;
                     yield return Prepend(TestCondition(required,
-                            r => new PropertyValue { Property = currentProperty, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, r => 100, Mutable),
+                            r => new PropertyValue { Property = currentProperty, ValueType = PropertyValueType.ShortText, Value = "Valid" }, r => 100, Mutable),
                         languages, new List<Property> { currentProperty });
                 }
 
-                // Only property values with language same as channel language accounted
+                // All property values accounted when property is not multilanguage
                 var properties = new List<Property>
                 {
                     new Property
@@ -161,15 +161,38 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                         Required = true,
                         ValueType = PropertyValueType.ShortText,
                         Dictionary = true,
-                        DictionaryValues = new[] { new PropertyDictionaryValue { LanguageCode = "Valid", Value = dictionaryPropertyValues[PropertyValueType.ShortText][0] } }
+                        DictionaryValues = new[] { new PropertyDictionaryValue { Value = dictionaryPropertyValues[PropertyValueType.ShortText][0] } }
                     },
                     new Property { Id = "Valid2", Required = true, ValueType = PropertyValueType.ShortText, Dictionary = false, DictionaryValues = null }
+                };
+                foreach (var language in new[] { "Invalid", "Valid" })
+                {
+                    for (var i = 0; i < 2; i++)
+                    {
+                        var value = new PropertyValue { ValueType = PropertyValueType.ShortText, Property = properties[i], Value = "Valid" + (i + 1) };
+                        yield return Prepend(TestCondition(language, l => value, l => 100, Mutable), languages, new List<Property> { properties[i] });
+                    }
+                }
+
+                // Only property values with language from channel language list accounted when property is multilanguage
+                properties = new List<Property>
+                {
+                    new Property
+                    {
+                        Id = "Valid1",
+                        Required = true,
+                        ValueType = PropertyValueType.ShortText,
+                        Multilanguage = true,
+                        Dictionary = true,
+                        DictionaryValues = new[] { new PropertyDictionaryValue { LanguageCode = "Valid", Value = dictionaryPropertyValues[PropertyValueType.ShortText][0] } }
+                    },
+                    new Property { Id = "Valid2", Required = true, ValueType = PropertyValueType.ShortText, Multilanguage = true, Dictionary = false, DictionaryValues = null }
                 };
                 foreach (var language in new[] { null, string.Empty, "Invalid", "Valid" })
                 {
                     for (var i = 0; i < 2; i++)
                     {
-                        var value = new PropertyValue { LanguageCode = language, ValueType = PropertyValueType.ShortText, Property = properties[i], Value = i == 0 ? "Valid1" : "Valid" };
+                        var value = new PropertyValue { LanguageCode = language, ValueType = PropertyValueType.ShortText, Property = properties[i], Value = "Valid" + (i + 1) };
                         yield return Prepend(TestCondition(language, l => value, l => l == "Valid" ? 100 : 0, Mutable), languages, new List<Property> { properties[i] });
                     }
                 }
@@ -181,7 +204,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     var currentProperty = property;
                     currentProperty.DictionaryValues = dictionaryValue;
                     yield return Prepend(TestCondition(dictionaryValue,
-                            dv => new PropertyValue { Property = currentProperty, LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" }, dv => 100, Mutable),
+                            dv => new PropertyValue { Property = currentProperty, ValueType = PropertyValueType.ShortText, Value = "Valid" }, dv => 100, Mutable),
                         languages, new List<Property> { currentProperty });
                 }
 
@@ -196,16 +219,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                             ValueType = type,
                             Dictionary = true,
                             DictionaryValues = dictionaryValues[type]
-                                .Select((x, i) => new PropertyDictionaryValue { LanguageCode = "Valid", Value = dictionaryPropertyValues[type][i] })
+                                .Select((x, i) => new PropertyDictionaryValue { Value = dictionaryPropertyValues[type][i] })
                                 .ToArray()
                         })
                         .ToList();
 
                     var validValues = properties
-                        .Select((p, i) => new PropertyValue { Property = p, LanguageCode = "Valid", ValueType = type, Value = dictionaryValues[type][i] })
+                        .Select((p, i) => new PropertyValue { Property = p, ValueType = type, Value = dictionaryValues[type][i] })
                         .ToArray();
                     var invalidValues = properties
-                        .Select((p, i) => new PropertyValue { Property = p, LanguageCode = "Valid", ValueType = type, Value = valuesNotInDictionary[type][i] })
+                        .Select((p, i) => new PropertyValue { Property = p, ValueType = type, Value = valuesNotInDictionary[type][i] })
                         .ToArray();
 
                     foreach (var data in TestAll(validValues, 100, Mutable))
@@ -217,7 +240,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                         yield return Prepend(data, languages, properties);
                     }
 
-                    // Check correct validation of usual properties
+                    // Check correct validation of non-dictionary properties
                     properties = propertyIds.Select(id => new Property
                         {
                             Id = id,
@@ -244,28 +267,26 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                     }
                 }
 
-                languages = new[] { "Valid1", "Valid2" };
-                
-                // Check correct percentage calculation for properties with dictionaries
+                // Check correct percentage calculation for non-multilanguage properties with dictionaries
                 var dictionaryTestingProperties = propertyIds.Select(id => new Property
                     {
                         Id = id,
                         Required = true,
                         ValueType = PropertyValueType.ShortText,
                         Dictionary = true,
-                        DictionaryValues = languages.SelectMany(l => dictionaryValues[PropertyValueType.ShortText]
-                            .Select((x, i) => new PropertyDictionaryValue { LanguageCode = l, Value = dictionaryPropertyValues[PropertyValueType.ShortText][i] }))
+                        DictionaryValues = dictionaryValues[PropertyValueType.ShortText]
+                            .Select((x, i) => new PropertyDictionaryValue { Value = dictionaryPropertyValues[PropertyValueType.ShortText][i] })
                             .ToArray()
                     })
                     .ToList();
                 foreach (var data in TestAll(languages.SelectMany(l => dictionaryTestingProperties.Select(p =>
-                        new PropertyValue { Property = p, LanguageCode = l, ValueType = PropertyValueType.ShortText, Value = dictionaryPropertyValues[PropertyValueType.ShortText][0] }
-                    )).ToArray(), 100, Mutable))
+                    new PropertyValue { Property = p, LanguageCode = l, ValueType = PropertyValueType.ShortText, Value = dictionaryPropertyValues[PropertyValueType.ShortText][0] }
+                )).ToArray(), 100, Mutable))
                 {
                     yield return Prepend(data, languages, dictionaryTestingProperties);
                 }
 
-                // Check correct percentage calculation for usual properties
+                // Check correct percentage calculation for non-multilanguage non-dictionary properties
                 var testingProperties = propertyIds.Select(id => new Property
                     {
                         Id = id,
@@ -275,11 +296,87 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                         DictionaryValues = null
                     })
                     .ToList();
-                foreach (var data in TestAll(languages.SelectMany(l => testingProperties.Select(p =>
+                foreach (var data in TestAll(testingProperties.Select(p => new PropertyValue { Property = p, ValueType = PropertyValueType.ShortText, Value = "Valid" }).ToArray(), 100, Mutable))
+                {
+                    yield return Prepend(data, languages, testingProperties);
+                }
+
+                languages = new[] { "Valid1", "Valid2" };
+
+                // Check correct percentage calculation for multilanguage properties with dictionaries
+                var dictionaryMultiLanguageTestingProperties = propertyIds.Select(id => new Property
+                    {
+                        Id = id,
+                        Required = true,
+                        ValueType = PropertyValueType.ShortText,
+                        Multilanguage = true,
+                        Dictionary = true,
+                        DictionaryValues = languages.SelectMany(l => dictionaryValues[PropertyValueType.ShortText]
+                                .Select((x, i) => new PropertyDictionaryValue { LanguageCode = l, Value = dictionaryPropertyValues[PropertyValueType.ShortText][i] }))
+                            .ToArray()
+                    })
+                    .ToList();
+                foreach (var data in TestAll(languages.SelectMany(l => dictionaryMultiLanguageTestingProperties.Select(p =>
+                        new PropertyValue { Property = p, LanguageCode = l, ValueType = PropertyValueType.ShortText, Value = dictionaryPropertyValues[PropertyValueType.ShortText][0] }
+                    )).ToArray(), 100, Mutable))
+                {
+                    yield return Prepend(data, languages, dictionaryMultiLanguageTestingProperties);
+                }
+
+                // Check correct percentage calculation for non-dictionary multilanguage properties
+                var multiLanguageTestingProperties = propertyIds.Select(id => new Property
+                    {
+                        Id = id,
+                        Required = true,
+                        ValueType = PropertyValueType.ShortText,
+                        Multilanguage = true,
+                        Dictionary = false,
+                        DictionaryValues = null
+                    })
+                    .ToList();
+                foreach (var data in TestAll(languages.SelectMany(l => multiLanguageTestingProperties.Select(p =>
                         new PropertyValue { Property = p, LanguageCode = l, ValueType = PropertyValueType.ShortText, Value = "Valid" }
                     )).ToArray(), 100, Mutable))
                 {
-                    yield return Prepend(data, languages, testingProperties);
+                    yield return Prepend(data, languages, multiLanguageTestingProperties);
+                }
+
+                languages = new[] { "Valid" };
+
+                // Check correct calculation for mixed collection of multilanguage and non-multilanguage properties
+                var singleLanguageMixedTestingProperties = new[] { "Valid1", "Valid2" }.Select(id => new Property
+                    {
+                        Id = id,
+                        Required = true,
+                        ValueType = PropertyValueType.ShortText,
+                        Dictionary = false,
+                        DictionaryValues = null
+                    })
+                    .ToList();
+                var multiLanguageMixedTestingProperties = new[] { "Valid3", "Valid4" }.Select(id => new Property
+                    {
+                        Id = id,
+                        Required = true,
+                        ValueType = PropertyValueType.ShortText,
+                        Multilanguage = true,
+                        Dictionary = false,
+                        DictionaryValues = null
+                    })
+                    .ToList();
+                foreach (var data in TestAllValid(
+                    new[]
+                    {
+                        new PropertyValue { Property = multiLanguageMixedTestingProperties[0], LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = null },
+                        new PropertyValue { Property = singleLanguageMixedTestingProperties[0], ValueType = PropertyValueType.ShortText, Value = null }
+                    },
+                    new[]
+                    {
+                        new PropertyValue { Property = multiLanguageMixedTestingProperties[1], LanguageCode = "Valid", ValueType = PropertyValueType.ShortText, Value = "Valid" },
+                        new PropertyValue { Property = singleLanguageMixedTestingProperties[1], ValueType = PropertyValueType.ShortText, Value = "Valid" }
+                    },
+                    true))
+                {
+                    yield return Prepend(data, languages, ((List<PropertyValue>) data[0]).Select(pv => (Property) pv.Property).Distinct().ToList());
                 }
             }}
 
@@ -439,10 +536,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             where TObject: class
         {
             var variants = new[] { null, invalid, valid };
-            foreach (var first in variants)
+            for (var firstIndex = 0; firstIndex < variants.Length - 1; firstIndex++)
             {
-                foreach (var second in variants)
+                var first = variants[firstIndex];
+                for (var secondIndex = firstIndex + 1; secondIndex < variants.Length; secondIndex++)
                 {
+                    var second = variants[secondIndex];
                     var objects = new List<TObject>();
                     if (first != null)
                     {
@@ -460,17 +559,37 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 }
             }
         }
+        
+        private static IEnumerable<object[]> TestAllValid<TObject>(TObject[] invalidObjects, TObject[] validObjects, bool mutable = false)
+            where TObject : class
+        {
+            if (invalidObjects.Length != validObjects.Length)
+            {
+                throw new InvalidOperationException();
+            }
+            for (var invalidCount = invalidObjects.Length; invalidCount >= 0; invalidCount--)
+            {
+                var invalid = invalidObjects.Take(invalidCount).ToArray();
+                var valid = validObjects.Skip(invalidCount).ToArray();
+                var objects = invalid.Concat(valid).ToArray();
+                yield return new object[]
+                {
+                    mutable ? (ICollection<TObject>)objects.ToList() : objects.ToArray(),
+                    (int)Math.Floor((double)valid.Length / (double)objects.Length * 100d)
+                };
+            }
+        }
 
-        private static IEnumerable<object[]> TestAll<TObject>(TObject[] objects, int readinessPercent, bool mutable = false)
+        private static IEnumerable<object[]> TestAll<TObject>(TObject[] objects, double readinessPercent, bool mutable = false)
         {
             var variants = new List<TObject[]>();
-            variants.AddRange(Enumerable.Range(0, objects.Count()).Select(i => objects.Take(i).ToArray()));
+            variants.AddRange(Enumerable.Range(0, objects.Length).Select(i => objects.Take(i).ToArray()));
             foreach (var variant in mutable ? (IEnumerable<ICollection<TObject>>)variants.Select(x => x.ToList()) : variants)
             {
                 yield return new object[]
                 {
                     variant,
-                    readinessPercent * variant.Count / objects.Length
+                    (int)Math.Floor(readinessPercent * (double)variant.Count / (double)objects.Length)
                 };
             }
         }
