@@ -27,7 +27,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
                     var invalidPropertiesCount = singleLanguageProperties.Where(p =>
                         {
                             var values = x.PropertyValues.Where(v => v.Property != null && v.Property.Id == p.Id).ToArray();
-                            return IsInvalidProperty(p, values, null, false);
+                            return IsInvalidProperty(p, values);
                         })
                         .Count();
                     var invalidPropertiesPerLanguageCount = channel.Languages
@@ -35,7 +35,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
                             .Where(p =>
                             {
                                 var values = x.PropertyValues.Where(v => v.Property != null && v.Property.Id == p.Id).ToArray();
-                                return IsInvalidProperty(p, values, l, true);
+                                return IsInvalidProperty(p, values, l);
                             })
                             .Count())
                         .Sum();
@@ -46,7 +46,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
             }).ToArray();
         }
 
-        private static bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode, bool multilanguage)
+        private static bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode = null)
         {
             var retVal = values.IsNullOrEmpty();
             if (!retVal)
@@ -54,11 +54,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
                 if (property.Dictionary)
                 {
                     retVal = values.All(pv => !property.DictionaryValues.IsNullOrEmpty() &&
-                                             (multilanguage && pv.LanguageCode != languageCode || !property.DictionaryValues.Any(dv => IsEqualValues(pv.ValueType, dv.Value, pv.Value))));
+                                             (property.Multilanguage && pv.LanguageCode != languageCode || !property.DictionaryValues.Any(dv => IsEqualValues(pv.ValueType, dv.Value, pv.Value))));
                 }
                 else
                 {
-                    retVal = values.All(pv => multilanguage && pv.LanguageCode != languageCode || IsInvalidPropertyValue(pv.ValueType, pv.Value));
+                    retVal = values.All(pv => property.Multilanguage && pv.LanguageCode != languageCode || IsInvalidPropertyValue(pv.ValueType, pv.Value));
                 }
             }
             return retVal;
