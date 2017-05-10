@@ -11,8 +11,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 {
     public class DefaultReadinessEvaluator : IReadinessEvaluator
     {
-        private readonly IReadinessDetailEvaluator[] _detailEvaluators;
         private readonly IItemService _productService;
+
+        protected IReadOnlyCollection<IReadinessDetailEvaluator> DetailEvaluators { get; }
 
         public DefaultReadinessEvaluator(DefaultReadinessDetailEvaluator[] detailEvaluators, IItemService productService) :
             this(detailEvaluators as IReadinessDetailEvaluator[], productService)
@@ -21,8 +22,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 
         protected DefaultReadinessEvaluator(IReadinessDetailEvaluator[] detailEvaluators, IItemService productService)
         {
-            _detailEvaluators = detailEvaluators;
             _productService = productService;
+            DetailEvaluators = detailEvaluators;
         }
 
         public virtual ReadinessEntry[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
@@ -39,8 +40,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             products = _productService.GetByIds(products.Select(x => x.Id).ToArray(), ItemResponseGroup.ItemLarge).ToArray();
             products = products.Where(x => x.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == channel.CatalogId)).ToArray();
 
-            var details = new List<ReadinessDetail>(products.Length * _detailEvaluators.Length);
-            foreach (var detailEvaluator in _detailEvaluators)
+            var details = new List<ReadinessDetail>(products.Length * DetailEvaluators.Count);
+            foreach (var detailEvaluator in DetailEvaluators)
             {
                 details.AddRange(detailEvaluator.EvaluateReadiness(channel, products));
             }
