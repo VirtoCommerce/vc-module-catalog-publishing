@@ -52,6 +52,7 @@ angular.module(moduleName, [])
             }
         });
         widgetService.registerWidget({
+            size: [2, 1],
             controller: 'virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController',
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/widgets/catalog-publishing-widget.tpl.html',
         }, 'itemDetail');

@@ -1,0 +1,9 @@
+﻿.menu.__inline.__pinned {
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.menu.__inline.__pinned .menu-item {
+    float: right;
+}

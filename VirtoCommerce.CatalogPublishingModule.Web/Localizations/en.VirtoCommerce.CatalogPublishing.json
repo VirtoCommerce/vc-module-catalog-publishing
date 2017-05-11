@@ -47,7 +47,7 @@
     },
     "widgets": {
       "catalog-publishing": {
-        "title": "Publishing completeness for channel ",
+        "title": "Completeness for channel ",
         "no-channels-message": "No channels available"
       }
     }

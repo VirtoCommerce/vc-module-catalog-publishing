@@ -14,7 +14,7 @@
 
             catalogPublishingApi.searchChannels({
                 skip: 0,
-                take: 1000,
+                take: Math.pow(2, 31) - 1,
                 catalogIds: catalogIds
             }, function (response) {
                 var allChannels = response.results;
@@ -23,18 +23,8 @@
                     if (channel) {
                         existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
                     }
+                    $scope.channels = angular.copy(allChannels);
                     $scope.channel = existingChannel || allChannels[0];
-                    $scope.openChannelSelectBlade = function () {
-                        bladeNavigationService.showBlade({
-                            id: 'channelSelectBlade',
-                            title: 'catalog-publishing.blades.channel-select.title',
-                            headIcon: 'fa fa-tasks',
-                            channel: $scope.channel,
-                            productId: blade.currentEntityId,
-                            controller: 'virtoCommerce.catalogPublishingModule.channelSelectController',
-                            template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-select.tpl.html'
-                        }, blade);
-                    }
                     evaluate($scope.channel.id, blade.currentEntityId);
                 }
             });
@@ -43,6 +33,10 @@
         $scope.$on('product-saved', function (event, product) {
             evaluate(channel.id, product.id, true);
         });
+
+        $scope.evaluate = function () {
+            evaluate($scope.channel.id, blade.currentEntityId, true);
+        }
 
         function evaluate(channelId, productId, saveEntities) {
             catalogPublishingApi.evaluateChannelProducts({ id: channelId }, [productId],
@@ -68,6 +62,11 @@
                         $scope.readinessPercent = 0;
                     }
                 });
-
         }
+
+        $scope.changeChannel = function() {
+            var channel = _.find($scope.channels, function (c) { return c.id === $scope.channel.id });
+            $localStorage.catalogPublishingChannel = channel;
+            evaluate(channel.id, blade.currentEntityId);
+        };
     }]);
