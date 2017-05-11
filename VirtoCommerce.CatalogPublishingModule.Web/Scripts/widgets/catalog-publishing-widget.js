@@ -67,6 +67,6 @@
         $scope.changeChannel = function() {
             var channel = _.find($scope.channels, function (c) { return c.id === $scope.channel.id });
             $localStorage.catalogPublishingChannel = channel;
-            evaluate(channel.id, blade.currentEntityId);
+            evaluate(channel.id, blade.currentEntityId, true);
         };
     }]);
