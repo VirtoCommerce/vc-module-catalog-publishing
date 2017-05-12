@@ -10,7 +10,6 @@ using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Data.ChangeLog;
 using VirtoCommerce.SearchModule.Core.Model.Indexing;
 using Xunit;
 

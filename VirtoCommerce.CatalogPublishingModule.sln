@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Test", "VirtoCommerce.CatalogPublishingModule.Test\VirtoCommerce.CatalogPublishingModule.Test.csproj", "{50874BF9-0F61-4B9A-9645-ADC13F2801AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Data.Core", "VirtoCommerce.CatalogPublishingModule.Data.Core\VirtoCommerce.CatalogPublishingModule.Data.Core.csproj", "{81B946F3-813C-424A-8748-A27337672ADD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{50874BF9-0F61-4B9A-9645-ADC13F2801AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50874BF9-0F61-4B9A-9645-ADC13F2801AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50874BF9-0F61-4B9A-9645-ADC13F2801AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81B946F3-813C-424A-8748-A27337672ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81B946F3-813C-424A-8748-A27337672ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81B946F3-813C-424A-8748-A27337672ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81B946F3-813C-424A-8748-A27337672ADD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

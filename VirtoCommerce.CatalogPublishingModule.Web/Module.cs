@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Practices.Unity;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
-using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;

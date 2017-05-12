@@ -148,19 +148,12 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\ReadinessChannelCurrencyEntity.cs" />
     <Compile Include="Model\ReadinessChannelLanguageEntity.cs" />
-    <Compile Include="Services\DefaultReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\Evaluators\DescriptionsDetailEvaluator.cs" />
-    <Compile Include="Services\Evaluators\PricesReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\Evaluators\PropertiesReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\Evaluators\SeoReadinessDetailEvaluator.cs" />
     <Compile Include="Model\ReadinessChannelEntity.cs" />
     <Compile Include="Model\ReadinessDetailEntity.cs" />
     <Compile Include="Model\ReadinessEntryEntity.cs" />
-    <Compile Include="Common\ReadinessHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IReadinessRepository.cs" />
     <Compile Include="Repositories\ReadinessRepositoryImpl.cs" />
-    <Compile Include="Services\DefaultReadinessEvaluator.cs" />
     <Compile Include="Services\ProductReadinessDocumentBuilder.cs" />
     <Compile Include="Services\ProductReadinessOperationProvider.cs" />
     <Compile Include="Services\ReadinessServiceImpl.cs" />
@@ -173,6 +166,10 @@
     <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj">
       <Project>{451fecd7-a434-4a0b-b54a-56d92c99d17c}</Project>
       <Name>VirtoCommerce.CatalogPublishingModule.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data.Core\VirtoCommerce.CatalogPublishingModule.Data.Core.csproj">
+      <Project>{81b946f3-813c-424a-8748-a27337672add}</Project>
+      <Name>VirtoCommerce.CatalogPublishingModule.Data.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

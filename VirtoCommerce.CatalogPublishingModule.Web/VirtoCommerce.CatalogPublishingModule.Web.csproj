@@ -185,6 +185,10 @@
       <Project>{451fecd7-a434-4a0b-b54a-56d92c99d17c}</Project>
       <Name>VirtoCommerce.CatalogPublishingModule.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data.Core\VirtoCommerce.CatalogPublishingModule.Data.Core.csproj">
+      <Project>{81b946f3-813c-424a-8748-a27337672add}</Project>
+      <Name>VirtoCommerce.CatalogPublishingModule.Data.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data\VirtoCommerce.CatalogPublishingModule.Data.csproj">
       <Project>{cc97f906-deb0-4d07-b83d-5d6829094ada}</Project>
       <Name>VirtoCommerce.CatalogPublishingModule.Data</Name>

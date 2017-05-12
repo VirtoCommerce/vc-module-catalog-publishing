@@ -2,11 +2,11 @@
 using System.Globalization;
 using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Common;
+using VirtoCommerce.CatalogPublishingModule.Data.Core.Common;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Common;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators
+namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
 {
     public class PropertiesReadinessDetailEvaluator : DefaultReadinessDetailEvaluator
     {

@@ -7,7 +7,7 @@ using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Platform.Core.Common;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
 {
     public class DefaultReadinessEvaluator : IReadinessEvaluator
     {

@@ -2,7 +2,7 @@
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.Domain.Catalog.Model;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
 {
     public abstract class DefaultReadinessDetailEvaluator : IReadinessDetailEvaluator
     {
