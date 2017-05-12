@@ -114,4 +114,8 @@
                 });
             }
         }
+
+        blade.onClose = function (closeCallback) {
+            bladeNavigationService.showConfirmationIfNeeded(isDirty(), canSave(), blade, saveChanges, closeCallback, "catalog-publishing.dialogs.channel-save.title", "catalog-publishing.dialogs.channel-save.message");
+        };
     }]);

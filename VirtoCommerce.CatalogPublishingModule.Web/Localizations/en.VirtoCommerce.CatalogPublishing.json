@@ -40,6 +40,10 @@
       }
     },
     "dialogs": {
+      "channel-save": {
+        "title": "Save changes",
+        "message": "The channel has been modified. Do you want to save changes?"
+      },
       "channel-delete": {
         "title": "Delete confirmation",
         "message": "Are you sure you want to delete selected Catalog Publishing Channels?"
