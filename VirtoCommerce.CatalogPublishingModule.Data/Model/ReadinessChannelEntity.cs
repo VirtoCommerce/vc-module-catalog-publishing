@@ -45,17 +45,17 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 
             channel.Id = Id;
 
+            channel.CreatedBy = CreatedBy;
+            channel.CreatedDate = CreatedDate;
+            channel.ModifiedBy = ModifiedBy;
+            channel.ModifiedDate = ModifiedDate;
+
             channel.Name = Name;
             channel.CatalogId = CatalogId;
             channel.CatalogName = CatalogName;
             channel.Languages = Languages.Select(x => x.LanguageCode).ToList();
             channel.Currencies = Currencies.Select(x => x.CurrencyCode).ToList();
             channel.EvaluatorType = EvaluatorType;
-
-            channel.CreatedBy = CreatedBy;
-            channel.CreatedDate = CreatedDate;
-            channel.ModifiedBy = ModifiedBy;
-            channel.ModifiedDate = ModifiedDate;
 
             return channel;
         }
@@ -70,6 +70,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             pkMap.AddPair(channel, this);
 
             Id = channel.Id;
+
+            CreatedBy = channel.CreatedBy;
+            CreatedDate = channel.CreatedDate;
+            ModifiedBy = channel.ModifiedBy;
+            ModifiedDate = channel.ModifiedDate;
 
             Name = channel.Name;
             CatalogId = channel.CatalogId;
@@ -89,11 +94,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
                 }));
             }
             EvaluatorType = channel.EvaluatorType;
-
-            CreatedBy = channel.CreatedBy;
-            CreatedDate = channel.CreatedDate;
-            ModifiedBy = channel.ModifiedBy;
-            ModifiedDate = channel.ModifiedDate;
 
             return this;
         }

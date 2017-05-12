@@ -8,9 +8,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Services
     {
         ReadinessChannel[] GetChannelsByIds(string[] ids);
 
-        void SaveEntries(ReadinessEntry[] entries);
+        ReadinessEntry[] GetReadinessEntriesByIds(string[] ids);
 
         void SaveChannels(ReadinessChannel[] channels);
+
+        void SaveEntries(ReadinessEntry[] entries);
 
         GenericSearchResult<ReadinessChannel> SearchChannels(ReadinessChannelSearchCriteria criteria);
 

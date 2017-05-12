@@ -159,6 +159,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             return new ReadinessEntry
             {
+                Id = "Test",
+                CreatedBy = "Test",
+                CreatedDate = DateTime.Now,
+                ModifiedBy = null,
+                ModifiedDate = null,
                 ChannelId = "Test",
                 ProductId = "Test",
                 ReadinessPercent = 50,

@@ -1,12 +1,16 @@
-﻿using Microsoft.Practices.Unity;
+﻿using System;
+using Microsoft.Practices.Unity;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluators;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
+using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.SearchModule.Core.Model.Indexing;
 
 namespace VirtoCommerce.CatalogPublishingModule.Web
@@ -34,14 +38,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
         {
             base.Initialize();
 
-            _container.RegisterType<IReadinessRepository>(new InjectionFactory(c => new ReadinessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>())));
+            _container.RegisterType<IReadinessRepository>(new InjectionFactory(c => new ReadinessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>(),
+                new ChangeLogInterceptor(_container.Resolve<Func<IPlatformRepository>>(), ChangeLogPolicy.Cumulative, new[] { typeof(ReadinessEntryEntity).Name }, _container.Resolve<IUserNameResolver>()))));
             _container.RegisterType<IReadinessService, ReadinessServiceImpl>();
-            _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductReadinessDocumentBuilder>(nameof(ProductReadinessDocumentBuilder));
+
             _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>(nameof(DefaultReadinessEvaluator));
             _container.RegisterType<DefaultReadinessDetailEvaluator, PropertiesReadinessDetailEvaluator>(nameof(PropertiesReadinessDetailEvaluator));
             _container.RegisterType<DefaultReadinessDetailEvaluator, DescriptionsReadinessDetailEvaluator>(nameof(DescriptionsReadinessDetailEvaluator));
             _container.RegisterType<DefaultReadinessDetailEvaluator, PricesReadinessDetailEvaluator>(nameof(PricesReadinessDetailEvaluator));
             _container.RegisterType<DefaultReadinessDetailEvaluator, SeoReadinessDetailEvaluator>(nameof(SeoReadinessDetailEvaluator));
+
+            _container.RegisterType<IOperationProvider, ProductReadinessOperationProvider>(nameof(ProductReadinessOperationProvider));
+            _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductReadinessDocumentBuilder>(nameof(ProductReadinessDocumentBuilder));
         }
     }
 }

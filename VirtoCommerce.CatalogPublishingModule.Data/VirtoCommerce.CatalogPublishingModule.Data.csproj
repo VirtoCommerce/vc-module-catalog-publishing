@@ -120,8 +120,8 @@
       <HintPath>..\packages\VirtoCommerce.Platform.Data.2.12.5\lib\net461\VirtoCommerce.Platform.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="VirtoCommerce.SearchModule.Core, Version=2.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.0\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
+    <Reference Include="VirtoCommerce.SearchModule.Core, Version=2.14.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.2\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -141,6 +141,10 @@
     <Compile Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.Designer.cs">
       <DependentUpon>201705050747364_MultipleLanguagesAndCurrencies.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705120033537_ReadinessEntryAuditable.cs" />
+    <Compile Include="Migrations\201705120033537_ReadinessEntryAuditable.Designer.cs">
+      <DependentUpon>201705120033537_ReadinessEntryAuditable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\ReadinessChannelCurrencyEntity.cs" />
     <Compile Include="Model\ReadinessChannelLanguageEntity.cs" />
@@ -158,6 +162,7 @@
     <Compile Include="Repositories\ReadinessRepositoryImpl.cs" />
     <Compile Include="Services\DefaultReadinessEvaluator.cs" />
     <Compile Include="Services\ProductReadinessDocumentBuilder.cs" />
+    <Compile Include="Services\ProductReadinessOperationProvider.cs" />
     <Compile Include="Services\ReadinessServiceImpl.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.resx">
       <DependentUpon>201705050747364_MultipleLanguagesAndCurrencies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705120033537_ReadinessEntryAuditable.resx">
+      <DependentUpon>201705120033537_ReadinessEntryAuditable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

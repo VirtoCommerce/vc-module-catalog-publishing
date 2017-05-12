@@ -131,12 +131,12 @@
       <HintPath>..\packages\VirtoCommerce.Platform.Core.Web.2.12.4\lib\net461\VirtoCommerce.Platform.Core.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="VirtoCommerce.Platform.Data, Version=2.12.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Platform.Data.2.12.4\lib\net461\VirtoCommerce.Platform.Data.dll</HintPath>
+    <Reference Include="VirtoCommerce.Platform.Data, Version=2.12.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Platform.Data.2.12.5\lib\net461\VirtoCommerce.Platform.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="VirtoCommerce.SearchModule.Core, Version=2.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.0\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
+    <Reference Include="VirtoCommerce.SearchModule.Core, Version=2.14.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.SearchModule.Core.2.14.2\lib\net461\VirtoCommerce.SearchModule.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

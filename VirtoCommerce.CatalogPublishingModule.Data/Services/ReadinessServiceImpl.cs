@@ -39,30 +39,17 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             return retVal;
         }
 
-        public void SaveEntries(ReadinessEntry[] entries)
+        public ReadinessEntry[] GetReadinessEntriesByIds(string[] ids)
         {
-            using (var repository = _repositoryFactory())
+            ReadinessEntry[] retVal = null;
+            if (ids != null)
             {
-                using (var changeTracker = GetChangeTracker(repository))
+                using (var repository = _repositoryFactory())
                 {
-                    var alreadyExistEntities = repository.Entries.Include(x => x.Details).ToArray().Where(x => entries.Any(y => CompareEntries(y, x))).ToArray();
-                    foreach (var entry in entries)
-                    {
-                        var sourceEntity = AbstractTypeFactory<ReadinessEntryEntity>.TryCreateInstance().FromModel(entry);
-                        var targetEntity = alreadyExistEntities.FirstOrDefault(x => CompareEntries(entry, x));
-                        if (targetEntity != null)
-                        {
-                            changeTracker.Attach(targetEntity);
-                            sourceEntity.Patch(targetEntity);
-                        }
-                        else
-                        {
-                            repository.Add(sourceEntity);
-                        }
-                    }
+                    retVal = repository.GetEntriesByIds(ids).Select(x => x.ToModel(AbstractTypeFactory<ReadinessEntry>.TryCreateInstance())).ToArray();
                 }
-                CommitChanges(repository);
             }
+            return retVal;
         }
 
         public void SaveChannels(ReadinessChannel[] channels)
@@ -91,6 +78,33 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 }
                 CommitChanges(repository);
                 pkMap.ResolvePrimaryKeys();
+            }
+        }
+
+        public void SaveEntries(ReadinessEntry[] entries)
+        {
+            using (var repository = _repositoryFactory())
+            {
+                using (var changeTracker = GetChangeTracker(repository))
+                {
+                    var entriesIds = entries.Select(x => x.Id).Where(x => x != null).Distinct().ToArray();
+                    var alreadyExistEntities = repository.Entries.Include(x => x.Details).ToArray().Where(x => entriesIds.Contains(x.Id)).ToArray();
+                    foreach (var entry in entries)
+                    {
+                        var sourceEntity = AbstractTypeFactory<ReadinessEntryEntity>.TryCreateInstance().FromModel(entry);
+                        var targetEntity = alreadyExistEntities.FirstOrDefault(x => x.Id == entry.Id);
+                        if (targetEntity != null)
+                        {
+                            changeTracker.Attach(targetEntity);
+                            sourceEntity.Patch(targetEntity);
+                        }
+                        else
+                        {
+                            repository.Add(sourceEntity);
+                        }
+                    }
+                }
+                CommitChanges(repository);
             }
         }
 
@@ -128,11 +142,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 repository.DeleteChannels(ids);
                 CommitChanges(repository);
             }
-        }
-
-        private bool CompareEntries(ReadinessEntry entry, ReadinessEntryEntity entity)
-        {
-            return entry.ChannelId == entity.ChannelId && entry.ProductId == entity.ProductId;
         }
     }
 }

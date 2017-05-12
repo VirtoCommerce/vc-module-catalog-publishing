@@ -7,7 +7,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 {
-    public class ReadinessEntryEntity : Entity
+    public class ReadinessEntryEntity : AuditableEntity
     {
         public ReadinessEntryEntity()
         {
@@ -36,6 +36,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             if (entry == null)
                 throw new ArgumentNullException(nameof(entry));
 
+            entry.Id = Id;
+
+            entry.CreatedBy = CreatedBy;
+            entry.CreatedDate = CreatedDate;
+            entry.ModifiedBy = ModifiedBy;
+            entry.ModifiedDate = ModifiedDate;
+
             entry.ChannelId = ChannelId;
             entry.ProductId = ProductId;
             entry.ReadinessPercent = ReadinessPercent;
@@ -53,6 +60,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         {
             if (entry == null)
                 throw new ArgumentNullException(nameof(entry));
+
+            Id = entry.Id;
+
+            CreatedBy = entry.CreatedBy;
+            CreatedDate = entry.CreatedDate;
+            ModifiedBy = entry.ModifiedBy;
+            ModifiedDate = entry.ModifiedDate;
 
             ChannelId = entry.ChannelId;
             ProductId = entry.ProductId;
