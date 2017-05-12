@@ -74,7 +74,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private IChangeLogService GetChangeLogService()
         {
             var service = new Mock<IChangeLogService>();
-            service.Setup(x => x.FindChangeHistory(It.Is<string>(t => t == "ReadinessEntry"),
+            service.Setup(x => x.FindChangeHistory(It.Is<string>(t => t == "ReadinessEntryEntity"),
                     It.Is<DateTime>(d => d == _startIndexDateTime),
                     It.Is<DateTime>(d => d == _endIndexDateTime)))
                 .Returns<string, DateTime, DateTime>((t, sd, ed) => new[]
