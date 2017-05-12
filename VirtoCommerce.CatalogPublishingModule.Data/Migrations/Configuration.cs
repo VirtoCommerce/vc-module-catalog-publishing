@@ -5,14 +5,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    public sealed class Configuration : DbMigrationsConfiguration<VirtoCommerce.CatalogPublishingModule.Data.Repositories.ReadinessRepositoryImpl>
+    public sealed class Configuration : DbMigrationsConfiguration<VirtoCommerce.CatalogPublishingModule.Data.Repositories.CompletenessRepositoryImpl>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(VirtoCommerce.CatalogPublishingModule.Data.Repositories.ReadinessRepositoryImpl context)
+        protected override void Seed(VirtoCommerce.CatalogPublishingModule.Data.Repositories.CompletenessRepositoryImpl context)
         {
             //  This method will be called after migrating to the latest version.
 

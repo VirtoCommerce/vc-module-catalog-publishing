@@ -66,11 +66,11 @@
             $scope.selectedNodeId = channel.id;
             $localStorage.catalogPublishingChannel = channel;
             bladeNavigationService.showBlade({
-                id: 'readinessCatalogItems',
+                id: 'completenessCatalogItems',
                 breadcrumbs: [],
                 filter: {
-                    keyword: 'readiness_' + channel.name.toLowerCase() + ':[0 TO 99]',
-                    searchedKeyword: 'readiness_' + channel.name.toLowerCase() + ':[0 TO 99]'
+                    keyword: 'completeness_' + channel.name.toLowerCase() + ':[0 TO 99]',
+                    searchedKeyword: 'completeness_' + channel.name.toLowerCase() + ':[0 TO 99]'
                 },
                 catalogId: channel.catalogId,
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
@@ -84,9 +84,9 @@
                                     _.each(response, function(entry) {
                                         var item = _.find(items, function(i) { return i.id === entry.productId });
                                         if (item) {
-                                            item.readinessPercent = entry.readinessPercent;
+                                            item.completenessPercent = entry.completenessPercent;
                                         } else {
-                                            item.readinessPercent = 0;
+                                            item.completenessPercent = 0;
                                         }
                                     });
                                 });
@@ -140,7 +140,7 @@
     .run(['platformWebApp.ui-grid.extension', function (gridOptionExtension) {
         gridOptionExtension.registerExtension('catalog-item-select-grid', function (gridOptions) {
             gridOptions.columnDefs.push({
-                name: 'readinessPercent',
+                name: 'completenessPercent',
                 displayName: 'catalog-publishing.blades.channel-list.labels.completeness-percent',
                 cellTemplate: 'completeness.cell.html'
             });

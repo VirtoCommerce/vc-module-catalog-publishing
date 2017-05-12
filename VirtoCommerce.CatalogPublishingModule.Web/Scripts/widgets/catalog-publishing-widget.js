@@ -43,12 +43,12 @@
                 function (response) {
                     if (response.length) {
                         var entry = response[0];
-                        $scope.readinessPercent = entry.readinessPercent;
+                        $scope.completenessPercent = entry.completenessPercent;
                         _.each(entry.details, function (detail) {
                             var widgetControllerName = widgetMapperService.get(detail.name);
                             if (widgetControllerName) {
                                 var widget = _.find($scope.widgets, function (w) { return w.controller === widgetControllerName });
-                                if (widget && detail.readinessPercent < 100) {
+                                if (widget && detail.completenessPercent < 100) {
                                     widget.UIclass = 'error';
                                 } else {
                                     widget.UIclass = null;
@@ -59,7 +59,7 @@
                             catalogPublishingApi.saveEntries([entry]);
                         }
                     } else {
-                        $scope.readinessPercent = 0;
+                        $scope.completenessPercent = 0;
                     }
                 });
         }

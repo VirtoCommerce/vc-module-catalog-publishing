@@ -121,7 +121,7 @@
     <Compile Include="Model\PropertyDictionaryValue.cs" />
     <Compile Include="Model\PropertyValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadinessTests.cs" />
+    <Compile Include="CompletenessTests.cs" />
     <Compile Include="RollbackAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

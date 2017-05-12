@@ -4,7 +4,7 @@
             <li class="menu-item"><a cass="menu-link" ng-click="evaluate(); $event.stopPropagation();"><i class="menu-ico fa fa-refresh"></i></a></li>
         </ul>
         <div class="list __info form-group">
-            <div class="list-count" ng-bind="readinessPercent + '%'"></div>
+            <div class="list-count" ng-bind="completenessPercent + '%'"></div>
             <div class="list-t form-label">{{ 'catalog-publishing.widgets.catalog-publishing.title' | translate }}</div>
             <ui-select required ng-model="channel.id" append-to-body="true" on-select="changeChannel()">
                 <ui-select-match>{{ $select.selected.name }}</ui-select-match>

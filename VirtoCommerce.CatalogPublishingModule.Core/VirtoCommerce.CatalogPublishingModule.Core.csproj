@@ -55,14 +55,14 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Model\ReadinessChannel.cs" />
-    <Compile Include="Model\ReadinessDetail.cs" />
-    <Compile Include="Model\ReadinessEntry.cs" />
-    <Compile Include="Model\Search\ReadinessChannelSearchCriteria.cs" />
+    <Compile Include="Model\CompletenessChannel.cs" />
+    <Compile Include="Model\CompletenessDetail.cs" />
+    <Compile Include="Model\CompletenessEntry.cs" />
+    <Compile Include="Model\Search\CompletenessChannelSearchCriteria.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\IReadinessEvaluator.cs" />
-    <Compile Include="Services\IReadinessService.cs" />
+    <Compile Include="Services\ICompletenessDetailEvaluator.cs" />
+    <Compile Include="Services\ICompletenessEvaluator.cs" />
+    <Compile Include="Services\ICompletenessService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

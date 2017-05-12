@@ -64,7 +64,7 @@ angular.module(moduleName, [])
 
         var menuExportTemplate = {
             priority: 900,
-            satisfy: function (notify, place) { return place == 'menu' && (notify.notifyType == 'EvaluateReadiness'); },
+            satisfy: function (notify, place) { return place == 'menu' && (notify.notifyType == 'EvaluateCompleteness'); },
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/notifications/menuEvaluation.tpl.html',
             action: function (notify) { $state.go('workspace.pushNotificationsHistory', notify) }
         };
@@ -73,7 +73,7 @@ angular.module(moduleName, [])
         var historyExportTemplate = {
             priority: 900,
             satisfy: function (notify, place) {
-                return place == 'history' && (notify.notifyType == 'EvaluateReadiness');
+                return place == 'history' && (notify.notifyType == 'EvaluateCompleteness');
             },
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/notifications/historyEvaluation.tpl.html',
             action: function (notify) {

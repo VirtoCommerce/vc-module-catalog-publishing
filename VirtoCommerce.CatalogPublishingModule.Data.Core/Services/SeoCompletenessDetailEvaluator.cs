@@ -1,0 +1,30 @@
+﻿using System.Linq;
+using System.Text.RegularExpressions;
+using VirtoCommerce.CatalogPublishingModule.Core.Model;
+using VirtoCommerce.CatalogPublishingModule.Data.Core.Common;
+using VirtoCommerce.Domain.Catalog.Model;
+
+namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
+{
+    public class SeoCompletenessDetailEvaluator : DefaultCompletenessDetailEvaluator
+    {
+        public override CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        {
+            var pattern = @"[$+;=%{}[\]|\\\/@ ~#!^*&?:'<>,]";
+            return products.Select(p =>
+            {
+                var languagesWithoutValidSeoInfo = channel.Languages.Where(l => {
+                    var seoInfosForLanguage = p.SeoInfos?.Where(si => si.LanguageCode == l).ToArray();
+                    return seoInfosForLanguage == null || !seoInfosForLanguage.Any() || seoInfosForLanguage.All(si => string.IsNullOrEmpty(si.SemanticUrl) || Regex.IsMatch(si.SemanticUrl, pattern));
+                });
+                var detail = new CompletenessDetail
+                {
+                    Name = "Seo",
+                    ProductId = p.Id,
+                    CompletenessPercent = CompletenessHelper.CalculateCompleteness(channel.Languages.Count, languagesWithoutValidSeoInfo.Count())
+                };
+                return detail;
+            }).ToArray();
+        }
+    }
+}

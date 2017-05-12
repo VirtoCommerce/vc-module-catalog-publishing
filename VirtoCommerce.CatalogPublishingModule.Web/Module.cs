@@ -27,9 +27,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
         public override void SetupDatabase()
         {
-            using (var context = new ReadinessRepositoryImpl(ConnectionStringName, _container.Resolve<AuditableInterceptor>()))
+            using (var context = new CompletenessRepositoryImpl(ConnectionStringName, _container.Resolve<AuditableInterceptor>()))
             {
-                var initializer = new SetupDatabaseInitializer<ReadinessRepositoryImpl, Data.Migrations.Configuration>();
+                var initializer = new SetupDatabaseInitializer<CompletenessRepositoryImpl, Data.Migrations.Configuration>();
                 initializer.InitializeDatabase(context);
             }
         }
@@ -38,18 +38,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
         {
             base.Initialize();
 
-            _container.RegisterType<IReadinessRepository>(new InjectionFactory(c => new ReadinessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>(),
-                new ChangeLogInterceptor(_container.Resolve<Func<IPlatformRepository>>(), ChangeLogPolicy.Cumulative, new[] { typeof(ReadinessEntryEntity).Name }, _container.Resolve<IUserNameResolver>()))));
-            _container.RegisterType<IReadinessService, ReadinessServiceImpl>();
+            _container.RegisterType<ICompletenessRepository>(new InjectionFactory(c => new CompletenessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>(),
+                new ChangeLogInterceptor(_container.Resolve<Func<IPlatformRepository>>(), ChangeLogPolicy.Cumulative, new[] { typeof(CompletenessEntryEntity).Name }, _container.Resolve<IUserNameResolver>()))));
+            _container.RegisterType<ICompletenessService, CompletenessServiceImpl>();
 
-            _container.RegisterType<IReadinessEvaluator, DefaultReadinessEvaluator>(nameof(DefaultReadinessEvaluator));
-            _container.RegisterType<DefaultReadinessDetailEvaluator, PropertiesReadinessDetailEvaluator>(nameof(PropertiesReadinessDetailEvaluator));
-            _container.RegisterType<DefaultReadinessDetailEvaluator, DescriptionsReadinessDetailEvaluator>(nameof(DescriptionsReadinessDetailEvaluator));
-            _container.RegisterType<DefaultReadinessDetailEvaluator, PricesReadinessDetailEvaluator>(nameof(PricesReadinessDetailEvaluator));
-            _container.RegisterType<DefaultReadinessDetailEvaluator, SeoReadinessDetailEvaluator>(nameof(SeoReadinessDetailEvaluator));
+            _container.RegisterType<ICompletenessEvaluator, DefaultCompletenessEvaluator>(nameof(DefaultCompletenessEvaluator));
+            _container.RegisterType<DefaultCompletenessDetailEvaluator, PropertiesCompletenessDetailEvaluator>(nameof(PropertiesCompletenessDetailEvaluator));
+            _container.RegisterType<DefaultCompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>(nameof(DescriptionsCompletenessDetailEvaluator));
+            _container.RegisterType<DefaultCompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>(nameof(PricesCompletenessDetailEvaluator));
+            _container.RegisterType<DefaultCompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>(nameof(SeoCompletenessDetailEvaluator));
 
-            _container.RegisterType<IOperationProvider, ProductReadinessOperationProvider>(nameof(ProductReadinessOperationProvider));
-            _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductReadinessDocumentBuilder>(nameof(ProductReadinessDocumentBuilder));
+            _container.RegisterType<IOperationProvider, ProductCompletenessOperationProvider>(nameof(ProductCompletenessOperationProvider));
+            _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductCompletenessDocumentBuilder>(nameof(ProductCompletenessDocumentBuilder));
         }
     }
 }

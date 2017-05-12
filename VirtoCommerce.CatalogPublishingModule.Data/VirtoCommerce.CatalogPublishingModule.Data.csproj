@@ -129,34 +129,22 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Migrations\201704171549277_Initial.cs" />
-    <Compile Include="Migrations\201704171549277_Initial.Designer.cs">
-      <DependentUpon>201704171549277_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704271201355_CatalogName.cs" />
-    <Compile Include="Migrations\201704271201355_CatalogName.Designer.cs">
-      <DependentUpon>201704271201355_CatalogName.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.cs" />
-    <Compile Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.Designer.cs">
-      <DependentUpon>201705050747364_MultipleLanguagesAndCurrencies.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705120033537_ReadinessEntryAuditable.cs" />
-    <Compile Include="Migrations\201705120033537_ReadinessEntryAuditable.Designer.cs">
-      <DependentUpon>201705120033537_ReadinessEntryAuditable.cs</DependentUpon>
+    <Compile Include="Migrations\201705121527388_Initial.cs" />
+    <Compile Include="Migrations\201705121527388_Initial.Designer.cs">
+      <DependentUpon>201705121527388_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Model\ReadinessChannelCurrencyEntity.cs" />
-    <Compile Include="Model\ReadinessChannelLanguageEntity.cs" />
-    <Compile Include="Model\ReadinessChannelEntity.cs" />
-    <Compile Include="Model\ReadinessDetailEntity.cs" />
-    <Compile Include="Model\ReadinessEntryEntity.cs" />
+    <Compile Include="Model\CompletenessChannelCurrencyEntity.cs" />
+    <Compile Include="Model\CompletenessChannelLanguageEntity.cs" />
+    <Compile Include="Model\CompletenessChannelEntity.cs" />
+    <Compile Include="Model\CompletenessDetailEntity.cs" />
+    <Compile Include="Model\CompletenessEntryEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\IReadinessRepository.cs" />
-    <Compile Include="Repositories\ReadinessRepositoryImpl.cs" />
-    <Compile Include="Services\ProductReadinessDocumentBuilder.cs" />
-    <Compile Include="Services\ProductReadinessOperationProvider.cs" />
-    <Compile Include="Services\ReadinessServiceImpl.cs" />
+    <Compile Include="Repositories\ICompletenessRepository.cs" />
+    <Compile Include="Repositories\CompletenessRepositoryImpl.cs" />
+    <Compile Include="Services\ProductCompletenessDocumentBuilder.cs" />
+    <Compile Include="Services\ProductCompletenessOperationProvider.cs" />
+    <Compile Include="Services\CompletenessServiceImpl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -173,20 +161,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704171549277_Initial.resx">
-      <DependentUpon>201704171549277_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704271201355_CatalogName.resx">
-      <DependentUpon>201704271201355_CatalogName.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705050747364_MultipleLanguagesAndCurrencies.resx">
-      <DependentUpon>201705050747364_MultipleLanguagesAndCurrencies.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705120033537_ReadinessEntryAuditable.resx">
-      <DependentUpon>201705120033537_ReadinessEntryAuditable.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201705121527388_Initial.resx">
+      <DependentUpon>201705121527388_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

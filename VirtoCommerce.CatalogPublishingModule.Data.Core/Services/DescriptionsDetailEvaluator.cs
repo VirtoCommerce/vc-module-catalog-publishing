@@ -7,31 +7,31 @@ using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
 {
-    public class DescriptionsReadinessDetailEvaluator : DefaultReadinessDetailEvaluator
+    public class DescriptionsCompletenessDetailEvaluator : DefaultCompletenessDetailEvaluator
     {
         private readonly ISettingsManager _settingsManager;
 
-        public DescriptionsReadinessDetailEvaluator(ISettingsManager settingsManager)
+        public DescriptionsCompletenessDetailEvaluator(ISettingsManager settingsManager)
         {
             _settingsManager = settingsManager;
         }
 
-        public override ReadinessDetail[] EvaluateReadiness(ReadinessChannel channel, CatalogProduct[] products)
+        public override CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
         {
             var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").ArrayValues;
             return products.Select(x =>
             {
-                var detail = new ReadinessDetail { Name = "Descriptions", ProductId = x.Id };
+                var detail = new CompletenessDetail { Name = "Descriptions", ProductId = x.Id };
                 if (descriptionTypes.IsNullOrEmpty())
                 {
-                    detail.ReadinessPercent = 100;
+                    detail.CompletenessPercent = 100;
                 }
                 else
                 {
                     var missedDescriptionTypesPerLanguageCount = channel.Languages
                         .Select(l => descriptionTypes.Except(x.Reviews.Where(r => r.LanguageCode == l && !string.IsNullOrEmpty(r.Content)).Select(r => r.ReviewType).Distinct()).Count())
                         .Sum();
-                    detail.ReadinessPercent = ReadinessHelper.CalculateReadiness(descriptionTypes.Length * channel.Languages.Count, missedDescriptionTypesPerLanguageCount);
+                    detail.CompletenessPercent = CompletenessHelper.CalculateCompleteness(descriptionTypes.Length * channel.Languages.Count, missedDescriptionTypesPerLanguageCount);
                 }
                 return detail;
             }).ToArray();

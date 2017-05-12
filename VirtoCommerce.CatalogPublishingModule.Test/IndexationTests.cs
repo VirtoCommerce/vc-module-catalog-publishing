@@ -50,20 +50,20 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         [Fact]
         public void TestDocumentBuilder()
         {
-            var documentBuilder = new ProductReadinessDocumentBuilder(GetReadinessService(), new []{ GetReadinessEvaluator() });
+            var documentBuilder = new ProductCompletenessDocumentBuilder(GetCompletenessService(), new []{ GetCompletenessEvaluator() });
             var documents = _products.Select(x => new ResultDocument() as IDocument).ToArray();
             documentBuilder.UpdateDocuments(documents, _products, null);
             for (var i = 0; i < documents.Length; i++)
             {
                 var document = documents[i];
-                Assert.True(document.FieldCount == 1 && (int) document["readiness_" + _products[i].Outlines.FirstOrDefault()?.Items.FirstOrDefault()?.Id.ToLower()].Value == 50);
+                Assert.True(document.FieldCount == 1 && (int) document["completeness_" + _products[i].Outlines.FirstOrDefault()?.Items.FirstOrDefault()?.Id.ToLower()].Value == 50);
             }
         }
 
         [Fact]
         public void TestOperationProvider()
         {
-            var operationProvider = new ProductReadinessOperationProvider(GetChangeLogService(), GetReadinessService());
+            var operationProvider = new ProductCompletenessOperationProvider(GetChangeLogService(), GetCompletenessService());
             Assert.True(operationProvider.DocumentType == "catalogitem");
             var operations = operationProvider.GetOperations(_startIndexDateTime, _endIndexDateTime);
             Assert.Collection(operations, o => Assert.True(o.ObjectId == "First" && o.Timestamp == DateTime.Parse("5/11/2017 1:00 PM") && o.OperationType == OperationType.Index),
@@ -74,7 +74,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private IChangeLogService GetChangeLogService()
         {
             var service = new Mock<IChangeLogService>();
-            service.Setup(x => x.FindChangeHistory(It.Is<string>(t => t == "ReadinessEntryEntity"),
+            service.Setup(x => x.FindChangeHistory(It.Is<string>(t => t == "CompletenessEntryEntity"),
                     It.Is<DateTime>(d => d == _startIndexDateTime),
                     It.Is<DateTime>(d => d == _endIndexDateTime)))
                 .Returns<string, DateTime, DateTime>((t, sd, ed) => new[]
@@ -121,74 +121,74 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             return service.Object;
         }
 
-        private IReadinessService GetReadinessService()
+        private ICompletenessService GetCompletenessService()
         {
-            var service = new Mock<IReadinessService>();
-            service.Setup(x => x.SearchChannels(It.Is<ReadinessChannelSearchCriteria>(c => c.CatalogIds.Any(id => id == FirstCatalogId || id == SecondCatalogId))))
-                .Returns<ReadinessChannelSearchCriteria>(x => new GenericSearchResult<ReadinessChannel> { Results = x.CatalogIds.Select(GetChannelByCatalogId).ToArray() });
-            service.Setup(x => x.GetReadinessEntriesByIds(It.Is<string[]>(ids => _products.Select(p => p.Id).Intersect(ids).Any())))
-                .Returns<string[]>(ids => _products.Select(p => GetReadinessEntry(p.CatalogId, p.Id)).ToArray());
+            var service = new Mock<ICompletenessService>();
+            service.Setup(x => x.SearchChannels(It.Is<CompletenessChannelSearchCriteria>(c => c.CatalogIds.Any(id => id == FirstCatalogId || id == SecondCatalogId))))
+                .Returns<CompletenessChannelSearchCriteria>(x => new GenericSearchResult<CompletenessChannel> { Results = x.CatalogIds.Select(GetChannelByCatalogId).ToArray() });
+            service.Setup(x => x.GetCompletenessEntriesByIds(It.Is<string[]>(ids => _products.Select(p => p.Id).Intersect(ids).Any())))
+                .Returns<string[]>(ids => _products.Select(p => GetCompletenessEntry(p.CatalogId, p.Id)).ToArray());
             return service.Object;
         }
 
-        private ReadinessChannel GetChannelByCatalogId(string catalogId)
+        private CompletenessChannel GetChannelByCatalogId(string catalogId)
         {
-            return new ReadinessChannel
+            return new CompletenessChannel
             {
                 Name = catalogId,
                 Languages = new List<string> { "Test1", "Test2" },
                 Currencies = new List<string> { "Test1", "Test2" },
                 CatalogId = catalogId,
-                EvaluatorType = GetReadinessEvaluator().GetType().Name,
-                ReadinessPercent = 0
+                EvaluatorType = GetCompletenessEvaluator().GetType().Name,
+                CompletenessPercent = 0
             };
         }
 
-        private IReadinessEvaluator GetReadinessEvaluator()
+        private ICompletenessEvaluator GetCompletenessEvaluator()
         {
-            var service = new Mock<IReadinessEvaluator>();
-            service.Setup(x => x.EvaluateReadiness(
-                It.Is<ReadinessChannel>(c => c.CatalogId == FirstCatalogId || c.CatalogId == SecondCatalogId),
+            var service = new Mock<ICompletenessEvaluator>();
+            service.Setup(x => x.EvaluateCompleteness(
+                It.Is<CompletenessChannel>(c => c.CatalogId == FirstCatalogId || c.CatalogId == SecondCatalogId),
                 It.Is<CatalogProduct[]>(cp => _products.Select(p => p.Id).Intersect(cp.Select(p => p.Id)).Any())))
-                .Returns<ReadinessChannel, CatalogProduct[]>((c, x) => x.Select(p => GetReadinessEntry(c.Id, p.Id)).ToArray());
+                .Returns<CompletenessChannel, CatalogProduct[]>((c, x) => x.Select(p => GetCompletenessEntry(c.Id, p.Id)).ToArray());
             return service.Object;
         }
 
-        private static ReadinessEntry GetReadinessEntry(string channelId, string productId)
+        private static CompletenessEntry GetCompletenessEntry(string channelId, string productId)
         {
-            return new ReadinessEntry
+            return new CompletenessEntry
             {
                 Id = productId,
                 ChannelId = channelId,
                 ProductId = productId,
-                ReadinessPercent = 50,
+                CompletenessPercent = 50,
                 Details = GetDetails()
             };
         }
 
-        private static ReadinessDetail[] GetDetails()
+        private static CompletenessDetail[] GetDetails()
         {
             return new[]
             {
-                new ReadinessDetail
+                new CompletenessDetail
                 {
                     Name= "Test1",
-                    ReadinessPercent = 25
+                    CompletenessPercent = 25
                 },
-                new ReadinessDetail
+                new CompletenessDetail
                 {
                     Name= "Test2",
-                    ReadinessPercent = 25
+                    CompletenessPercent = 25
                 },
-                new ReadinessDetail
+                new CompletenessDetail
                 {
                     Name= "Test3",
-                    ReadinessPercent = 25
+                    CompletenessPercent = 25
                 },
-                new ReadinessDetail
+                new CompletenessDetail
                 {
                     Name= "Test4",
-                    ReadinessPercent = 25
+                    CompletenessPercent = 25
                 }
             };
         }

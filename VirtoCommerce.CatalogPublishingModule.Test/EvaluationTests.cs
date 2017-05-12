@@ -42,7 +42,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         };
         private Price[] _prices = new Price[0];
         private string[] _editorialReviewTypes = { "Valid" };
-        private readonly ReadinessChannel _channel = new ReadinessChannel
+        private readonly CompletenessChannel _channel = new CompletenessChannel
         {
             Name = "Valid",
             Languages = new List<string> { "Valid", },
@@ -53,19 +53,19 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         [Fact]
         public void InvalidParameters()
         {
-            var evaluator = GetReadinessEvaluator();
+            var evaluator = GetCompletenessEvaluator();
             // catalog
-            Assert.Throws<ArgumentNullException>(() => evaluator.EvaluateReadiness(null, new[] { new CatalogProduct() }));
+            Assert.Throws<ArgumentNullException>(() => evaluator.EvaluateCompleteness(null, new[] { new CatalogProduct() }));
             // products
-            Assert.Throws<ArgumentException>(() => evaluator.EvaluateReadiness(new ReadinessChannel(), null));
-            Assert.Throws<ArgumentException>(() => evaluator.EvaluateReadiness(new ReadinessChannel(), new CatalogProduct[0]));
+            Assert.Throws<ArgumentException>(() => evaluator.EvaluateCompleteness(new CompletenessChannel(), null));
+            Assert.Throws<ArgumentException>(() => evaluator.EvaluateCompleteness(new CompletenessChannel(), new CatalogProduct[0]));
         }
 
         [Fact]
         public void PartiallyLoadedProducts()
         {
-            var evaluator = GetReadinessEvaluator();
-            evaluator.EvaluateReadiness(_channel, new[] { new CatalogProduct { Id = "Valid" } });
+            var evaluator = GetCompletenessEvaluator();
+            evaluator.EvaluateCompleteness(_channel, new[] { new CatalogProduct { Id = "Valid" } });
         }
 
         private const bool Mutable = true;
@@ -381,14 +381,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         [Theory]
         [MemberData(nameof(Properties))]
-        public void PropertiesValidation(string[] languages, List<Property> properties, List<PropertyValue> values, int readinessPercent)
+        public void PropertiesValidation(string[] languages, List<Property> properties, List<PropertyValue> values, int completenessPercent)
         {
-            var evaluator = GetReadinessEvaluator();
+            var evaluator = GetCompletenessEvaluator();
             _channel.Languages = languages;
             _product.Properties = properties.Cast<Domain.Catalog.Model.Property>().ToList();
             _product.PropertyValues = values.Cast<Domain.Catalog.Model.PropertyValue>().ToList();
-            var readiness = evaluator.EvaluateReadiness(_channel, new [] { _product });
-            Assert.True(readiness[0].Details.First(x => x.Name == "Properties").ReadinessPercent == readinessPercent);
+            var completeness = evaluator.EvaluateCompleteness(_channel, new [] { _product });
+            Assert.True(completeness[0].Details.First(x => x.Name == "Properties").CompletenessPercent == completenessPercent);
         }
 
         public static IEnumerable<object[]> Descriptions
@@ -427,14 +427,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         [Theory]
         [MemberData(nameof(Descriptions))]
-        public void DescriptionsValidation(string[] languages, string[] descriptionTypes, EditorialReview[] descriptions, int readinessPercent)
+        public void DescriptionsValidation(string[] languages, string[] descriptionTypes, EditorialReview[] descriptions, int completenessPercent)
         {
-            var evaluator = GetReadinessEvaluator();
+            var evaluator = GetCompletenessEvaluator();
             _channel.Languages = languages;
             _editorialReviewTypes = descriptionTypes;
             _product.Reviews = descriptions;
-            var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
-            Assert.True(readiness[0].Details.First(x => x.Name == "Descriptions").ReadinessPercent == readinessPercent);
+            var completeness = evaluator.EvaluateCompleteness(_channel, new[] { _product });
+            Assert.True(completeness[0].Details.First(x => x.Name == "Descriptions").CompletenessPercent == completenessPercent);
         }
 
         public static IEnumerable<object[]> Prices
@@ -467,13 +467,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         [Theory]
         [MemberData(nameof(Prices))]
-        public void PricesValidation(string[] currencies, Price[] prices, int readinessPercent)
+        public void PricesValidation(string[] currencies, Price[] prices, int completenessPercent)
         {
-            var evaluator = GetReadinessEvaluator();
+            var evaluator = GetCompletenessEvaluator();
             _channel.Currencies = currencies;
             _prices = prices;
-            var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
-            Assert.True(readiness[0].Details.First(x => x.Name == "Prices").ReadinessPercent == readinessPercent);
+            var completeness = evaluator.EvaluateCompleteness(_channel, new[] { _product });
+            Assert.True(completeness[0].Details.First(x => x.Name == "Prices").CompletenessPercent == completenessPercent);
         }
 
         public static IEnumerable<object[]> SeoInfos
@@ -505,13 +505,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         [Theory]
         [MemberData(nameof(SeoInfos))]
-        public void SeoValidation(string[] languages, SeoInfo[] seoInfos, int readinessPercent)
+        public void SeoValidation(string[] languages, SeoInfo[] seoInfos, int completenessPercent)
         {
-            var evaluator = GetReadinessEvaluator();
+            var evaluator = GetCompletenessEvaluator();
             _channel.Languages = languages;
             _product.SeoInfos = seoInfos;
-            var readiness = evaluator.EvaluateReadiness(_channel, new[] { _product });
-            Assert.True(readiness[0].Details.First(x => x.Name == "Seo").ReadinessPercent == readinessPercent);
+            var completeness = evaluator.EvaluateCompleteness(_channel, new[] { _product });
+            Assert.True(completeness[0].Details.First(x => x.Name == "Seo").CompletenessPercent == completenessPercent);
         }
 
         private static object[] Prepend(object[] original, params object[] additional)
@@ -579,7 +579,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             }
         }
 
-        private static IEnumerable<object[]> TestAll<TObject>(TObject[] objects, double readinessPercent, bool mutable = false)
+        private static IEnumerable<object[]> TestAll<TObject>(TObject[] objects, double completenessPercent, bool mutable = false)
         {
             var variants = new List<TObject[]>();
             variants.AddRange(Enumerable.Range(0, objects.Length).Select(i => objects.Take(i).ToArray()));
@@ -588,16 +588,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 yield return new object[]
                 {
                     variant,
-                    (int)Math.Floor(readinessPercent * (double)variant.Count / (double)objects.Length)
+                    (int)Math.Floor(completenessPercent * (double)variant.Count / (double)objects.Length)
                 };
             }
         }
 
-        private DefaultReadinessEvaluator GetReadinessEvaluator()
+        private DefaultCompletenessEvaluator GetCompletenessEvaluator()
         {
-            return new DefaultReadinessEvaluator(new DefaultReadinessDetailEvaluator[]
+            return new DefaultCompletenessEvaluator(new DefaultCompletenessDetailEvaluator[]
             {
-                new PropertiesReadinessDetailEvaluator(), new DescriptionsReadinessDetailEvaluator(GetSettingManager()), new PricesReadinessDetailEvaluator(GetPricingSearchService()), new SeoReadinessDetailEvaluator()
+                new PropertiesCompletenessDetailEvaluator(), new DescriptionsCompletenessDetailEvaluator(GetSettingManager()), new PricesCompletenessDetailEvaluator(GetPricingSearchService()), new SeoCompletenessDetailEvaluator()
             }, GetProductService());
         }
 

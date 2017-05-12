@@ -55,13 +55,13 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Common\ReadinessHelper.cs" />
-    <Compile Include="Services\DefaultReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\DefaultReadinessEvaluator.cs" />
+    <Compile Include="Common\CompletenessHelper.cs" />
+    <Compile Include="Services\DefaultCompletenessDetailEvaluator.cs" />
+    <Compile Include="Services\DefaultCompletenessEvaluator.cs" />
     <Compile Include="Services\DescriptionsDetailEvaluator.cs" />
-    <Compile Include="Services\PricesReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\PropertiesReadinessDetailEvaluator.cs" />
-    <Compile Include="Services\SeoReadinessDetailEvaluator.cs" />
+    <Compile Include="Services\PricesCompletenessDetailEvaluator.cs" />
+    <Compile Include="Services\PropertiesCompletenessDetailEvaluator.cs" />
+    <Compile Include="Services\SeoCompletenessDetailEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

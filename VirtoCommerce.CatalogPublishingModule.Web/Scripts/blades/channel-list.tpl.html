@@ -20,7 +20,7 @@
                 name: 'catalogName',
                 displayName: 'catalog-publishing.blades.channel-list.labels.catalog'
             }, {
-                name: 'readinessPercent',
+                name: 'completenessPercent',
                 displayName: 'catalog-publishing.blades.channel-list.labels.completeness-percent',
                 cellTemplate: 'completeness.cell.html'
             }]})">
@@ -63,5 +63,5 @@
 </script>
 
 <script type="text/ng-template" id="completeness.cell.html">
-    <div class="ui-grid-cell-contents">{{row.entity.readinessPercent}}%</div>
+    <div class="ui-grid-cell-contents">{{row.entity.completenessPercent}}%</div>
 </script>
