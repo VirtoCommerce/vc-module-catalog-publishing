@@ -30,9 +30,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 
             modelBuilder.Entity<ReadinessChannelLanguageEntity>().HasKey(x => x.Id).Property(x => x.Id);
             modelBuilder.Entity<ReadinessChannelLanguageEntity>().HasRequired(x => x.Channel).WithMany(x => x.Languages).HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
+            modelBuilder.Entity<ReadinessChannelLanguageEntity>().ToTable("ReadinessChannelLanguage");
 
             modelBuilder.Entity<ReadinessChannelCurrencyEntity>().HasKey(x => x.Id).Property(x => x.Id);
             modelBuilder.Entity<ReadinessChannelCurrencyEntity>().HasRequired(x => x.Channel).WithMany(x => x.Currencies).HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
+            modelBuilder.Entity<ReadinessChannelCurrencyEntity>().ToTable("ReadinessChannelCurrency");
 
             modelBuilder.Entity<ReadinessChannelEntity>().HasKey(x => x.Id).Property(x => x.Id);
             modelBuilder.Entity<ReadinessChannelEntity>().ToTable("ReadinessChannel");

@@ -7,13 +7,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class ReadinessEntryAuditable : IMigrationMetadata
+    public sealed partial class Initial : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ReadinessEntryAuditable));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Initial));
         
         string IMigrationMetadata.Id
         {
-            get { return "201705120033537_ReadinessEntryAuditable"; }
+            get { return "201705121544191_Initial"; }
         }
         
         string IMigrationMetadata.Source
