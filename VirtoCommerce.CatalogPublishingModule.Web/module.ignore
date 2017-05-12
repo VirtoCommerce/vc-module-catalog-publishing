@@ -1,2 +1,5 @@
 ﻿VirtoCommerce.Domain.dll
-Hangfire.Core.resources.dll
+es\Hangfire.Core.resources.dll
+zh\Hangfire.Core.resources.dll
+VirtoCommerce.SearchModule.Core.dll
+VirtoCommerce.SearchModule.Core.xml
