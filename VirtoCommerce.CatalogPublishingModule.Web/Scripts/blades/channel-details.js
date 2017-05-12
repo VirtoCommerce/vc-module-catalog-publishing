@@ -82,7 +82,7 @@
         }
 
         function isDirty() {
-            return !angular.equals(blade.currentEntity, blade.originalEntity) && blade.hasUpdatePermission();
+            return !angular.equals(blade.currentEntity, blade.originalEntity) && !blade.isNew && blade.hasUpdatePermission();
         }
 
         function canSave() {
