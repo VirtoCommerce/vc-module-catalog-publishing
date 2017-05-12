@@ -7,7 +7,22 @@ Installing the module:
 * Manually: download module zip package from https://github.com/VirtoCommerce/vc-module-catalog-publishing/releases. In VC Manager go to Configuration -> Modules -> Advanced -> upload module package -> Install.
 
 # Module configuration
+Create new channel of publication:
+* Go to Configuration\Channels<br>
+![image](https://cloud.githubusercontent.com/assets/7644848/25898504/ac96b296-358c-11e7-84d6-6cb783338413.png)<br><br>
+* Add new channel to calculate completeness percent by specified criteria<br> 
+![image](https://cloud.githubusercontent.com/assets/7644848/25898608/1d98928e-358d-11e7-9e83-e12fff436b89.png)<br><br>
+* Define locales, currencies, catalog, evaluator type and create channel 
 
+# Evaluating the completeness
+* Click "Evaluate" from submenu of the channel to calculate the completeness<br>
+![image](https://cloud.githubusercontent.com/assets/7644848/25898762/b74cd69c-358d-11e7-8d34-52c6925743f8.png)<br><br>
+* Run "Build" to force the Catalog Search Index update<br>
+![image](https://cloud.githubusercontent.com/assets/7644848/26010830/ce0a04be-374e-11e7-8115-dae8c76c388e.png)<br><br>
+* After that you can use search filters by range completeness in the catalog search
+![image](https://cloud.githubusercontent.com/assets/7644848/26010971/622fe58c-374f-11e7-9953-6103e9eaeff2.png)<br><br>
+* A reddish background indicates that the module is not filled completely
+![image](https://cloud.githubusercontent.com/assets/7644848/26011214/7c528054-3750-11e7-8fe7-54a7ffb614e7.png)<br><br>
 
 # Default completeness evaluation
 Default completeness evaluator check the following statements:
