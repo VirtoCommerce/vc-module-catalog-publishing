@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SearchModule.Core.Model.Indexing;
@@ -27,7 +28,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 
         public IList<Operation> GetOperations(DateTime startDate, DateTime endDate)
         {
-            var allReadinessEntryChanges = _changeLogService.FindChangeHistory("ReadinessEntry", startDate, endDate).ToArray();
+            var allReadinessEntryChanges = _changeLogService.FindChangeHistory(typeof(ReadinessEntryEntity).Name, startDate, endDate).ToArray();
             var readinessEntryIds = allReadinessEntryChanges.Select(c => c.ObjectId).Distinct().ToArray();
             var readinessEntries = GetReadinessEntries(readinessEntryIds);
 
