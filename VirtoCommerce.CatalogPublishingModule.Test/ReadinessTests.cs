@@ -49,40 +49,26 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             var entry = GetEntry();
             ReadinessChannel testChannel;
 
-            using (var repository = GetRepository())
-            {
-                service.SaveChannels(new[] { channel });
-
-                TestEntry(repository, service, entry);
-            }
+            // Added
+            service.SaveChannels(new[] { channel });
+            TestEntry(service, entry);
 
             testChannel = service.GetChannelsByIds(new[] { channel.Id }).FirstOrDefault();
             Assert.True(testChannel != null && testChannel.ReadinessPercent == entry.ReadinessPercent);
 
             // Changed
-            using (var repository = GetRepository())
-            {
-                Array.ForEach(entry.Details, x => x.ReadinessPercent = 15);
-                entry.ReadinessPercent = (int)Math.Floor((double)entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
-
-                service.SaveEntries(new[] { entry });
-
-                TestEntry(repository, service, entry);
-            }
+            Array.ForEach(entry.Details, x => x.ReadinessPercent = 15);
+            entry.ReadinessPercent = (int) Math.Floor((double) entry.Details.Sum(x => x.ReadinessPercent) / entry.Details.Length);
+            TestEntry(service, entry);
 
             testChannel = service.GetChannelsByIds(new[] { channel.Id }).FirstOrDefault();
             Assert.True(testChannel != null && testChannel.ReadinessPercent == entry.ReadinessPercent);
         }
 
-        private void TestEntry(IReadinessRepository repository, IReadinessService service, ReadinessEntry correctEntry)
+        private void TestEntry(IReadinessService service, ReadinessEntry correctEntry)
         {
             service.SaveEntries(new[] { correctEntry });
-            var testEntryEntity = repository.Entries.Include(x => x.Details).FirstOrDefault(x => x.ChannelId == correctEntry.ChannelId);
-            var testEntry = testEntryEntity != null ? testEntryEntity.ToModel(AbstractTypeFactory<ReadinessEntry>.TryCreateInstance()) : null;
-            Assert.True(CompareEntries(testEntry, correctEntry));
-
-            testEntryEntity = testEntryEntity != null ? repository.GetEntriesByIds(new[] { testEntryEntity.Id }).FirstOrDefault() : null;
-            testEntry = testEntryEntity != null ? testEntryEntity.ToModel(AbstractTypeFactory<ReadinessEntry>.TryCreateInstance()) : null;
+            var testEntry = service.GetReadinessEntriesByIds(new[] { correctEntry.Id }).FirstOrDefault();
             Assert.True(CompareEntries(testEntry, correctEntry));
         }
 

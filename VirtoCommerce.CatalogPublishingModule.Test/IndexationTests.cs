@@ -64,6 +64,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public void TestOperationProvider()
         {
             var operationProvider = new ProductReadinessOperationProvider(GetChangeLogService(), GetReadinessService());
+            Assert.True(operationProvider.DocumentType == "catalogitem");
             var operations = operationProvider.GetOperations(_startIndexDateTime, _endIndexDateTime);
             Assert.Collection(operations, o => Assert.True(o.ObjectId == "First" && o.Timestamp == DateTime.Parse("5/11/2017 1:00 PM") && o.OperationType == OperationType.Index),
                 o => Assert.True(o.ObjectId == "Second" && o.Timestamp == DateTime.Parse("5/11/2017 3:00 PM") && o.OperationType == OperationType.Index),
