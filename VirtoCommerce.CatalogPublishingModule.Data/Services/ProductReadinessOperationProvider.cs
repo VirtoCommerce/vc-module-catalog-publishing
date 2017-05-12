@@ -28,16 +28,15 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 
         public IList<Operation> GetOperations(DateTime startDate, DateTime endDate)
         {
-            var allReadinessEntryChanges = _changeLogService.FindChangeHistory(typeof(ReadinessEntryEntity).Name, startDate, endDate).ToArray();
-            var readinessEntryIds = allReadinessEntryChanges.Select(c => c.ObjectId).Distinct().ToArray();
-            var readinessEntries = GetReadinessEntries(readinessEntryIds);
+            var allOperations = _changeLogService.FindChangeHistory(typeof(ReadinessEntryEntity).Name, startDate, endDate).ToArray();
+            var readinessEntryIds = allOperations.Select(c => c.ObjectId).ToArray();
+            var productIds = GetProductIds(readinessEntryIds);
 
             // TODO: Possible reusable code, and -WithPagingAndParallelism method too
             // TODO: How to get product for deleted readiness entry? See VirtoCommerce.SearchApiModule.Data.Services.ProductPriceOperationProvider
-            var result = allReadinessEntryChanges
-                .Select(c => new { Timestamp = c.ModifiedDate ?? c.CreatedDate, ReadinessEntry = readinessEntries.ContainsKey(c.ObjectId) ? readinessEntries[c.ObjectId] : null })
-                .Where(x => x.ReadinessEntry != null)
-                .Select(x => new Operation { ObjectId = x.ReadinessEntry.ProductId, Timestamp = x.Timestamp, OperationType = OperationType.Index })
+            var result = allOperations
+                .Where(o => productIds.ContainsKey(o.ObjectId))
+                .Select(o => new Operation { ObjectId = productIds[o.ObjectId], Timestamp = o.ModifiedDate ?? o.CreatedDate, OperationType = OperationType.Index })
                 .GroupBy(o => o.ObjectId)
                 .Select(g => g.OrderByDescending(o => o.Timestamp).First())
                 .ToList();
@@ -45,19 +44,19 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             return result;
         }
 
-        protected virtual IDictionary<string, ReadinessEntry> GetReadinessEntries(ICollection<string> readinessEntryIds)
+        protected virtual IDictionary<string, string> GetProductIds(ICollection<string> readinessEntryIds)
         {
             // TODO: Get pageSize and degreeOfParallelism from settings. See VirtoCommerce.SearchApiModule.Data.Services.ProductPriceOperationProvider 
-            return GetReadinessEntriesWithPagingAndParallelism(readinessEntryIds, 1000, 10);
+            return GetProductIdsWithPagingAndParallelism(readinessEntryIds, 1000, 10);
         }
 
-        protected virtual IDictionary<string, ReadinessEntry> GetReadinessEntriesWithPagingAndParallelism(ICollection<string> readinessEntryIds, int pageSize, int degreeOfParallelism)
+        protected virtual IDictionary<string, string> GetProductIdsWithPagingAndParallelism(ICollection<string> readinessEntryIds, int pageSize, int degreeOfParallelism)
         {
-            IDictionary<string, ReadinessEntry> result;
+            IDictionary<string, string> result;
 
             if (degreeOfParallelism > 1)
             {
-                var dictionary = new ConcurrentDictionary<string, ReadinessEntry>();
+                var dictionary = new ConcurrentDictionary<string, string>();
 
                 var pages = new List<string[]>();
                 readinessEntryIds.ProcessWithPaging(pageSize, (ids, skipCount, totalCount) => pages.Add(ids.ToArray()));
@@ -69,7 +68,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                     var readinessEntries = _readinessService.GetReadinessEntriesByIds(ids);
                     foreach (var readinessEntry in readinessEntries)
                     {
-                        dictionary.AddOrUpdate(readinessEntry.Id, readinessEntry, (key, oldValue) => readinessEntry);
+                        var productId = readinessEntry.ProductId;
+                        dictionary.AddOrUpdate(readinessEntry.Id, productId, (key, oldValue) => productId);
                     }
                 });
 
@@ -77,13 +77,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             }
             else
             {
-                var dictionary = new Dictionary<string, ReadinessEntry>();
+                var dictionary = new Dictionary<string, string>();
 
                 readinessEntryIds.ProcessWithPaging(pageSize, (ids, skipCount, totalCount) =>
                 {
                     foreach (var readinessEntry in _readinessService.GetReadinessEntriesByIds(ids.ToArray()))
                     {
-                        dictionary[readinessEntry.Id] = readinessEntry;
+                        dictionary[readinessEntry.Id] = readinessEntry.ProductId;
                     }
                 });
 
