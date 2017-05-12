@@ -32,6 +32,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
             var readinessEntries = GetReadinessEntries(readinessEntryIds);
 
             // TODO: Possible reusable code, and -WithPagingAndParallelism method too
+            // TODO: How to get product for deleted readiness entry? See VirtoCommerce.SearchApiModule.Data.Services.ProductPriceOperationProvider
             var result = allReadinessEntryChanges
                 .Select(c => new { Timestamp = c.ModifiedDate ?? c.CreatedDate, ReadinessEntry = readinessEntries.ContainsKey(c.ObjectId) ? readinessEntries[c.ObjectId] : null })
                 .Where(x => x.ReadinessEntry != null)
