@@ -164,6 +164,7 @@
     <Content Include="Scripts\blades\channel-evaluate-details.tpl.html" />
     <Content Include="Scripts\blades\channel-list.js" />
     <Content Include="Scripts\blades\channel-list.tpl.html" />
+    <Content Include="Scripts\blades\completeness.cell.html" />
     <Content Include="Scripts\blades\notifications\historyEvaluation.tpl.html" />
     <Content Include="Scripts\blades\notifications\menuEvaluation.tpl.html" />
     <Content Include="Scripts\catalog-publishing.js" />

@@ -142,7 +142,7 @@
             gridOptions.columnDefs.push({
                 name: 'completenessPercent',
                 displayName: 'catalog-publishing.blades.channel-list.labels.completeness-percent',
-                cellTemplate: 'completeness.cell.html'
+                cellTemplate: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/completeness.cell.html'
             });
         });
     }]);
