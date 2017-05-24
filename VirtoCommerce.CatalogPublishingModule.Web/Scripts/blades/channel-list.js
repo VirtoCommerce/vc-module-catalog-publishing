@@ -76,6 +76,11 @@
                 controller: 'virtoCommerce.catalogModule.catalogItemSelectController',
                 template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/common/catalog-items-select.tpl.html',
                 options: {
+                    gridColumns: [{
+                        name: 'completenessPercent',
+                        displayName: 'catalog-publishing.blades.channel-list.labels.completeness-percent',
+                        cellTemplate: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/completeness.cell.html'
+                    }],
                     onItemsLoaded: function(items) {
                         var itemIds = _.map(_.where(items, { type: 'product' }), function(i) { return i.id });
                         if (itemIds && itemIds.length) {
@@ -136,13 +141,4 @@
             };
             bladeUtils.initializePagination($scope);
         };
-    }])
-    .run(['platformWebApp.ui-grid.extension', function (gridOptionExtension) {
-        gridOptionExtension.registerExtension('catalog-item-select-grid', function (gridOptions) {
-            gridOptions.columnDefs.push({
-                name: 'completenessPercent',
-                displayName: 'catalog-publishing.blades.channel-list.labels.completeness-percent',
-                cellTemplate: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/completeness.cell.html'
-            });
-        });
     }]);
