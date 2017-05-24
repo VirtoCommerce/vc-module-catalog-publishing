@@ -16,17 +16,23 @@
         "labels": {
           "name": "Name",
           "name-description": "This field accepts latin symbols, digits and underscore symbol",
+          "name-pattern-error-message": "This field can contain only latin symbols and digits",
           "languages": "Languages",
-          "catalog": "Catalog",
+          "languages-description": "List of languages which will be used in product validation",
           "currencies": "Currencies",
+          "currencies-description": "List of currencies which will be used in product validation",
+          "catalog": "Catalog",
+          "catalog-description": "The catalog for which channel will be created",
           "evaluator": "Evaluator type",
           "evaluator-description": "The set of algorithms to evaluate product publishing completeness",
-          "evaluate": "Evaluate",
-          "name-pattern-error-message": "This field can contain only latin symbols and digits"
+          "evaluate": "Evaluate"
         },
         "placeholders": {
+          "enter-value":  "Enter value", 
           "currencies": "Select at least one currency for this channel",
-          "languages": "Select at least one language for this channel"
+          "languages": "Select at least one language for this channel",
+          "catalog": "Select catalog",
+          "evaluator":  "Select completeness evaluator" 
         }
       },
       "channel-select": {
