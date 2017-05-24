@@ -3,35 +3,33 @@
         var blade = $scope.blade;
         var channel = $localStorage.catalogPublishingChannel;
 
-        $scope.$on('product-loaded', function (event, product) {
-            var catalogIds = [];
-            _.each(blade.currentEntity.outlines, function (outline) {
-                var catalogItem = _.find(outline.items, function (item) { return item.seoObjectType === 'Catalog' });
-                if (catalogItem) {
-                    catalogIds.push(catalogItem.id);
-                }
-            });
-
-            catalogPublishingApi.searchChannels({
-                skip: 0,
-                take: Math.pow(2, 31) - 1,
-                catalogIds: catalogIds
-            }, function (response) {
-                var allChannels = response.results;
-                if (allChannels && allChannels.length) {
-                    var existingChannel = null;
-                    if (channel) {
-                        existingChannel = _.find(allChannels, function (c) { return c.id === channel.id });
+        $scope.$watch("blade.currentEntity", function (currentEntity, oldCurrentEntity, scope) {
+            if (currentEntity) {
+                var catalogIds = [];
+                _.each(currentEntity.outlines, function(outline) {
+                    var catalogItem = _.find(outline.items, function(item) { return item.seoObjectType === 'Catalog' });
+                    if (catalogItem) {
+                        catalogIds.push(catalogItem.id);
                     }
-                    $scope.channels = angular.copy(allChannels);
-                    $scope.channel = existingChannel || allChannels[0];
-                    evaluate($scope.channel.id, blade.currentEntityId);
-                }
-            });
-        });
+                });
 
-        $scope.$on('product-saved', function (event, product) {
-            evaluate(channel.id, product.id, true);
+                catalogPublishingApi.searchChannels({
+                    skip: 0,
+                    take: Math.pow(2, 31) - 1,
+                    catalogIds: catalogIds
+                }, function(response) {
+                    var allChannels = response.results;
+                    if (allChannels && allChannels.length) {
+                        var existingChannel = null;
+                        if (channel) {
+                            existingChannel = _.find(allChannels, function(c) { return c.id === channel.id });
+                        }
+                        $scope.channels = angular.copy(allChannels);
+                        $scope.channel = existingChannel || allChannels[0];
+                        evaluate($scope.channel.id, currentEntity.id);
+                    }
+                });
+            }
         });
 
         $scope.evaluate = function () {
