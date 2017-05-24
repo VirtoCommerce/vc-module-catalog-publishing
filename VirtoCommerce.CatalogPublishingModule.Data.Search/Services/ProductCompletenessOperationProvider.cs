@@ -9,8 +9,11 @@ using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SearchModule.Core.Model.Indexing;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
 {
+    /// <summary>
+    /// Extend product indexation process. Invalidate products as changed when products completeness value updated.
+    /// </summary>
     public class ProductCompletenessOperationProvider : IOperationProvider
     {
         private readonly IChangeLogService _changeLogService;

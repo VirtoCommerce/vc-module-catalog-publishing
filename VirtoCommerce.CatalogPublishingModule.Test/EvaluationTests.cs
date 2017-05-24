@@ -4,7 +4,8 @@ using System.Globalization;
 using System.Linq;
 using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model;
@@ -595,7 +596,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         private DefaultCompletenessEvaluator GetCompletenessEvaluator()
         {
-            return new DefaultCompletenessEvaluator(new DefaultCompletenessDetailEvaluator[]
+            return new DefaultCompletenessEvaluator(new ICompletenessDetailEvaluator[]
             {
                 new PropertiesCompletenessDetailEvaluator(), new DescriptionsCompletenessDetailEvaluator(GetSettingManager()), new PricesCompletenessDetailEvaluator(GetPricingSearchService()), new SeoCompletenessDetailEvaluator()
             }, GetProductService());

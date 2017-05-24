@@ -1,13 +1,17 @@
 ﻿using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Core.Common;
+using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Common;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
-    public class DescriptionsCompletenessDetailEvaluator : DefaultCompletenessDetailEvaluator
+    /// <summary>
+    ///  Descriptions valiator. Check that products have description per item description type per channel language, which content is not null or empty.
+    /// </summary>
+    public class DescriptionsCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
         private readonly ISettingsManager _settingsManager;
 
@@ -16,7 +20,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
             _settingsManager = settingsManager;
         }
 
-        public override CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
         {
             var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").ArrayValues;
             return products.Select(x =>

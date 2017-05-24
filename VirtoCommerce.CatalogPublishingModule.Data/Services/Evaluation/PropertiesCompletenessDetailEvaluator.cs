@@ -2,15 +2,23 @@
 using System.Globalization;
 using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Core.Common;
+using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Common;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Common;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
-    public class PropertiesCompletenessDetailEvaluator : DefaultCompletenessDetailEvaluator
+    /// <summary>
+    /// Properties validator. Check the following statements:
+    /// • One of property dictionary values (for dictionary properties);
+    /// • For value of type Short text & Long text: is not null or empty;
+    /// • For value of type Number: is greater than or equal to zero;
+    /// • Any value successfully parsed as Date time or Boolean is valid;
+    /// </summary>
+    public class PropertiesCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
-        public override CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
         {
             return products.Select(x =>
             {

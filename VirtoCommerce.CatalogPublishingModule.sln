@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Test", "VirtoCommerce.CatalogPublishingModule.Test\VirtoCommerce.CatalogPublishingModule.Test.csproj", "{50874BF9-0F61-4B9A-9645-ADC13F2801AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Data.Core", "VirtoCommerce.CatalogPublishingModule.Data.Core\VirtoCommerce.CatalogPublishingModule.Data.Core.csproj", "{81B946F3-813C-424A-8748-A27337672ADD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Data.Search", "VirtoCommerce.CatalogPublishingModule.Data.Search\VirtoCommerce.CatalogPublishingModule.Data.Search.csproj", "{81B946F3-813C-424A-8748-A27337672ADD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

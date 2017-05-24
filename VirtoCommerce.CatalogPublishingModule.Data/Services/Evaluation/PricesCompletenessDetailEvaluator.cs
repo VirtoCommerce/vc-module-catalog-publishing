@@ -1,14 +1,18 @@
 ﻿using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Core.Common;
+using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Common;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Pricing.Model.Search;
 using VirtoCommerce.Domain.Pricing.Services;
 using VirtoCommerce.Platform.Core.Common;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
-    public class PricesCompletenessDetailEvaluator : DefaultCompletenessDetailEvaluator
+    /// <summary>
+    ///  Prices valiator. Check that products have at least one price per channel currency, which list price is greater than zero.
+    /// </summary>
+    public class PricesCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
         private readonly IPricingSearchService _pricingSearchService;
 
@@ -17,7 +21,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
             _pricingSearchService = pricingSearchService;
         }
 
-        public override CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
         {
             var prices = _pricingSearchService.SearchPrices(new PricesSearchCriteria
             {

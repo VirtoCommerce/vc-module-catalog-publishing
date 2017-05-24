@@ -7,20 +7,18 @@ using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Platform.Core.Common;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
+    /// <summary>
+    /// Default completeness evaluator. Provides completeness for properties, descriptions, prices & seo by default
+    /// </summary>
     public class DefaultCompletenessEvaluator : ICompletenessEvaluator
     {
         private readonly IItemService _productService;
 
         protected IReadOnlyCollection<ICompletenessDetailEvaluator> DetailEvaluators { get; }
 
-        public DefaultCompletenessEvaluator(DefaultCompletenessDetailEvaluator[] detailEvaluators, IItemService productService) :
-            this(detailEvaluators as ICompletenessDetailEvaluator[], productService)
-        {
-        }
-
-        protected DefaultCompletenessEvaluator(ICompletenessDetailEvaluator[] detailEvaluators, IItemService productService)
+        public DefaultCompletenessEvaluator(ICompletenessDetailEvaluator[] detailEvaluators, IItemService productService)
         {
             _productService = productService;
             DetailEvaluators = detailEvaluators;

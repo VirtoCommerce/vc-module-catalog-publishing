@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.Practices.Unity;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
-using VirtoCommerce.CatalogPublishingModule.Data.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
+using VirtoCommerce.CatalogPublishingModule.Data.Search.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
@@ -43,10 +44,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             _container.RegisterType<ICompletenessService, CompletenessServiceImpl>();
 
             _container.RegisterType<ICompletenessEvaluator, DefaultCompletenessEvaluator>(nameof(DefaultCompletenessEvaluator));
-            _container.RegisterType<DefaultCompletenessDetailEvaluator, PropertiesCompletenessDetailEvaluator>(nameof(PropertiesCompletenessDetailEvaluator));
-            _container.RegisterType<DefaultCompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>(nameof(DescriptionsCompletenessDetailEvaluator));
-            _container.RegisterType<DefaultCompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>(nameof(PricesCompletenessDetailEvaluator));
-            _container.RegisterType<DefaultCompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>(nameof(SeoCompletenessDetailEvaluator));
+            _container.RegisterType<ICompletenessDetailEvaluator, PropertiesCompletenessDetailEvaluator>(nameof(PropertiesCompletenessDetailEvaluator));
+            _container.RegisterType<ICompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>(nameof(DescriptionsCompletenessDetailEvaluator));
+            _container.RegisterType<ICompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>(nameof(PricesCompletenessDetailEvaluator));
+            _container.RegisterType<ICompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>(nameof(SeoCompletenessDetailEvaluator));
 
             _container.RegisterType<IOperationProvider, ProductCompletenessOperationProvider>(nameof(ProductCompletenessOperationProvider));
             _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductCompletenessDocumentBuilder>(nameof(ProductCompletenessDocumentBuilder));

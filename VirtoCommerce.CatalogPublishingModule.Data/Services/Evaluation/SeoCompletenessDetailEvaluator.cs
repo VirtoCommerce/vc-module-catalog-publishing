@@ -1,14 +1,19 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Core.Common;
+using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Common;
 using VirtoCommerce.Domain.Catalog.Model;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
-    public class SeoCompletenessDetailEvaluator : DefaultCompletenessDetailEvaluator
+    /// <summary>
+    /// Properties validator. Check that products have at least one SEO per channel language,
+    /// URL keyword of which is not null or empty and does not contain invalid symbols (where invalid symbols is $+;=%{}[]|\/@ ~#!^*&?:'&lt;&gt;,)
+    /// </summary>
+    public class SeoCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
-        public override CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
         {
             var pattern = @"[$+;=%{}[\]|\\\/@ ~#!^*&?:'<>,]";
             return products.Select(p =>

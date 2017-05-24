@@ -6,8 +6,11 @@ using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SearchModule.Core.Model.Indexing;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
 {
+    /// <summary>
+    /// Extend product indexation process and provides completeness_ChannelName field for indexed products
+    /// </summary>
     public class ProductCompletenessDocumentBuilder : IBatchDocumentBuilder<CatalogProduct>
     {
         private readonly ICompletenessService _completenessService;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Core.Common
+namespace VirtoCommerce.CatalogPublishingModule.Data.Common
 {
     public static class CompletenessHelper
     {
