@@ -61,42 +61,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
             {
                 if (property.Dictionary)
                 {
-                    retVal = values.All(pv => !property.DictionaryValues.IsNullOrEmpty() &&
-                                             (property.Multilanguage && pv.LanguageCode != languageCode || !property.DictionaryValues.Any(dv => IsEqualValues(pv.ValueType, dv.Value, pv.Value))));
+                    retVal = values.All(pv => !property.DictionaryValues.IsNullOrEmpty() && (property.ValueType != PropertyValueType.ShortText ||
+                                             property.Multilanguage && pv.LanguageCode != languageCode || property.DictionaryValues.All(dv => dv.Value != (string) pv.Value)));
                 }
                 else
                 {
                     retVal = values.All(pv => property.Multilanguage && pv.LanguageCode != languageCode || IsInvalidPropertyValue(pv.ValueType, pv.Value));
                 }
-            }
-            return retVal;
-        }
-
-        private static bool IsEqualValues(PropertyValueType type, string first, object second)
-        {
-            var retVal = false;
-            bool successfulParse;
-            switch (type)
-            {
-                case PropertyValueType.ShortText:
-                case PropertyValueType.LongText:
-                    retVal = first == (string) second;
-                    break;
-                case PropertyValueType.Number:
-                    decimal parsedDecimal;
-                    successfulParse = decimal.TryParse(first.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out parsedDecimal);
-                    retVal = successfulParse && parsedDecimal == (decimal) second;
-                    break;
-                case PropertyValueType.DateTime:
-                    DateTime parsedDateTime;
-                    successfulParse = DateTime.TryParse(first, out parsedDateTime);
-                    retVal = successfulParse && parsedDateTime == (DateTime) second;
-                    break;
-                case PropertyValueType.Boolean:
-                    bool parsedBool;
-                    successfulParse = bool.TryParse(first, out parsedBool);
-                    retVal = successfulParse && parsedBool == (bool) second;
-                    break;
             }
             return retVal;
         }

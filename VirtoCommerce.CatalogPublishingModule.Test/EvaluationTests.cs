@@ -209,37 +209,37 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 }
 
                 var propertyIds = new[] { "Valid1", "Valid2" };
+                // Check correct validation of properties with dicrionaries
+                properties = propertyIds.Select(id => new Property
+                    {
+                        Id = id,
+                        Required = true,
+                        ValueType = PropertyValueType.ShortText,
+                        Dictionary = true,
+                        DictionaryValues = dictionaryValues[PropertyValueType.ShortText]
+                            .Select((x, i) => new PropertyDictionaryValue { Value = dictionaryPropertyValues[PropertyValueType.ShortText][i] })
+                            .ToArray()
+                    })
+                    .ToList();
+
+                var validValues = properties
+                    .Select((p, i) => new PropertyValue { Property = p, ValueType = PropertyValueType.ShortText, Value = dictionaryValues[PropertyValueType.ShortText][i] })
+                    .ToArray();
+                var invalidValues = properties
+                    .Select((p, i) => new PropertyValue { Property = p, ValueType = PropertyValueType.ShortText, Value = valuesNotInDictionary[PropertyValueType.ShortText][i] })
+                    .ToArray();
+
+                foreach (var data in TestAll(validValues, 100, Mutable))
+                {
+                    yield return Prepend(data, languages, properties);
+                }
+                foreach (var data in TestAll(invalidValues, 0, Mutable))
+                {
+                    yield return Prepend(data, languages, properties);
+                }
+
                 foreach (var type in valueTypes)
                 {
-                    // Check correct validation of properties with dicrionaries
-                    properties = propertyIds.Select(id => new Property
-                        {
-                            Id = id,
-                            Required = true,
-                            ValueType = type,
-                            Dictionary = true,
-                            DictionaryValues = dictionaryValues[type]
-                                .Select((x, i) => new PropertyDictionaryValue { Value = dictionaryPropertyValues[type][i] })
-                                .ToArray()
-                        })
-                        .ToList();
-
-                    var validValues = properties
-                        .Select((p, i) => new PropertyValue { Property = p, ValueType = type, Value = dictionaryValues[type][i] })
-                        .ToArray();
-                    var invalidValues = properties
-                        .Select((p, i) => new PropertyValue { Property = p, ValueType = type, Value = valuesNotInDictionary[type][i] })
-                        .ToArray();
-
-                    foreach (var data in TestAll(validValues, 100, Mutable))
-                    {
-                        yield return Prepend(data, languages, properties);
-                    }
-                    foreach (var data in TestAll(invalidValues, 0, Mutable))
-                    {
-                        yield return Prepend(data, languages, properties);
-                    }
-
                     // Check correct validation of non-dictionary properties
                     properties = propertyIds.Select(id => new Property
                         {
