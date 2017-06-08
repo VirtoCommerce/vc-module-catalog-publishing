@@ -19,7 +19,7 @@
     <owners>
         <owner>Virto Commerce</owner>
     </owners>
-    <projectUrl>https://github.com/VirtoCommerce/vc-module-catalog-publishing</projectUrl>
+    <projectUrl>https://virtocommerce.com/apps/extensions/catalog-publishing</projectUrl>
     <iconUrl>https://github.com/VirtoCommerce/vc-module-catalog-publishing/raw/master/VirtoCommerce.CatalogPublishingModule.Web/Content/logo.png</iconUrl>
     <releaseNotes>Initial implementation of module features.</releaseNotes>
     <copyright>Copyright © 2017 Virto Commerce. All rights reserved</copyright>
