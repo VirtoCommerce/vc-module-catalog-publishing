@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Search.Services;
-using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.Domain.Catalog.Model;
+using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Domain.Commerce.Model.Search;
+using VirtoCommerce.Domain.Search;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.SearchModule.Core.Model.Indexing;
 using Xunit;
 
 namespace VirtoCommerce.CatalogPublishingModule.Test
@@ -19,57 +20,71 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
     [Trait("Category", "CI")]
     public class IndexationTests
     {
-        private const string FirstCatalogId = "Test1";
-        private const string SecondCatalogId = "Test2";
+        private const string _firstCatalogId = "Test1";
+        private const string _secondCatalogId = "Test2";
         private readonly DateTime _startIndexDateTime = DateTime.Parse("5/11/2017 12:00 PM");
         private readonly DateTime _endIndexDateTime = DateTime.Parse("5/12/2017 12:00 AM");
 
-        private CatalogProduct[] _products =
+        private readonly CatalogProduct[] _products =
         {
             new CatalogProduct
             {
                 Id = "First",
-                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = FirstCatalogId } } } }
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = _firstCatalogId } } } }
             },
             new CatalogProduct
             {
                 Id = "Second",
-                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = FirstCatalogId } } } }
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = _firstCatalogId } } } }
             },
             new CatalogProduct
             {
                 Id = "Third",
-                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = SecondCatalogId } } } }
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = _secondCatalogId } } } }
             },
             new CatalogProduct
             {
                 Id = "Fourth",
-                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = SecondCatalogId } } } }
+                Outlines = new List<Outline> { new Outline { Items = new List<OutlineItem> { new OutlineItem { Id = _secondCatalogId } } } }
             }
         };
 
         [Fact]
-        public void TestDocumentBuilder()
+        public async Task TestDocumentBuilder()
         {
-            var documentBuilder = new ProductCompletenessDocumentBuilder(GetCompletenessService(), new []{ GetCompletenessEvaluator() });
-            var documents = _products.Select(x => new ResultDocument() as IDocument).ToArray();
-            documentBuilder.UpdateDocuments(documents, _products, null);
-            for (var i = 0; i < documents.Length; i++)
+            var documentBuilder = new ProductCompletenessDocumentBuilder(GetItemService(), GetCompletenessService(), new[] { GetCompletenessEvaluator() });
+            var productIds = _products.Select(p => p.Id).ToArray();
+
+            var documents = await documentBuilder.GetDocumentsAsync(productIds);
+
+            foreach (var product in _products)
             {
-                var document = documents[i];
-                Assert.True(document.FieldCount == 1 && (int) document["completeness_" + _products[i].Outlines.FirstOrDefault()?.Items.FirstOrDefault()?.Id.ToLower()].Value == 50);
+                var document = documents.FirstOrDefault(d => d.Id.EqualsInvariant(product.Id));
+                Assert.NotNull(document);
+                Assert.Equal(1, document.Fields.Count);
+
+                var catalogId = product.Outlines.First().Items.First().Id;
+                var fieldName = $"completeness_{catalogId}";
+                var completenessField = document.Fields.FirstOrDefault(f => f.Name.EqualsInvariant(fieldName));
+                Assert.NotNull(completenessField);
+                Assert.Equal(50, completenessField.Value);
             }
         }
 
         [Fact]
-        public void TestOperationProvider()
+        public async Task TestOperationProvider()
         {
-            var operationProvider = new ProductCompletenessOperationProvider(GetChangeLogService(), GetCompletenessService());
-            Assert.True(operationProvider.DocumentType == "catalogitem");
-            var operations = operationProvider.GetOperations(_startIndexDateTime, _endIndexDateTime);
-            Assert.Collection(operations, o => Assert.True(o.ObjectId == "First" && o.Timestamp == DateTime.Parse("5/11/2017 1:00 PM") && o.OperationType == OperationType.Index),
-                o => Assert.True(o.ObjectId == "Second" && o.Timestamp == DateTime.Parse("5/11/2017 3:00 PM") && o.OperationType == OperationType.Index),
-                o => Assert.True(o.ObjectId == "Third" && o.Timestamp == DateTime.Parse("5/11/2017 4:00 PM") && o.OperationType == OperationType.Index));
+            var changesProvider = new ProductCompletenessChangesProvider(GetChangeLogService(), GetCompletenessService());
+
+            var changesCount = await changesProvider.GetTotalChangesCountAsync(_startIndexDateTime, _endIndexDateTime);
+            Assert.Equal(4, changesCount);
+
+            var changes = await changesProvider.GetChangesAsync(_startIndexDateTime, _endIndexDateTime, 0, changesCount);
+            Assert.Collection(changes,
+                c => Assert.True(c.DocumentId == "First" && c.ChangeDate == DateTime.Parse("5/11/2017 1:00 PM") && c.ChangeType == IndexDocumentChangeType.Modified),
+                c => Assert.True(c.DocumentId == "Second" && c.ChangeDate == DateTime.Parse("5/11/2017 2:00 PM") && c.ChangeType == IndexDocumentChangeType.Modified),
+                c => Assert.True(c.DocumentId == "Second" && c.ChangeDate == DateTime.Parse("5/11/2017 3:00 PM") && c.ChangeType == IndexDocumentChangeType.Modified),
+                c => Assert.True(c.DocumentId == "Third" && c.ChangeDate == DateTime.Parse("5/11/2017 4:00 PM") && c.ChangeType == IndexDocumentChangeType.Modified));
         }
 
         private IChangeLogService GetChangeLogService()
@@ -122,10 +137,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             return service.Object;
         }
 
+        private IItemService GetItemService()
+        {
+            var service = new Mock<IItemService>();
+            service.Setup(x => x.GetByIds(It.IsAny<string[]>(), It.IsAny<ItemResponseGroup>(), It.IsAny<string>()))
+                .Returns<string[], ItemResponseGroup, string>((ids, rg, c) => _products.Where(p => ids.Contains(p.Id)).ToArray());
+            return service.Object;
+        }
+
         private ICompletenessService GetCompletenessService()
         {
             var service = new Mock<ICompletenessService>();
-            service.Setup(x => x.SearchChannels(It.Is<CompletenessChannelSearchCriteria>(c => c.CatalogIds.Any(id => id == FirstCatalogId || id == SecondCatalogId))))
+            service.Setup(x => x.SearchChannels(It.Is<CompletenessChannelSearchCriteria>(c => c.CatalogIds.Any(id => id == _firstCatalogId || id == _secondCatalogId))))
                 .Returns<CompletenessChannelSearchCriteria>(x => new GenericSearchResult<CompletenessChannel> { Results = x.CatalogIds.Select(GetChannelByCatalogId).ToArray() });
             service.Setup(x => x.GetCompletenessEntriesByIds(It.Is<string[]>(ids => _products.Select(p => p.Id).Intersect(ids).Any())))
                 .Returns<string[]>(ids => _products.Select(p => GetCompletenessEntry(p.CatalogId, p.Id)).ToArray());
@@ -149,7 +172,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         {
             var service = new Mock<ICompletenessEvaluator>();
             service.Setup(x => x.EvaluateCompleteness(
-                It.Is<CompletenessChannel>(c => c.CatalogId == FirstCatalogId || c.CatalogId == SecondCatalogId),
+                It.Is<CompletenessChannel>(c => c.CatalogId == _firstCatalogId || c.CatalogId == _secondCatalogId),
                 It.Is<CatalogProduct[]>(cp => _products.Select(p => p.Id).Intersect(cp.Select(p => p.Id)).Any())))
                 .Returns<CompletenessChannel, CatalogProduct[]>((c, x) => x.Select(p => GetCompletenessEntry(c.Id, p.Id)).ToArray());
             return service.Object;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.Unity;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
@@ -6,19 +8,18 @@ using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Search.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation;
-using VirtoCommerce.Domain.Catalog.Model;
+using VirtoCommerce.Domain.Search;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 using VirtoCommerce.Platform.Data.Repositories;
-using VirtoCommerce.SearchModule.Core.Model.Indexing;
 
 namespace VirtoCommerce.CatalogPublishingModule.Web
 {
     public class Module : ModuleBase
     {
-        private const string ConnectionStringName = "VirtoCommerce";
+        private const string _connectionStringName = "VirtoCommerce";
         private readonly IUnityContainer _container;
 
         public Module(IUnityContainer container)
@@ -28,7 +29,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
         public override void SetupDatabase()
         {
-            using (var context = new CompletenessRepositoryImpl(ConnectionStringName, _container.Resolve<AuditableInterceptor>()))
+            using (var context = new CompletenessRepositoryImpl(_connectionStringName, _container.Resolve<AuditableInterceptor>()))
             {
                 var initializer = new SetupDatabaseInitializer<CompletenessRepositoryImpl, Data.Migrations.Configuration>();
                 initializer.InitializeDatabase(context);
@@ -39,7 +40,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
         {
             base.Initialize();
 
-            _container.RegisterType<ICompletenessRepository>(new InjectionFactory(c => new CompletenessRepositoryImpl(ConnectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>(),
+            _container.RegisterType<ICompletenessRepository>(new InjectionFactory(c => new CompletenessRepositoryImpl(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>(),
                 new ChangeLogInterceptor(_container.Resolve<Func<IPlatformRepository>>(), ChangeLogPolicy.Cumulative, new[] { typeof(CompletenessEntryEntity).Name }, _container.Resolve<IUserNameResolver>()))));
             _container.RegisterType<ICompletenessService, CompletenessServiceImpl>();
 
@@ -49,8 +50,29 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             _container.RegisterType<ICompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>(nameof(PricesCompletenessDetailEvaluator));
             _container.RegisterType<ICompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>(nameof(SeoCompletenessDetailEvaluator));
 
-            _container.RegisterType<IOperationProvider, ProductCompletenessOperationProvider>(nameof(ProductCompletenessOperationProvider));
-            _container.RegisterType<IBatchDocumentBuilder<CatalogProduct>, ProductCompletenessDocumentBuilder>(nameof(ProductCompletenessDocumentBuilder));
+            #region Search
+
+            var productIndexingConfigurations = _container.Resolve<IndexDocumentConfiguration[]>();
+            if (productIndexingConfigurations != null)
+            {
+                var productPriceDocumentSource = new IndexDocumentSource
+                {
+                    ChangesProvider = _container.Resolve<ProductCompletenessChangesProvider>(),
+                    DocumentBuilder = _container.Resolve<ProductCompletenessDocumentBuilder>(),
+                };
+
+                foreach (var configuration in productIndexingConfigurations.Where(c => c.DocumentType == KnownDocumentTypes.Product))
+                {
+                    if (configuration.RelatedSources == null)
+                    {
+                        configuration.RelatedSources = new List<IndexDocumentSource>();
+                    }
+
+                    configuration.RelatedSources.Add(productPriceDocumentSource);
+                }
+            }
+
+            #endregion
         }
     }
 }

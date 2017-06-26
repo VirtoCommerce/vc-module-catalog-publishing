@@ -2,11 +2,10 @@
 <module>
     <id>VirtoCommerce.CatalogPublishing</id>
     <version>1.0.0</version>
-    <platformVersion>2.13.4</platformVersion>
+    <platformVersion>2.13.9</platformVersion>
     <dependencies>
-        <dependency id="VirtoCommerce.Core" version="2.21.0" />
-        <dependency id="VirtoCommerce.Catalog" version="2.16.6" />
-        <dependency id="VirtoCommerce.Search" version="2.14.2" />
+        <dependency id="VirtoCommerce.Core" version="2.23.0" />
+        <dependency id="VirtoCommerce.Catalog" version="2.17.0" />
     </dependencies>
 
     <title>Catalog publishing module</title>
@@ -15,6 +14,7 @@
         <author>Alexey Antonov</author>
         <author>Andrew Orlov</author>
         <author>Aleksandr Vishnyakov</author>
+        <author>Artem Dudarev</author>
     </authors>
     <owners>
         <owner>Virto Commerce</owner>
