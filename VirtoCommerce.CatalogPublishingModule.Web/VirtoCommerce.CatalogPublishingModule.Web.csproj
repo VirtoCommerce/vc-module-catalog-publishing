@@ -137,11 +137,11 @@
   <ItemGroup>
     <Content Include="Content\css\catalogPublishing.css" />
     <Content Include="Content\logo.png" />
-    <Content Include="packages.config">
+    <None Include="packages.config">
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="app.config" />
-    <Content Include="module.ignore" />
+    </None>
+    <None Include="app.config" />
+    <None Include="module.ignore" />
     <Content Include="module.manifest" />
     <Content Include="Localizations\en.VirtoCommerce.CatalogPublishing.json" />
     <None Include="Web.Debug.config">
@@ -165,7 +165,7 @@
     <Content Include="Scripts\resources\catalog-publishing.js" />
     <Content Include="Scripts\widgets\catalog-publishing-widget.js" />
     <Content Include="Scripts\widgets\catalog-publishing-widget.tpl.html" />
-    <Content Include="Web.config" />
+    <None Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
@@ -197,7 +197,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != '' And Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ProjectExtensions>
     <VisualStudio>
