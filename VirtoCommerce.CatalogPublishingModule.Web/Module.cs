@@ -49,13 +49,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             _container.RegisterType<ICompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>(nameof(DescriptionsCompletenessDetailEvaluator));
             _container.RegisterType<ICompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>(nameof(PricesCompletenessDetailEvaluator));
             _container.RegisterType<ICompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>(nameof(SeoCompletenessDetailEvaluator));
+        }
+
+        public override void PostInitialize()
+        {
+            base.PostInitialize();
 
             #region Search
 
             var productIndexingConfigurations = _container.Resolve<IndexDocumentConfiguration[]>();
             if (productIndexingConfigurations != null)
             {
-                var productPriceDocumentSource = new IndexDocumentSource
+                var productCompletenessDocumentSource = new IndexDocumentSource
                 {
                     ChangesProvider = _container.Resolve<ProductCompletenessChangesProvider>(),
                     DocumentBuilder = _container.Resolve<ProductCompletenessDocumentBuilder>(),
@@ -68,7 +73,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
                         configuration.RelatedSources = new List<IndexDocumentSource>();
                     }
 
-                    configuration.RelatedSources.Add(productPriceDocumentSource);
+                    configuration.RelatedSources.Add(productCompletenessDocumentSource);
                 }
             }
 
