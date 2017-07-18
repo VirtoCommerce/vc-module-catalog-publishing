@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.sitemapsModule')
+﻿angular.module('virtoCommerce.catalogPublishingModule')
     .controller('virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController', ['$scope', '$localStorage', 'platformWebApp.authService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($scope, $localStorage, authService, widgetService, bladeNavigationService, catalogPublishingApi, widgetMapperService) {
         var blade = $scope.blade;
         var channel = $localStorage.catalogPublishingChannel;
