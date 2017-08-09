@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.Platform.Data.Infrastructure;
@@ -42,20 +44,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
             base.OnModelCreating(modelBuilder);
         }
 
-        public IQueryable<CompletenessEntryEntity> Entries
-        {
-            get { return GetAsQueryable<CompletenessEntryEntity>(); }
-        }
-
-        public IQueryable<CompletenessDetailEntity> Details
-        {
-            get { return GetAsQueryable<CompletenessDetailEntity>(); }
-        }
-
-        public IQueryable<CompletenessChannelEntity> Channels
-        {
-            get { return GetAsQueryable<CompletenessChannelEntity>().Include(x => x.Languages).Include(x => x.Currencies); }
-        }
+        public IQueryable<CompletenessEntryEntity> Entries => GetAsQueryable<CompletenessEntryEntity>();
+        public IQueryable<CompletenessDetailEntity> Details => GetAsQueryable<CompletenessDetailEntity>();
+        public IQueryable<CompletenessChannelEntity> Channels => GetAsQueryable<CompletenessChannelEntity>().Include(x => x.Languages).Include(x => x.Currencies);
 
         public CompletenessChannelEntity[] GetChannelsByIds(string[] ids)
         {
@@ -69,9 +60,32 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 
         public void DeleteChannels(string[] ids)
         {
-            var queryPattern = @"DELETE FROM CompletenessChannel WHERE Id IN ({0})";
-            var query = string.Format(queryPattern, string.Join(", ", ids.Select(x => $"'{x}'")));
-            ObjectContext.ExecuteStoreCommand(query);
+            ExecuteStoreCommand("DELETE FROM CompletenessChannel WHERE Id IN ({0})", ids);
+        }
+
+
+        protected virtual void ExecuteStoreCommand(string commandTemplate, IEnumerable<string> parameterValues)
+        {
+            var command = CreateCommand(commandTemplate, parameterValues);
+            ObjectContext.ExecuteStoreCommand(command.Text, command.Parameters);
+        }
+
+        protected virtual Command CreateCommand(string commandTemplate, IEnumerable<string> parameterValues)
+        {
+            var parameters = parameterValues.Select((v, i) => new SqlParameter($"@p{i}", v)).ToArray();
+            var parameterNames = string.Join(",", parameters.Select(p => p.ParameterName));
+
+            return new Command
+            {
+                Text = string.Format(commandTemplate, parameterNames),
+                Parameters = parameters.OfType<object>().ToArray(),
+            };
+        }
+
+        protected class Command
+        {
+            public string Text { get; set; }
+            public object[] Parameters { get; set; }
         }
     }
 }
