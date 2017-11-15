@@ -48,8 +48,6 @@
                                 var widget = _.find($scope.widgets, function (w) { return w.controller === widgetControllerName });
                                 if (widget && detail.completenessPercent < 100) {
                                     widget.UIclass = 'error';
-                                } else {
-                                    widget.UIclass = null;
                                 }
                             }
                         });
