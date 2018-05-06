@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <module>
     <id>VirtoCommerce.CatalogPublishing</id>
-    <version>1.1.2</version>
-    <platformVersion>2.13.26</platformVersion>
+    <version>1.0.0</version>
+    <platformVersion>2.13.4</platformVersion>
     <dependencies>
-        <dependency id="VirtoCommerce.Core" version="2.25.0" />
-        <dependency id="VirtoCommerce.Catalog" version="2.21.8" />
+        <dependency id="VirtoCommerce.Core" version="2.21.0" />
+        <dependency id="VirtoCommerce.Catalog" version="2.16.6" />
+        <dependency id="VirtoCommerce.Search" version="2.14.2" />
     </dependencies>
 
     <title>Catalog publishing module</title>
@@ -14,15 +15,14 @@
         <author>Alexey Antonov</author>
         <author>Andrew Orlov</author>
         <author>Aleksandr Vishnyakov</author>
-        <author>Artem Dudarev</author>
     </authors>
     <owners>
         <owner>Virto Commerce</owner>
     </owners>
-    <projectUrl>https://virtocommerce.com/apps/extensions/catalog-publishing</projectUrl>
+    <projectUrl>https://github.com/VirtoCommerce/vc-module-catalog-publishing</projectUrl>
     <iconUrl>https://github.com/VirtoCommerce/vc-module-catalog-publishing/raw/master/VirtoCommerce.CatalogPublishingModule.Web/Content/logo.png</iconUrl>
     <releaseNotes>Initial implementation of module features.</releaseNotes>
-    <copyright>Copyright © 2018 Virto Commerce. All rights reserved</copyright>
+    <copyright>Copyright © 2017 Virto Commerce. All rights reserved</copyright>
     <tags>publishing filling</tags>
 
     <assemblyFile>VirtoCommerce.CatalogPublishingModule.Web.dll</assemblyFile>

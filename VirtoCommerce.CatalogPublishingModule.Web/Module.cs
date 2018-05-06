@@ -41,7 +41,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             base.Initialize();
 
             _container.RegisterType<ICompletenessRepository>(new InjectionFactory(c => new CompletenessRepositoryImpl(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>(),
-                new ChangeLogInterceptor(_container.Resolve<Func<IPlatformRepository>>(), ChangeLogPolicy.Cumulative, new[] { typeof(CompletenessEntryEntity).Name }, _container.Resolve<IUserNameResolver>()))));
+                new ChangeLogInterceptor(_container.Resolve<Func<IPlatformRepository>>(), ChangeLogPolicy.Cumulative, new[] { typeof(CompletenessEntryEntity).Name }))));
             _container.RegisterType<ICompletenessService, CompletenessServiceImpl>();
 
             _container.RegisterType<ICompletenessEvaluator, DefaultCompletenessEvaluator>(nameof(DefaultCompletenessEvaluator));

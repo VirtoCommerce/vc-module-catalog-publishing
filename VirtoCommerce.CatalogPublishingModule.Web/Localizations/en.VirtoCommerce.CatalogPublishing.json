@@ -2,6 +2,16 @@
   "catalog-publishing": {
     "main-menu-title": "Channels",
     "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "total": "Total",
+          "processed": "Processed",
+          "errors": "Errors",
+          "errors-count": "Errors count"
+        }
+      },
       "channel-list": {
         "title": "Channels",
         "labels": {
@@ -28,11 +38,11 @@
           "evaluate": "Evaluate"
         },
         "placeholders": {
-          "enter-value":  "Enter value", 
+          "enter-value": "Enter value",
           "currencies": "Select at least one currency for this channel",
           "languages": "Select at least one language for this channel",
           "catalog": "Select catalog",
-          "evaluator":  "Select completeness evaluator" 
+          "evaluator": "Select completeness evaluator"
         }
       },
       "channel-select": {
