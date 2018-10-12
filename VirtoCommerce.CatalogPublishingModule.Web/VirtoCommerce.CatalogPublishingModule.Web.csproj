@@ -162,6 +162,7 @@
     <Content Include="Scripts\blades\notifications\menuEvaluation.tpl.html" />
     <Content Include="Scripts\catalog-publishing.js" />
     <Content Include="Scripts\resources\catalog-publishing.js" />
+    <Content Include="Scripts\services\productCompletenessBladeFactory.js" />
     <Content Include="Scripts\widgets\catalog-publishing-widget.js" />
     <Content Include="Scripts\widgets\catalog-publishing-widget.tpl.html" />
     <None Include="Web.config" />

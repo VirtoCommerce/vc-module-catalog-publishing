@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
-    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', '$localStorage', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.ui-grid.extension', 'virtoCommerce.catalogPublishingModule.catalogPublishing', function ($scope, $localStorage, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, gridOptionExtension, catalogPublishingApi) {
+    .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', '$localStorage', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.ui-grid.extension', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.productCompletenessBladeFactory', function ($scope, $localStorage, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, gridOptionExtension, catalogPublishingApi, productCompletenessBladeFactory) {
         var blade = $scope.blade;
         blade.isLoading = false;
 
@@ -81,6 +81,10 @@
                         displayName: 'catalog-publishing.blades.channel-list.labels.completeness-percent',
                         cellTemplate: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/completeness.cell.html'
                     }],
+                    fnGetBladeForItem: function (product) {
+                        //Extension point used for define custom views for product completeness 
+                        return productCompletenessBladeFactory(product);                    
+                    },
                     onItemsLoaded: function(items) {
                         var itemIds = _.map(_.where(items, { type: 'product' }), function(i) { return i.id });
                         if (itemIds && itemIds.length) {

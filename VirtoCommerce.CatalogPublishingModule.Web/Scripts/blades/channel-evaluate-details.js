@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.marketingModule')
+﻿angular.module('virtoCommerce.catalogPublishingModule')
     .controller('virtoCommerce.catalogPublishingModule.channelEvaluateDetailsController', ['$rootScope', '$scope', function ($rootScope, $scope) {
         var blade = $scope.blade;
         blade.headIcon = 'fa fa-calculator';
