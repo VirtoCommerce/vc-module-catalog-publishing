@@ -61,7 +61,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [Route("channels/{id}/evaluate")]
         [ResponseType(typeof(PushNotification))]
         [CheckPermission(Permission = ChannelPredefinedPermissions.Update)]
-        public IHttpActionResult EvaluateCompleteness(string id)
+        public IHttpActionResult EvaluateChannelCompleteness(string id)
         {
             return EvaluateCompleteness("EvaluateCompleteness", "Evaluate completeness task", notification => BackgroundJob.Enqueue(() => EvaluateCompletenessJob(id, notification)));
         }
@@ -73,7 +73,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
         [ResponseType(typeof(CompletenessEntry[]))]
-        public IHttpActionResult EvaluateCompleteness(string id, [FromBody] string[] productIds)
+        public IHttpActionResult EvaluateProductsCompleteness(string id, [FromBody] string[] productIds)
         {
             var channel = _completenessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
             if (channel == null)
