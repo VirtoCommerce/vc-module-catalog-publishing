@@ -29,7 +29,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
         public Task<IList<IndexDocument>> GetDocumentsAsync(IList<string> documentIds)
         {
             var products = GetProducts(documentIds);
-            var documentsByProductId = documentIds.ToDictionary(id => id, id => new IndexDocument(id));
+            var documentsByProductId = documentIds.Distinct().ToDictionary(id => id, id => new IndexDocument(id));
             var catalogIds = products.SelectMany(p => p.Outlines.Select(o => o.Items.FirstOrDefault()?.Id)).Distinct().ToArray();
             var productsByCatalogId = catalogIds.ToDictionary(id => id, id => products.Where(p => p.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == id)));
 
