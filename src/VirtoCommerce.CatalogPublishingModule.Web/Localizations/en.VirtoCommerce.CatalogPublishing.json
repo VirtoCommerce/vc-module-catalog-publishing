@@ -1,4 +1,4 @@
-﻿{
+{
   "catalog-publishing": {
     "main-menu-title": "Channels",
     "blades": {
@@ -71,5 +71,12 @@
         "no-channels-message": "No channels available"
       }
     }
+  },
+  "permissions": {
+    "channel:access": "Open channels menu",
+    "channel:create": "Create channel",
+    "channel:read": "View channel",
+    "channel:update": "Update channel",
+    "channel:delete": "Delete channel"
   }
 }
