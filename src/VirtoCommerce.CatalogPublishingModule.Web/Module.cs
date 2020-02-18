@@ -5,12 +5,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VirtoCommerce.CatalogPublishingModule.Core;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 using VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.SearchModule.Core.Model;
 
 namespace VirtoCommerce.CatalogPublishingModule.Web
@@ -37,6 +41,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
         public void PostInitialize(IApplicationBuilder appBuilder)
         {
+            var permissionsProvider = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
+            permissionsProvider.RegisterPermissions(ModuleConstants.Security.Permissions.AllPermissions.Select(x => new Permission() { GroupName = "CatalogPublishing", Name = x }).ToArray());
+
             var productIndexingConfigurations = appBuilder.ApplicationServices.GetServices<IndexDocumentConfiguration>();
 
             if (productIndexingConfigurations != null)
@@ -56,6 +63,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
                     configuration.RelatedSources.Add(productCompletenessDocumentSource);
                 }
+            }
+
+            using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<CatalogPublishingDbContext>();
+                dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
+                dbContext.Database.EnsureCreated();
+                dbContext.Database.Migrate();
             }
         }
 
