@@ -1,11 +1,12 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Threading.Tasks;
+using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Common;
-using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Pricing.Model.Search;
-using VirtoCommerce.Domain.Pricing.Services;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.PricingModule.Core.Model.Search;
+using VirtoCommerce.PricingModule.Core.Services;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
@@ -21,13 +22,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
             _pricingSearchService = pricingSearchService;
         }
 
-        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public async Task<CompletenessDetail[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)
         {
-            var prices = _pricingSearchService.SearchPrices(new PricesSearchCriteria
+            var prices = (await _pricingSearchService.SearchPricesAsync(new PricesSearchCriteria
             {
                 ProductIds = products.Select(x => x.Id).ToArray(),
                 Take = int.MaxValue
-            }).Results;
+            })).Results;
             return products.Select(x =>
             {
                 var detail = new CompletenessDetail { Name = "Prices", ProductId = x.Id };

@@ -1,8 +1,9 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Threading.Tasks;
+using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Common;
-using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 
@@ -20,9 +21,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
             _settingsManager = settingsManager;
         }
 
-        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public async Task<CompletenessDetail[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)
         {
-            var descriptionTypes = _settingsManager.GetSettingByName("Catalog.EditorialReviewTypes").ArrayValues;
+            var descriptionTypes = (await _settingsManager.GetObjectSettingAsync("Catalog.EditorialReviewTypes")).AllowedValues.Select(x => x.ToString()).ToArray();
             return products.Select(x =>
             {
                 var detail = new CompletenessDetail { Name = "Descriptions", ProductId = x.Id };

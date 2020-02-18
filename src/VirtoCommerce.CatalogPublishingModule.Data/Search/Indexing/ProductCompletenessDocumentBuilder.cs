@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
-using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Catalog.Services;
-using VirtoCommerce.Domain.Search;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.SearchModule.Core.Model;
+using VirtoCommerce.SearchModule.Core.Services;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing
 {
     /// <summary>
     /// Extend product indexation process and provides completeness_ChannelName field for indexed products
@@ -26,14 +27,15 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
             _completenessEvaluators = completenessEvaluators;
         }
 
-        public Task<IList<IndexDocument>> GetDocumentsAsync(IList<string> documentIds)
+        public async Task<IList<IndexDocument>> GetDocumentsAsync(IList<string> documentIds)
         {
-            var products = GetProducts(documentIds);
+            var products = await GetProducts(documentIds);
             var documentsByProductId = documentIds.Distinct().ToDictionary(id => id, id => new IndexDocument(id));
             var catalogIds = products.SelectMany(p => p.Outlines.Select(o => o.Items.FirstOrDefault()?.Id)).Distinct().ToArray();
             var productsByCatalogId = catalogIds.ToDictionary(id => id, id => products.Where(p => p.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == id)));
 
-            var channels = _completenessService.SearchChannels(new CompletenessChannelSearchCriteria { CatalogIds = catalogIds, Take = int.MaxValue }).Results;
+            var channelsSearchResult = await _completenessService.SearchChannelsAsync(new CompletenessChannelSearchCriteria { CatalogIds = catalogIds, Take = int.MaxValue });
+            var channels = channelsSearchResult.Results;
             if (!channels.IsNullOrEmpty())
             {
                 foreach (var catalogId in catalogIds)
@@ -41,7 +43,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
                     foreach (var channel in channels.Where(c => c.CatalogId == catalogId))
                     {
                         var evaluator = _completenessEvaluators.FirstOrDefault(e => e.GetType().Name == channel.EvaluatorType);
-                        var completenessEntries = evaluator?.EvaluateCompleteness(channel, productsByCatalogId[catalogId].ToArray());
+                        var completenessEntries = await evaluator?.EvaluateCompletenessAsync(channel, productsByCatalogId[catalogId].ToArray());
                         if (completenessEntries?.Any() == true)
                         {
                             foreach (var completenessEntry in completenessEntries)
@@ -55,13 +57,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
             }
 
             IList<IndexDocument> result = documentsByProductId.Values.Where(d => d.Fields.Any()).ToArray();
-            return Task.FromResult(result);
+            return result;
         }
 
 
-        protected virtual IList<CatalogProduct> GetProducts(IList<string> productIds)
+        protected async virtual Task<IList<CatalogProduct>> GetProducts(IList<string> productIds)
         {
-            return _itemService.GetByIds(productIds.ToArray(), ItemResponseGroup.Outlines);
+            return await _itemService.GetByIdsAsync(productIds.ToArray(), ItemResponseGroup.Outlines.ToString());
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 
@@ -8,6 +9,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Services
     /// </summary>
     public interface ICompletenessDetailEvaluator
     {
-        CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products);
+        Task<CompletenessDetail[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products);
     }
 }

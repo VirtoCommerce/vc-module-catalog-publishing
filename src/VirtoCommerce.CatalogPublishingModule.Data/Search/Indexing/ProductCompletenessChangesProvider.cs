@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
-using VirtoCommerce.Domain.Search;
 using VirtoCommerce.Platform.Core.ChangeLog;
+using VirtoCommerce.SearchModule.Core.Model;
+using VirtoCommerce.SearchModule.Core.Services;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
+namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing
 {
     /// <summary>
     /// Extend product indexation process. Invalidate products as changed when products completeness value updated.
@@ -16,16 +17,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
     {
         public const string ChangeLogObjectType = nameof(CompletenessEntryEntity);
 
-        private readonly IChangeLogService _changeLogService;
+        private readonly IChangeLogSearchService _changeLogSearchService;
         private readonly ICompletenessService _completenessService;
 
-        public ProductCompletenessChangesProvider(IChangeLogService changeLogService, ICompletenessService completenessService)
+        public ProductCompletenessChangesProvider(IChangeLogSearchService changeLogSearchService, ICompletenessService completenessService)
         {
-            _changeLogService = changeLogService;
+            _changeLogSearchService = changeLogSearchService;
             _completenessService = completenessService;
         }
 
-        public Task<long> GetTotalChangesCountAsync(DateTime? startDate, DateTime? endDate)
+        public async Task<long> GetTotalChangesCountAsync(DateTime? startDate, DateTime? endDate)
         {
             long result;
 
@@ -37,13 +38,20 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
             else
             {
                 // Get changes count from operation log
-                result = _changeLogService.FindChangeHistory(ChangeLogObjectType, startDate, endDate).Count();
+                result = (await _changeLogSearchService.SearchAsync(
+                    new ChangeLogSearchCriteria()
+                    {
+                        ObjectType = ChangeLogObjectType,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    })
+                ).TotalCount;
             }
 
-            return Task.FromResult(result);
+            return result;
         }
 
-        public Task<IList<IndexDocumentChange>> GetChangesAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
+        public async Task<IList<IndexDocumentChange>> GetChangesAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
         {
             IList<IndexDocumentChange> result;
 
@@ -53,13 +61,19 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
             }
             else
             {
-                var operations = _changeLogService.FindChangeHistory(ChangeLogObjectType, startDate, endDate)
-                    .Skip((int)skip)
-                    .Take((int)take)
-                    .ToArray();
+                var operations = (await _changeLogSearchService.SearchAsync(
+                     new ChangeLogSearchCriteria()
+                     {
+                         ObjectType = ChangeLogObjectType,
+                         StartDate = startDate,
+                         EndDate = endDate,
+                         Skip = (int)skip,
+                         Take = (int)take,
+                     }))
+                .Results;
 
                 var completenessEntryIds = operations.Select(o => o.ObjectId).ToArray();
-                var entryIdsAndProductIds = GetProductIds(completenessEntryIds);
+                var entryIdsAndProductIds = await GetProductIdsAsync(completenessEntryIds);
 
                 result = operations
                     .Where(o => entryIdsAndProductIds.ContainsKey(o.ObjectId))
@@ -72,13 +86,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Services
                     .ToArray();
             }
 
-            return Task.FromResult(result);
+            return result;
         }
 
-        protected virtual IDictionary<string, string> GetProductIds(string[] completenessEntryIds)
+        protected async virtual Task<IDictionary<string, string>> GetProductIdsAsync(string[] completenessEntryIds)
         {
             // TODO: How to get product for deleted completeness entry?
-            var completenessEntries = _completenessService.GetCompletenessEntriesByIds(completenessEntryIds);
+            var completenessEntries = await _completenessService.GetCompletenessEntriesByIdsAsync(completenessEntryIds);
             var result = completenessEntries.ToDictionary(e => e.Id, e => e.ProductId);
             return result;
         }

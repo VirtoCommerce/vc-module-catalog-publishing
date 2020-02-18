@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublis
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Data", "src\VirtoCommerce.CatalogPublishingModule.Data\VirtoCommerce.CatalogPublishingModule.Data.csproj", "{702DA601-B998-45E8-B0C1-E97895B4723F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Data.Search", "src\VirtoCommerce.CatalogPublishingModule.Data.Search\VirtoCommerce.CatalogPublishingModule.Data.Search.csproj", "{7DB2CCA0-184A-4359-842D-28DBCF0B189E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Web", "src\VirtoCommerce.CatalogPublishingModule.Web\VirtoCommerce.CatalogPublishingModule.Web.csproj", "{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Test", "tests\VirtoCommerce.CatalogPublishingModule.Test\VirtoCommerce.CatalogPublishingModule.Test.csproj", "{F5C6FDD1-F543-417A-9346-3CBE434085A7}"
@@ -31,10 +29,6 @@ Global
 		{702DA601-B998-45E8-B0C1-E97895B4723F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{702DA601-B998-45E8-B0C1-E97895B4723F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{702DA601-B998-45E8-B0C1-E97895B4723F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DB2CCA0-184A-4359-842D-28DBCF0B189E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DB2CCA0-184A-4359-842D-28DBCF0B189E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DB2CCA0-184A-4359-842D-28DBCF0B189E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DB2CCA0-184A-4359-842D-28DBCF0B189E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,7 +44,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{37591672-9DE9-425B-8328-85F4C78EC804} = {92E3DD37-35D6-4B89-A048-EC0BBF871245}
 		{702DA601-B998-45E8-B0C1-E97895B4723F} = {92E3DD37-35D6-4B89-A048-EC0BBF871245}
-		{7DB2CCA0-184A-4359-842D-28DBCF0B189E} = {92E3DD37-35D6-4B89-A048-EC0BBF871245}
 		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D} = {92E3DD37-35D6-4B89-A048-EC0BBF871245}
 		{F5C6FDD1-F543-417A-9346-3CBE434085A7} = {6A14233A-7BE8-49E4-88D7-3E37458674B7}
 	EndGlobalSection

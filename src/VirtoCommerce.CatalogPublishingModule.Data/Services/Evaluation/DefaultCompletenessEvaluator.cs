@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
-using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Catalog.Services;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
@@ -24,7 +25,30 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
             DetailEvaluators = detailEvaluators;
         }
 
-        public virtual CompletenessEntry[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public virtual async Task<CompletenessEntry[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)
+        {
+            ValidateParameters(channel, products);
+
+            products = (await _productService.GetByIdsAsync(products.Select(x => x.Id).ToArray(), ItemResponseGroup.ItemLarge.ToString())).ToArray();
+            products = products.Where(x => x.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == channel.CatalogId)).ToArray();
+
+            var details = new List<CompletenessDetail>(products.Length * DetailEvaluators.Count);
+            foreach (var detailEvaluator in DetailEvaluators)
+            {
+                details.AddRange(await detailEvaluator.EvaluateCompletenessAsync(channel, products));
+            }
+            var entries = details.GroupBy(x => x.ProductId)
+                .Select(x =>
+                {
+                    var entry = new CompletenessEntry { ChannelId = channel.Id, ProductId = x.Key, Details = x.AsEnumerable().ToArray() };
+                    entry.CompletenessPercent = (int)Math.Floor(entry.Details.Average(d => d.CompletenessPercent));
+                    return entry;
+                });
+
+            return entries.ToArray();
+        }
+
+        private static void ValidateParameters(CompletenessChannel channel, CatalogProduct[] products)
         {
             if (channel == null)
             {
@@ -34,24 +58,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
             {
                 throw new ArgumentException("Products must be specified", nameof(products));
             }
-
-            products = _productService.GetByIds(products.Select(x => x.Id).ToArray(), ItemResponseGroup.ItemLarge).ToArray();
-            products = products.Where(x => x.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == channel.CatalogId)).ToArray();
-
-            var details = new List<CompletenessDetail>(products.Length * DetailEvaluators.Count);
-            foreach (var detailEvaluator in DetailEvaluators)
-            {
-                details.AddRange(detailEvaluator.EvaluateCompleteness(channel, products));
-            }
-            var entries = details.GroupBy(x => x.ProductId)
-                .Select(x =>
-                {
-                    var entry = new CompletenessEntry { ChannelId = channel.Id, ProductId = x.Key, Details = x.AsEnumerable().ToArray() };
-                    entry.CompletenessPercent = (int) Math.Floor(entry.Details.Average(d => d.CompletenessPercent));
-                    return entry;
-                });
-
-            return entries.ToArray();
         }
     }
 }

@@ -12,13 +12,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-	  <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc3-0141" />
-	  <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.0.0-rc3-0141" />
+	  <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc3-0148" />
+	  <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.0.0-rc3-0148" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj" />
-      <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data.Search\VirtoCommerce.CatalogPublishingModule.Data.Search.csproj" />
       <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data\VirtoCommerce.CatalogPublishingModule.Data.csproj" />
     </ItemGroup>
 

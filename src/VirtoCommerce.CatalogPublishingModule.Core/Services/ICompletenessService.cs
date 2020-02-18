@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 
@@ -5,16 +6,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Services
 {
     public interface ICompletenessService
     {
-        CompletenessChannel[] GetChannelsByIds(string[] ids);
+        Task<CompletenessChannel[]> GetChannelsByIdsAsync(string[] ids);
 
-        CompletenessEntry[] GetCompletenessEntriesByIds(string[] ids);
+        Task<CompletenessEntry[]> GetCompletenessEntriesByIdsAsync(string[] ids);
 
-        void SaveChannels(CompletenessChannel[] channels);
+        Task SaveChannelsAsync(CompletenessChannel[] channels);
 
-        void SaveEntries(CompletenessEntry[] entries);
+        Task SaveEntriesAsync(CompletenessEntry[] entries);
 
-        CompletenessChannelSearchResult SearchChannels(CompletenessChannelSearchCriteria criteria);
+        Task<CompletenessChannelSearchResult> SearchChannelsAsync(CompletenessChannelSearchCriteria criteria);
 
-        void DeleteChannels(string[] ids);
+        Task DeleteChannelsAsync(string[] ids);
     }
 }

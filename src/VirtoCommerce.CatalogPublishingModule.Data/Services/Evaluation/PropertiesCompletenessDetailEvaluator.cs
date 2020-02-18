@@ -1,10 +1,12 @@
-﻿using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Model.Search;
+using VirtoCommerce.CatalogModule.Core.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Common;
-using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
@@ -18,78 +20,105 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
     /// </summary>
     public class PropertiesCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
-        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        private readonly IPropertyDictionaryItemSearchService _propertyDictionaryItemSearchService;
+        private readonly Dictionary<string, bool> _propertyDictionaryHasItemsCache = new Dictionary<string, bool>();
+
+        public PropertiesCompletenessDetailEvaluator(IPropertyDictionaryItemSearchService propertyDictionaryItemSearchService)
         {
-            return products.Select(x =>
+            _propertyDictionaryItemSearchService = propertyDictionaryItemSearchService;
+        }
+
+        public async Task<CompletenessDetail[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)
+        {
+            var result = new List<CompletenessDetail>();
+            foreach (var product in products)
             {
-                var detail = new CompletenessDetail { Name = "Properties", ProductId = x.Id };
-                if (x.Properties.IsNullOrEmpty())
+                var detail = new CompletenessDetail { Name = "Properties", ProductId = product.Id };
+                if (product.Properties.IsNullOrEmpty())
                 {
                     detail.CompletenessPercent = 100;
                 }
                 else
                 {
-                    var properties = x.Properties.Where(p => p != null && p.Required).ToArray();
+                    var properties = product.Properties.Where(p => p != null && p.Required).ToArray();
+                    foreach (var property in properties)
+                    {
+                        await CountPropertyDictionaryItems(property.Id);
+                    }
                     var singleLanguageProperties = properties.Where(p => !p.Multilanguage).ToArray();
                     var multiLanguageProperties = properties.Where(p => p.Multilanguage).ToArray();
-                    var invalidPropertiesCount = singleLanguageProperties.Where(p =>
-                        {
-                            var values = x.PropertyValues.Where(v => v.Property != null && v.Property.Id == p.Id).ToArray();
-                            return IsInvalidProperty(p, values);
-                        })
-                        .Count();
+                    var invalidPropertiesCount = singleLanguageProperties.Count(p =>
+                    {
+                        var values = p.Values.ToArray();
+                        return IsInvalidProperty(p, values);
+                    });
                     var invalidPropertiesPerLanguageCount = channel.Languages
                         .Select(l => multiLanguageProperties
-                            .Where(p =>
+                            .Count(p =>
                             {
-                                var values = x.PropertyValues.Where(v => v.Property != null && v.Property.Id == p.Id).ToArray();
+                                var values = p.Values.ToArray();
                                 return IsInvalidProperty(p, values, l);
-                            })
-                            .Count())
+                            }))
                         .Sum();
                     detail.CompletenessPercent = CompletenessHelper.CalculateCompleteness(singleLanguageProperties.Length + multiLanguageProperties.Length * channel.Languages.Count,
                         invalidPropertiesCount + invalidPropertiesPerLanguageCount);
                 }
-                return detail;
-            }).ToArray();
+                result.Add(detail);
+            }
+            return result.ToArray();
         }
 
-        private static bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode = null)
+        private bool IsInvalidProperty(Property property, PropertyValue[] values, string languageCode = null)
         {
-            var retVal = values.IsNullOrEmpty();
-            if (!retVal)
+            var result = values.IsNullOrEmpty();
+            if (!result)
             {
                 if (property.Dictionary)
                 {
-                    retVal = values.All(pv => !property.DictionaryValues.IsNullOrEmpty() && (property.ValueType != PropertyValueType.ShortText ||
-                                             property.Multilanguage && pv.LanguageCode != languageCode || property.DictionaryValues.All(dv => dv.Value != (string) pv.Value)));
+                    var dictionaryHasItems = _propertyDictionaryHasItemsCache[property.Id];
+                    result = values.All(pv => dictionaryHasItems && (property.ValueType != PropertyValueType.ShortText || property.Multilanguage && pv.LanguageCode != languageCode)
+                    );
                 }
                 else
                 {
-                    retVal = values.All(pv => property.Multilanguage && pv.LanguageCode != languageCode || IsInvalidPropertyValue(pv.ValueType, pv.Value));
+                    result = values.All(pv => property.Multilanguage && pv.LanguageCode != languageCode || IsInvalidPropertyValue(pv.ValueType, pv.Value));
                 }
             }
-            return retVal;
+            return result;
         }
-        
+
+        private async Task CountPropertyDictionaryItems(string propertyId)
+        {
+            if (!_propertyDictionaryHasItemsCache.ContainsKey(propertyId))
+            {
+                var items = await _propertyDictionaryItemSearchService.SearchAsync(
+                    new PropertyDictionaryItemSearchCriteria
+                    {
+                        PropertyIds = new[] { propertyId },
+                        Take = 0,
+                    });
+                _propertyDictionaryHasItemsCache.Add(propertyId, items.TotalCount > 0);
+            }
+        }
+
         private static bool IsInvalidPropertyValue(PropertyValueType type, object value)
         {
-            var retVal = value == null;
-            if (!retVal)
+            var result = value == null;
+            if (!result)
             {
                 switch (type)
                 {
                     case PropertyValueType.ShortText:
                     case PropertyValueType.LongText:
-                        retVal = string.IsNullOrEmpty((string)value);
+                        result = string.IsNullOrEmpty((string)value);
                         break;
                     case PropertyValueType.Number:
-                        retVal = (decimal)value < 0m;
+                        result = (decimal)value < 0m;
                         break;
-                    // No checks for DateTime & Boolean - any value is valid
+                        // No checks for DateTime & Boolean - any value is valid
                 }
             }
-            return retVal;
+            return result;
         }
     }
 }

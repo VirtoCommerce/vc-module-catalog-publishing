@@ -1,9 +1,10 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Common;
-using VirtoCommerce.Domain.Catalog.Model;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
@@ -13,12 +14,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
     /// </summary>
     public class SeoCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
-        public CompletenessDetail[] EvaluateCompleteness(CompletenessChannel channel, CatalogProduct[] products)
+        public Task<CompletenessDetail[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)
         {
             var pattern = @"[$+;=%{}[\]|\\\/@ ~#!^*&?:'<>,]";
-            return products.Select(p =>
+            var result = products.Select(p =>
             {
-                var languagesWithoutValidSeoInfo = channel.Languages.Where(l => {
+                var languagesWithoutValidSeoInfo = channel.Languages.Where(l =>
+                {
                     var seoInfosForLanguage = p.SeoInfos?.Where(si => si.LanguageCode == l).ToArray();
                     return seoInfosForLanguage == null || !seoInfosForLanguage.Any() || seoInfosForLanguage.All(si => string.IsNullOrEmpty(si.SemanticUrl) || Regex.IsMatch(si.SemanticUrl, pattern));
                 });
@@ -30,6 +32,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
                 };
                 return detail;
             }).ToArray();
+
+            return Task.FromResult(result);
         }
     }
 }

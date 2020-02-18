@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Threading.Tasks;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -12,10 +13,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 
         IQueryable<CompletenessChannelEntity> Channels { get; }
 
-        CompletenessChannelEntity[] GetChannelsByIds(string[] ids);
+        Task<CompletenessChannelEntity[]> GetChannelsByIdsAsync(string[] ids);
 
-        CompletenessEntryEntity[] GetEntriesByIds(string[] ids);
+        Task<CompletenessEntryEntity[]> GetEntriesByIdsAsync(string[] ids);
 
-        void DeleteChannels(string[] ids);
+        Task DeleteChannelsAsync(string[] ids);
     }
 }

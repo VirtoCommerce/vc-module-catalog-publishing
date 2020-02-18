@@ -1,73 +1,43 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.SqlClient;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.Platform.Data.Infrastructure;
-using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 {
-    public class CompletenessRepositoryImpl : EFRepositoryBase, ICompletenessRepository
+    public class CompletenessRepositoryImpl : DbContextRepositoryBase<CatalogPublishingDbContext>, ICompletenessRepository
     {
-        public CompletenessRepositoryImpl()
+        public CompletenessRepositoryImpl(CatalogPublishingDbContext dbContext) : base(dbContext)
         {
         }
 
-        public CompletenessRepositoryImpl(string nameOrConnectionString, params IInterceptor[] interceptors)
-            : base(nameOrConnectionString, null, interceptors)
+        public IQueryable<CompletenessEntryEntity> Entries => DbContext.Set<CompletenessEntryEntity>();
+        public IQueryable<CompletenessDetailEntity> Details => DbContext.Set<CompletenessDetailEntity>();
+        public IQueryable<CompletenessChannelEntity> Channels => DbContext.Set<CompletenessChannelEntity>().Include(x => x.Languages).Include(x => x.Currencies);
+
+        public async Task<CompletenessChannelEntity[]> GetChannelsByIdsAsync(string[] ids)
         {
-            Configuration.LazyLoadingEnabled = false;
+            return await Channels.Where(x => ids.Contains(x.Id)).ToArrayAsync();
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        public async Task<CompletenessEntryEntity[]> GetEntriesByIdsAsync(string[] ids)
         {
-            modelBuilder.Entity<CompletenessDetailEntity>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<CompletenessDetailEntity>().HasRequired(x => x.CompletenessEntry).WithMany(x => x.Details).HasForeignKey(x => x.CompletenessEntryId).WillCascadeOnDelete(true);
-            modelBuilder.Entity<CompletenessDetailEntity>().ToTable("CompletenessDetail");
-
-            modelBuilder.Entity<CompletenessEntryEntity>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<CompletenessEntryEntity>().HasRequired(x => x.Channel).WithMany().HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
-            modelBuilder.Entity<CompletenessEntryEntity>().ToTable("CompletenessEntry");
-
-            modelBuilder.Entity<CompletenessChannelLanguageEntity>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<CompletenessChannelLanguageEntity>().HasRequired(x => x.Channel).WithMany(x => x.Languages).HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
-            modelBuilder.Entity<CompletenessChannelLanguageEntity>().ToTable("CompletenessChannelLanguage");
-
-            modelBuilder.Entity<CompletenessChannelCurrencyEntity>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<CompletenessChannelCurrencyEntity>().HasRequired(x => x.Channel).WithMany(x => x.Currencies).HasForeignKey(x => x.ChannelId).WillCascadeOnDelete(true);
-            modelBuilder.Entity<CompletenessChannelCurrencyEntity>().ToTable("CompletenessChannelCurrency");
-
-            modelBuilder.Entity<CompletenessChannelEntity>().HasKey(x => x.Id).Property(x => x.Id);
-            modelBuilder.Entity<CompletenessChannelEntity>().ToTable("CompletenessChannel");
-
-            base.OnModelCreating(modelBuilder);
+            return await Entries.Include(x => x.Channel).Include(x => x.Details).Where(x => ids.Contains(x.Id)).ToArrayAsync();
         }
 
-        public IQueryable<CompletenessEntryEntity> Entries => GetAsQueryable<CompletenessEntryEntity>();
-        public IQueryable<CompletenessDetailEntity> Details => GetAsQueryable<CompletenessDetailEntity>();
-        public IQueryable<CompletenessChannelEntity> Channels => GetAsQueryable<CompletenessChannelEntity>().Include(x => x.Languages).Include(x => x.Currencies);
-
-        public CompletenessChannelEntity[] GetChannelsByIds(string[] ids)
+        public async Task DeleteChannelsAsync(string[] ids)
         {
-            return Channels.Where(x => ids.Contains(x.Id)).ToArray();
-        }
-
-        public CompletenessEntryEntity[] GetEntriesByIds(string[] ids)
-        {
-            return Entries.Include(x => x.Channel).Include(x => x.Details).Where(x => ids.Contains(x.Id)).ToArray();
-        }
-
-        public void DeleteChannels(string[] ids)
-        {
-            ExecuteStoreCommand("DELETE FROM CompletenessChannel WHERE Id IN ({0})", ids);
+            await ExecuteStoreQueryAsync("DELETE FROM CompletenessChannel WHERE Id IN ({0})", ids);
         }
 
 
-        protected virtual void ExecuteStoreCommand(string commandTemplate, IEnumerable<string> parameterValues)
+        protected virtual async Task<int> ExecuteStoreQueryAsync(string commandTemplate, IEnumerable<string> parameterValues)
         {
             var command = CreateCommand(commandTemplate, parameterValues);
-            ObjectContext.ExecuteStoreCommand(command.Text, command.Parameters);
+            return await DbContext.Database.ExecuteSqlRawAsync(command.Text, command.Parameters.ToArray());
         }
 
         protected virtual Command CreateCommand(string commandTemplate, IEnumerable<string> parameterValues)
@@ -78,14 +48,36 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
             return new Command
             {
                 Text = string.Format(commandTemplate, parameterNames),
-                Parameters = parameters.OfType<object>().ToArray(),
+                Parameters = parameters.OfType<object>().ToList(),
             };
+        }
+
+        protected SqlParameter[] AddArrayParameters<T>(Command cmd, string paramNameRoot, IEnumerable<T> values)
+        {
+            /* An array cannot be simply added as a parameter to a SqlCommand so we need to loop through things and add it manually. 
+             * Each item in the array will end up being it's own SqlParameter so the return value for this must be used as part of the
+             * IN statement in the CommandText.
+             */
+            var parameters = new List<SqlParameter>();
+            var parameterNames = new List<string>();
+            var paramNbr = 1;
+            foreach (var value in values)
+            {
+                var paramName = $"{paramNameRoot}{paramNbr++}";
+                parameterNames.Add(paramName);
+                var p = new SqlParameter(paramName, value);
+                cmd.Parameters.Add(p);
+                parameters.Add(p);
+            }
+            cmd.Text = cmd.Text.Replace(paramNameRoot, string.Join(",", parameterNames));
+
+            return parameters.ToArray();
         }
 
         protected class Command
         {
             public string Text { get; set; }
-            public object[] Parameters { get; set; }
+            public IList<object> Parameters { get; set; } = new List<object>();
         }
     }
 }
