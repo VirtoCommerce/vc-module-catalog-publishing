@@ -1,69 +1,50 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Practices.Unity;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
-using VirtoCommerce.CatalogPublishingModule.Data.Model;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
-using VirtoCommerce.CatalogPublishingModule.Data.Search.Services;
+using VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation;
-using VirtoCommerce.Domain.Search;
 using VirtoCommerce.Platform.Core.Modularity;
-using VirtoCommerce.Platform.Core.Security;
-using VirtoCommerce.Platform.Data.Infrastructure;
-using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
-using VirtoCommerce.Platform.Data.Repositories;
+using VirtoCommerce.SearchModule.Core.Model;
 
 namespace VirtoCommerce.CatalogPublishingModule.Web
 {
-    public class Module : ModuleBase
+    public class Module : IModule
     {
-        private const string _connectionStringName = "VirtoCommerce";
-        private readonly IUnityContainer _container;
+        public ManifestModuleInfo ModuleInfo { get; set; }
 
-        public Module(IUnityContainer container)
+        public void Initialize(IServiceCollection serviceCollection)
         {
-            _container = container;
+            var configuration = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            serviceCollection.AddTransient<ICompletenessRepository, CompletenessRepositoryImpl>();
+            var connectionString = configuration.GetConnectionString("VirtoCommerce");
+            serviceCollection.AddDbContext<CatalogPublishingDbContext>(options => options.UseSqlServer(connectionString));
+            serviceCollection.AddSingleton<Func<ICompletenessRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<ICompletenessRepository>());
+
+            serviceCollection.AddTransient<ICompletenessService, CompletenessServiceImpl>();
+            serviceCollection.AddTransient<ICompletenessEvaluator, DefaultCompletenessEvaluator>();
+            serviceCollection.AddTransient<ICompletenessDetailEvaluator, PropertiesCompletenessDetailEvaluator>();
+            serviceCollection.AddTransient<ICompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>();
+            serviceCollection.AddTransient<ICompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>();
+            serviceCollection.AddTransient<ICompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>();
         }
 
-        public override void SetupDatabase()
+        public void PostInitialize(IApplicationBuilder appBuilder)
         {
-            using (var context = new CompletenessRepositoryImpl(_connectionStringName, _container.Resolve<AuditableInterceptor>()))
-            {
-                var initializer = new SetupDatabaseInitializer<CompletenessRepositoryImpl, Data.Migrations.Configuration>();
-                initializer.InitializeDatabase(context);
-            }
-        }
+            var productIndexingConfigurations = appBuilder.ApplicationServices.GetServices<IndexDocumentConfiguration>();
 
-        public override void Initialize()
-        {
-            base.Initialize();
-
-            _container.RegisterType<ICompletenessRepository>(new InjectionFactory(c => new CompletenessRepositoryImpl(_connectionStringName, new EntityPrimaryKeyGeneratorInterceptor(), _container.Resolve<AuditableInterceptor>(),
-                new ChangeLogInterceptor(_container.Resolve<Func<IPlatformRepository>>(), ChangeLogPolicy.Cumulative, new[] { typeof(CompletenessEntryEntity).Name }))));
-            _container.RegisterType<ICompletenessService, CompletenessServiceImpl>();
-
-            _container.RegisterType<ICompletenessEvaluator, DefaultCompletenessEvaluator>(nameof(DefaultCompletenessEvaluator));
-            _container.RegisterType<ICompletenessDetailEvaluator, PropertiesCompletenessDetailEvaluator>(nameof(PropertiesCompletenessDetailEvaluator));
-            _container.RegisterType<ICompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>(nameof(DescriptionsCompletenessDetailEvaluator));
-            _container.RegisterType<ICompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>(nameof(PricesCompletenessDetailEvaluator));
-            _container.RegisterType<ICompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>(nameof(SeoCompletenessDetailEvaluator));
-        }
-
-        public override void PostInitialize()
-        {
-            base.PostInitialize();
-
-            #region Search
-
-            var productIndexingConfigurations = _container.Resolve<IndexDocumentConfiguration[]>();
             if (productIndexingConfigurations != null)
             {
                 var productCompletenessDocumentSource = new IndexDocumentSource
                 {
-                    ChangesProvider = _container.Resolve<ProductCompletenessChangesProvider>(),
-                    DocumentBuilder = _container.Resolve<ProductCompletenessDocumentBuilder>(),
+                    ChangesProvider = appBuilder.ApplicationServices.GetService<ProductCompletenessChangesProvider>(),
+                    DocumentBuilder = appBuilder.ApplicationServices.GetService<ProductCompletenessDocumentBuilder>(),
                 };
 
                 foreach (var configuration in productIndexingConfigurations.Where(c => c.DocumentType == KnownDocumentTypes.Product))
@@ -76,8 +57,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
                     configuration.RelatedSources.Add(productCompletenessDocumentSource);
                 }
             }
+        }
 
-            #endregion
+        public void Uninstall()
+        {
+            // Not needed
         }
     }
 }
