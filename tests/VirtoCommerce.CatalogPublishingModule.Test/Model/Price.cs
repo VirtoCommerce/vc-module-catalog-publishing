@@ -1,6 +1,6 @@
-﻿namespace VirtoCommerce.CatalogPublishingModule.Test.Model
+namespace VirtoCommerce.CatalogPublishingModule.Test.Model
 {
-    public class Price : Domain.Pricing.Model.Price
+    public class Price : PricingModule.Core.Model.Price
     {
         public override string ToString()
         {

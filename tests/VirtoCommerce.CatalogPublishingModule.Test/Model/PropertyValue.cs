@@ -1,6 +1,6 @@
-﻿namespace VirtoCommerce.CatalogPublishingModule.Test.Model
+namespace VirtoCommerce.CatalogPublishingModule.Test.Model
 {
-    public class PropertyValue : Domain.Catalog.Model.PropertyValue
+    public class PropertyValue : CatalogModule.Core.Model.PropertyValue
     {
         public override string ToString()
         {

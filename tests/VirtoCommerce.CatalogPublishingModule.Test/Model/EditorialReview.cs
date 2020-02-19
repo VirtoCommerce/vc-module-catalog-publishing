@@ -1,6 +1,6 @@
-﻿namespace VirtoCommerce.CatalogPublishingModule.Test.Model
+namespace VirtoCommerce.CatalogPublishingModule.Test.Model
 {
-    public class EditorialReview : Domain.Catalog.Model.EditorialReview
+    public class EditorialReview : CatalogModule.Core.Model.EditorialReview
     {
         public override string ToString()
         {
