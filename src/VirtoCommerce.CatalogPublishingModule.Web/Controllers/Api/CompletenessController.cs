@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
@@ -32,14 +33,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         private readonly IPushNotificationManager _pushNotifier;
 
         public CompletenessController(ICompletenessService completenessService,
-            ICompletenessEvaluator[] completenessEvaluators,
+            IEnumerable<ICompletenessEvaluator> completenessEvaluators,
             IProductIndexedSearchService productIndexedSearchService,
             IItemService productService,
             IUserNameResolver userNameResolver,
             IPushNotificationManager pushNotifier)
         {
             _completenessService = completenessService;
-            _completenessEvaluators = completenessEvaluators;
+            _completenessEvaluators = completenessEvaluators.ToArray();
             _productIndexedSearchService = productIndexedSearchService;
             _productService = productService;
             _userNameResolver = userNameResolver;

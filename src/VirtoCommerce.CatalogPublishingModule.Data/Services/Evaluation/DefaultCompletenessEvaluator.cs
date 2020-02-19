@@ -19,10 +19,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 
         protected IReadOnlyCollection<ICompletenessDetailEvaluator> DetailEvaluators { get; }
 
-        public DefaultCompletenessEvaluator(ICompletenessDetailEvaluator[] detailEvaluators, IItemService productService)
+        public DefaultCompletenessEvaluator(IEnumerable<ICompletenessDetailEvaluator> detailEvaluators, IItemService productService)
         {
             _productService = productService;
-            DetailEvaluators = detailEvaluators;
+            DetailEvaluators = detailEvaluators.ToArray();
         }
 
         public virtual async Task<CompletenessEntry[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)

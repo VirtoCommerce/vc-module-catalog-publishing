@@ -20,11 +20,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing
         private readonly ICompletenessService _completenessService;
         private readonly ICompletenessEvaluator[] _completenessEvaluators;
 
-        public ProductCompletenessDocumentBuilder(IItemService itemService, ICompletenessService completenessService, ICompletenessEvaluator[] completenessEvaluators)
+        public ProductCompletenessDocumentBuilder(IItemService itemService, ICompletenessService completenessService, IEnumerable<ICompletenessEvaluator> completenessEvaluators)
         {
             _itemService = itemService;
             _completenessService = completenessService;
-            _completenessEvaluators = completenessEvaluators;
+            _completenessEvaluators = completenessEvaluators.ToArray();
         }
 
         public async Task<IList<IndexDocument>> GetDocumentsAsync(IList<string> documentIds)
