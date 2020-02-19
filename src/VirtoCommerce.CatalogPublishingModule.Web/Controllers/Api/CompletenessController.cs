@@ -1,42 +1,46 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Net;
-using System.Web.Http;
-using System.Web.Http.Description;
+using System.Threading.Tasks;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Model.Search;
+using VirtoCommerce.CatalogModule.Core.Search;
+using VirtoCommerce.CatalogModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Core;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Web.Model;
-using VirtoCommerce.CatalogPublishingModule.Web.Security;
-using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Catalog.Services;
-using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
-using VirtoCommerce.Platform.Core.Web.Security;
-using VirtoCommerce.Platform.Data.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
 {
-    [RoutePrefix("api/completeness")]
-    public class CompletenessController : ApiController
+    [Route("api/completeness")]
+    public class CompletenessController : Controller
     {
         private readonly ICompletenessService _completenessService;
         private readonly ICompletenessEvaluator[] _completenessEvaluators;
-        private readonly ICatalogSearchService _catalogSearchService;
+        private readonly IProductIndexedSearchService _productIndexedSearchService;
         private readonly IItemService _productService;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _pushNotifier;
 
-        public CompletenessController(ICompletenessService completenessService, ICompletenessEvaluator[] completenessEvaluators,
-            ICatalogSearchService catalogSearchService, IItemService productService,
-            IUserNameResolver userNameResolver, IPushNotificationManager pushNotifier)
+        public CompletenessController(ICompletenessService completenessService,
+            ICompletenessEvaluator[] completenessEvaluators,
+            IProductIndexedSearchService productIndexedSearchService,
+            IItemService productService,
+            IUserNameResolver userNameResolver,
+            IPushNotificationManager pushNotifier)
         {
             _completenessService = completenessService;
             _completenessEvaluators = completenessEvaluators;
-            _catalogSearchService = catalogSearchService;
+            _productIndexedSearchService = productIndexedSearchService;
             _productService = productService;
             _userNameResolver = userNameResolver;
             _pushNotifier = pushNotifier;
@@ -47,10 +51,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// </summary>
         [HttpGet]
         [Route("evaluators")]
-        [ResponseType(typeof(string[]))]
-        public IHttpActionResult GetEvaluators()
+        [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+        public Task<ActionResult<string[]>> GetEvaluators()
         {
-            return Ok(_completenessEvaluators.Select(x => x.GetType().Name));
+            var result = (_completenessEvaluators.Select(x => x.GetType().Name).ToArray());
+
+            return Task.FromResult<ActionResult<string[]>>(Ok(result));
         }
 
         /// <summary>
@@ -59,11 +65,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <remarks>Evaluate completeness for specified channel. Result will be saved to database.</remarks>
         [HttpPost]
         [Route("channels/{id}/evaluate")]
-        [ResponseType(typeof(PushNotification))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Update)]
-        public IHttpActionResult EvaluateChannelCompleteness(string id)
+        [ProducesResponseType(typeof(EvaluateCompletenessNotification), StatusCodes.Status200OK)]
+        [Authorize(ModuleConstants.Security.Permissions.Update)]
+        public async Task<ActionResult<EvaluateCompletenessNotification>> EvaluateChannelCompletenessAsync([FromQuery]string id)
         {
-            return EvaluateCompleteness("EvaluateCompleteness", "Evaluate completeness task", notification => BackgroundJob.Enqueue(() => EvaluateCompletenessJob(id, notification)));
+            return await EvaluateCompletenessAsync("EvaluateCompleteness", "Evaluate completeness task", notification => BackgroundJob.Enqueue(() => EvaluateCompletenessJob(id, notification)));
         }
 
         /// <summary>
@@ -72,10 +78,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <remarks>Evaluate completeness for specified products</remarks>
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
-        [ResponseType(typeof(CompletenessEntry[]))]
-        public IHttpActionResult EvaluateProductsCompleteness(string id, [FromBody] string[] productIds)
+        [ProducesResponseType(typeof(CompletenessEntry[]), StatusCodes.Status200OK)]
+        public async Task<ActionResult> EvaluateProductsCompleteness([FromQuery]string id, [FromBody] string[] productIds)
         {
-            var channel = _completenessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
+            var channel = (await _completenessService.GetChannelsByIdsAsync(new[] { id })).FirstOrDefault();
+
             if (channel == null)
             {
                 throw new ArgumentException("Channel with specified ID not found", nameof(id));
@@ -92,13 +99,15 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
                 throw new ArgumentNullException(nameof(productIds));
             }
 
-            var products = _productService.GetByIds(productIds, ItemResponseGroup.ItemInfo);
+            var products = await _productService.GetByIdsAsync(productIds, ItemResponseGroup.ItemInfo.ToString());
             if (products == null)
             {
                 throw new ArgumentException("Products with specified IDs not found", nameof(productIds));
             }
 
-            return Ok(evaluator.EvaluateCompleteness(channel, products));
+            var result = await evaluator.EvaluateCompletenessAsync(channel, products);
+
+            return Ok(result);
         }
 
         /// <summary>
@@ -107,12 +116,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <param name="entries">Evaluated entries</param>
         [HttpPut]
         [Route("entries")]
-        [ResponseType(typeof(void))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Update)]
-        public IHttpActionResult SaveEntries(CompletenessEntry[] entries)
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [Authorize(ModuleConstants.Security.Permissions.Update)]
+        public async Task<ActionResult> SaveEntries([FromBody]CompletenessEntry[] entries)
         {
-            _completenessService.SaveEntries(entries);
-            return StatusCode(HttpStatusCode.NoContent);
+            await _completenessService.SaveEntriesAsync(entries);
+
+            return NoContent();
         }
 
         /// <summary>
@@ -121,15 +131,18 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <param name="id">Channel id</param>
         [HttpGet]
         [Route("channels/{id}")]
-        [ResponseType(typeof(CompletenessChannel))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Read)]
-        public IHttpActionResult GetChannel(string id)
+        [ProducesResponseType(typeof(CompletenessChannel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
+        public async Task<ActionResult<CompletenessChannel>> GetChannel([FromQuery]string id)
         {
-            var channel = _completenessService.GetChannelsByIds(new[] { id }).FirstOrDefault();
+            var channel = (await _completenessService.GetChannelsByIdsAsync(new[] { id })).FirstOrDefault();
+
             if (channel == null)
             {
                 return NotFound();
             }
+
             return Ok(channel);
         }
 
@@ -139,15 +152,17 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <remarks>Search channels by given criteria</remarks>
         [HttpPost]
         [Route("channels/search")]
-        [ResponseType(typeof(GenericSearchResult<CompletenessChannel>))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Read)]
-        public IHttpActionResult SearchChannel(CompletenessChannelSearchCriteria criteria)
+        [ProducesResponseType(typeof(CompletenessChannelSearchResult), StatusCodes.Status200OK)]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
+        public async Task<ActionResult<CompletenessChannelSearchResult>> SearchChannel([FromBody]CompletenessChannelSearchCriteria criteria)
         {
             if (criteria == null)
             {
                 criteria = new CompletenessChannelSearchCriteria();
             }
-            var result = _completenessService.SearchChannels(criteria);
+
+            var result = await _completenessService.SearchChannelsAsync(criteria);
+
             return Ok(result);
         }
 
@@ -157,11 +172,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <param name="channel">Channel</param>
         [HttpPost]
         [Route("channels")]
-        [ResponseType(typeof(CompletenessChannel))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Create)]
-        public IHttpActionResult CreateChannel(CompletenessChannel channel)
+        [ProducesResponseType(typeof(CompletenessChannel), StatusCodes.Status200OK)]
+        [Authorize(ModuleConstants.Security.Permissions.Create)]
+        public async Task<ActionResult<CompletenessChannel>> CreateChannel([FromBody]CompletenessChannel channel)
         {
-            _completenessService.SaveChannels(new[] { channel });
+            await _completenessService.SaveChannelsAsync(new[] { channel });
+
             return Ok(channel);
         }
 
@@ -171,12 +187,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <param name="channel">Channel</param>
         [HttpPut]
         [Route("channels")]
-        [ResponseType(typeof(void))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Update)]
-        public IHttpActionResult UpdateChannel(CompletenessChannel channel)
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [Authorize(ModuleConstants.Security.Permissions.Update)]
+        public async Task<ActionResult> UpdateChannel([FromBody]CompletenessChannel channel)
         {
-            _completenessService.SaveChannels(new[] { channel });
-            return StatusCode(HttpStatusCode.NoContent);
+            await _completenessService.SaveChannelsAsync(new[] { channel });
+
+            return NoContent();
         }
 
         /// <summary>
@@ -186,22 +203,23 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <param name="ids">An array of channels ids</param>
         [HttpDelete]
         [Route("channels")]
-        [ResponseType(typeof(void))]
-        [CheckPermission(Permission = ChannelPredefinedPermissions.Delete)]
-        public IHttpActionResult DeleteChannels([FromUri] string[] ids)
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [Authorize(ModuleConstants.Security.Permissions.Delete)]
+        public async Task<ActionResult> DeleteChannels([FromQuery] string[] ids)
         {
-            _completenessService.DeleteChannels(ids);
-            return StatusCode(HttpStatusCode.NoContent);
+            await _completenessService.DeleteChannelsAsync(ids);
+
+            return NoContent();
         }
 
-        private IHttpActionResult EvaluateCompleteness(string notifyType, string notificationDescription, Action<EvaluateCompletenessNotification> job)
+        private async Task<ActionResult<EvaluateCompletenessNotification>> EvaluateCompletenessAsync(string notifyType, string notificationDescription, Action<EvaluateCompletenessNotification> job)
         {
             var notification = new EvaluateCompletenessNotification(_userNameResolver.GetCurrentUserName(), notifyType)
             {
                 Title = notificationDescription,
                 Description = "Starting evaluation..."
             };
-            _pushNotifier.Upsert(notification);
+            await _pushNotifier.SendAsync(notification);
 
             job(notification);
 
@@ -209,9 +227,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        public void EvaluateCompletenessJob(string channelId, EvaluateCompletenessNotification notification)
+        public async Task EvaluateCompletenessJob(string channelId, EvaluateCompletenessNotification notification)
         {
-            var channel = _completenessService.GetChannelsByIds(new[] { channelId }).FirstOrDefault();
+            var channel = (await _completenessService.GetChannelsByIdsAsync(new[] { channelId })).FirstOrDefault();
             if (channel == null)
             {
                 throw new ArgumentException("Channel with specified ID not found", nameof(channelId));
@@ -226,27 +244,26 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             try
             {
                 const int productsPerIterationCount = 50;
-                notification.TotalCount = _catalogSearchService
-                    .Search(new SearchCriteria { CatalogId = channel.CatalogId, SearchInChildren = true, ResponseGroup = SearchResponseGroup.WithProducts, Take = 0 })
-                    .ProductsTotalCount;
+                notification.TotalCount = (await _productIndexedSearchService
+                    .SearchAsync(new ProductIndexedSearchCriteria { CatalogId = channel.CatalogId, ResponseGroup = ItemResponseGroup.ItemInfo.ToString(), Take = 0 }))
+                    .TotalCount;
                 do
                 {
-                    var products = _catalogSearchService
-                        .Search(new SearchCriteria
+                    var products = (await _productIndexedSearchService
+                        .SearchAsync(new ProductIndexedSearchCriteria
                         {
                             CatalogId = channel.CatalogId,
-                            SearchInChildren = true,
-                            ResponseGroup = SearchResponseGroup.WithProducts,
+                            ResponseGroup = ItemResponseGroup.ItemInfo.ToString(),
                             Skip = (int)notification.ProcessedCount,
                             Take = productsPerIterationCount
-                        }).Products;
+                        })).Items;
 
-                    var entries = evaluator.EvaluateCompleteness(channel, products.ToArray());
+                    var entries = await evaluator.EvaluateCompletenessAsync(channel, products.ToArray());
                     notification.Completeness = entries;
-                    _completenessService.SaveEntries(entries);
+                    await _completenessService.SaveEntriesAsync(entries);
 
-                    notification.ProcessedCount += products.Count;
-                    _pushNotifier.Upsert(notification);
+                    notification.ProcessedCount += products.Length;
+                    await _pushNotifier.SendAsync(notification);
                 } while (notification.ProcessedCount < notification.TotalCount);
             }
             catch (Exception ex)
@@ -258,7 +275,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             {
                 notification.Description = "Evaluation finished";
                 notification.Finished = DateTime.UtcNow;
-                _pushNotifier.Upsert(notification);
+                await _pushNotifier.SendAsync(notification);
             }
         }
     }
