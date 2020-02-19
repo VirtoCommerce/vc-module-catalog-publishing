@@ -9,7 +9,7 @@ using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
 {
     [DbContext(typeof(CatalogPublishingDbContext))]
-    [Migration("20000000000000_UpdateCustomerReviewsV2")]
+    [Migration("20000000000000_UpdateCatalogPublishingV2")]
     partial class UpdateCatalogPublishingV2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
