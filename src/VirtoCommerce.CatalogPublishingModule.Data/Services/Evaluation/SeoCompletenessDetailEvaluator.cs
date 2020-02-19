@@ -10,7 +10,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
     /// <summary>
     /// Properties validator. Check that products have at least one SEO per channel language,
-    /// URL keyword of which is not null or empty and does not contain invalid symbols (where invalid symbols is $+;=%{}[]|\/@ ~#!^*&?:'&lt;&gt;,)
+    /// URL keyword of which is not null or empty and does not contain invalid symbols (where invalid symbols is $+;=%{}[]|\/@ ~#!^*&amp;?:'&lt;&gt;,)
     /// </summary>
     public class SeoCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {

@@ -14,7 +14,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
     /// <summary>
     /// Properties validator. Check the following statements:
     /// • One of property dictionary values (for dictionary properties);
-    /// • For value of type Short text & Long text: is not null or empty;
+    /// • For value of type Short text &amp; Long text: is not null or empty;
     /// • For value of type Number: is greater than or equal to zero;
     /// • Any value successfully parsed as Date time or Boolean is valid;
     /// </summary>

@@ -11,7 +11,7 @@ using VirtoCommerce.Platform.Core.Common;
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
     /// <summary>
-    /// Default completeness evaluator. Provides completeness for properties, descriptions, prices & seo by default
+    /// Default completeness evaluator. Provides completeness for properties, descriptions, prices &amp; seo by default
     /// </summary>
     public class DefaultCompletenessEvaluator : ICompletenessEvaluator
     {
