@@ -37,6 +37,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             serviceCollection.AddTransient<ICompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>();
             serviceCollection.AddTransient<ICompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>();
             serviceCollection.AddTransient<ICompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>();
+
+            serviceCollection.AddTransient<ProductCompletenessChangesProvider>();
+            serviceCollection.AddTransient<ProductCompletenessDocumentBuilder>();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
@@ -50,8 +53,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             {
                 var productCompletenessDocumentSource = new IndexDocumentSource
                 {
-                    ChangesProvider = appBuilder.ApplicationServices.GetService<ProductCompletenessChangesProvider>(),
-                    DocumentBuilder = appBuilder.ApplicationServices.GetService<ProductCompletenessDocumentBuilder>(),
+                    ChangesProvider = appBuilder.ApplicationServices.GetRequiredService<ProductCompletenessChangesProvider>(),
+                    DocumentBuilder = appBuilder.ApplicationServices.GetRequiredService<ProductCompletenessDocumentBuilder>(),
                 };
 
                 foreach (var configuration in productIndexingConfigurations.Where(c => c.DocumentType == KnownDocumentTypes.Product))
