@@ -31,7 +31,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<CompletenessChannelCurrencyEntity>()
                 .HasOne(x => x.Channel)
-                .WithMany()
+                .WithMany(x => x.Currencies)
                 .HasForeignKey(x => x.ChannelId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -43,7 +43,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<CompletenessChannelLanguageEntity>()
                 .HasOne(x => x.Channel)
-                .WithMany()
+                .WithMany(x => x.Languages)
                 .HasForeignKey(x => x.ChannelId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -67,7 +67,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<CompletenessDetailEntity>()
                 .HasOne(x => x.CompletenessEntry)
-                .WithMany()
+                .WithMany(x => x.Details)
                 .HasForeignKey(x => x.CompletenessEntryId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);

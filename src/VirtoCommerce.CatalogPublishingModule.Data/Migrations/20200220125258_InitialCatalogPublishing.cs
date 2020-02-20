@@ -32,8 +32,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 {
                     Id = table.Column<string>(maxLength: 128, nullable: false),
                     CurrencyCode = table.Column<string>(maxLength: 64, nullable: false),
-                    ChannelId = table.Column<string>(nullable: false),
-                    CompletenessChannelEntityId = table.Column<string>(nullable: true)
+                    ChannelId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,12 +43,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         principalTable: "CompletenessChannel",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompletenessChannelCurrency_CompletenessChannel_CompletenessChannelEntityId",
-                        column: x => x.CompletenessChannelEntityId,
-                        principalTable: "CompletenessChannel",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,8 +51,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 {
                     Id = table.Column<string>(maxLength: 128, nullable: false),
                     LanguageCode = table.Column<string>(nullable: false),
-                    ChannelId = table.Column<string>(nullable: false),
-                    CompletenessChannelEntityId = table.Column<string>(nullable: true)
+                    ChannelId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,12 +62,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         principalTable: "CompletenessChannel",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompletenessChannelLanguage_CompletenessChannel_CompletenessChannelEntityId",
-                        column: x => x.CompletenessChannelEntityId,
-                        principalTable: "CompletenessChannel",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -109,18 +95,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                     Id = table.Column<string>(maxLength: 128, nullable: false),
                     Name = table.Column<string>(maxLength: 128, nullable: false),
                     CompletenessPercent = table.Column<int>(nullable: false),
-                    CompletenessEntryId = table.Column<string>(nullable: false),
-                    CompletenessEntryEntityId = table.Column<string>(nullable: true)
+                    CompletenessEntryId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CompletenessDetail", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CompletenessDetail_CompletenessEntry_CompletenessEntryEntityId",
-                        column: x => x.CompletenessEntryEntityId,
-                        principalTable: "CompletenessEntry",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CompletenessDetail_CompletenessEntry_CompletenessEntryId",
                         column: x => x.CompletenessEntryId,
@@ -135,24 +114,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 column: "ChannelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompletenessChannelCurrency_CompletenessChannelEntityId",
-                table: "CompletenessChannelCurrency",
-                column: "CompletenessChannelEntityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CompletenessChannelLanguage_ChannelId",
                 table: "CompletenessChannelLanguage",
                 column: "ChannelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompletenessChannelLanguage_CompletenessChannelEntityId",
-                table: "CompletenessChannelLanguage",
-                column: "CompletenessChannelEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompletenessDetail_CompletenessEntryEntityId",
-                table: "CompletenessDetail",
-                column: "CompletenessEntryEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CompletenessDetail_CompletenessEntryId",

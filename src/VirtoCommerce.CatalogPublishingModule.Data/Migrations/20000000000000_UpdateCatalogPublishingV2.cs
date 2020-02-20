@@ -7,10 +7,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(
-                @"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__MigrationHistory'))
-                IF (EXISTS (SELECT * FROM __MigrationHistory WHERE ContextKey = 'VirtoCommerce.CatalogPublishingModule.Data.Data.Migrations.Configuration'))
+                @"IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__MigrationHistory'))
+                IF (EXISTS (SELECT 1 FROM __MigrationHistory WHERE ContextKey = 'VirtoCommerce.CatalogPublishingModule.Data.Migrations.Configuration'))
                     BEGIN
-                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20200218125100_InitialCatalogPublishing', '2.2.3-servicing-35854')
+                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20200220125258_InitialCatalogPublishing', '2.2.3-servicing-35854')
                     END");
         }
 
