@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -12,8 +12,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-	  <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.0.0-rc.3" />
-	  <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc3-0149" />
+	  <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.0.0-rc.3-001" />
+	  <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc3-0150" />
     </ItemGroup>
 
 </Project>
