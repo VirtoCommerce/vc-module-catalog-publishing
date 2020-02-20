@@ -68,7 +68,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [Route("channels/{id}/evaluate")]
         [ProducesResponseType(typeof(EvaluateCompletenessNotification), StatusCodes.Status200OK)]
         [Authorize(ModuleConstants.Security.Permissions.Update)]
-        public async Task<ActionResult<EvaluateCompletenessNotification>> EvaluateChannelCompletenessAsync([FromQuery]string id)
+        public async Task<ActionResult<EvaluateCompletenessNotification>> EvaluateChannelCompletenessAsync([FromRoute]string id)
         {
             return await EvaluateCompletenessAsync("EvaluateCompleteness", "Evaluate completeness task", notification => BackgroundJob.Enqueue(() => EvaluateCompletenessJob(id, notification)));
         }
@@ -80,7 +80,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
         [ProducesResponseType(typeof(CompletenessEntry[]), StatusCodes.Status200OK)]
-        public async Task<ActionResult> EvaluateProductsCompleteness([FromQuery]string id, [FromBody] string[] productIds)
+        public async Task<ActionResult> EvaluateProductsCompleteness([FromRoute]string id, [FromBody] string[] productIds)
         {
             var channel = (await _completenessService.GetChannelsByIdsAsync(new[] { id })).FirstOrDefault();
 
@@ -135,7 +135,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [ProducesResponseType(typeof(CompletenessChannel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [Authorize(ModuleConstants.Security.Permissions.Read)]
-        public async Task<ActionResult<CompletenessChannel>> GetChannel([FromQuery]string id)
+        public async Task<ActionResult<CompletenessChannel>> GetChannel([FromRoute]string id)
         {
             var channel = (await _completenessService.GetChannelsByIdsAsync(new[] { id })).FirstOrDefault();
 
@@ -206,7 +206,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [Route("channels")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [Authorize(ModuleConstants.Security.Permissions.Delete)]
-        public async Task<ActionResult> DeleteChannels([FromQuery] string[] ids)
+        public async Task<ActionResult> DeleteChannels([FromRoute] string[] ids)
         {
             await _completenessService.DeleteChannelsAsync(ids);
 
