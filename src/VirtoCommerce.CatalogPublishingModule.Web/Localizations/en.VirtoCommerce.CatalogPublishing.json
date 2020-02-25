@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "Channels",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "total": "Total",
+          "processed": "Processed",
+          "errors": "Errors",
+          "errors-count": "Errors count"
+        }
+      },
+      "channel-list": {
+        "title": "Channels",
+        "labels": {
+          "name": "Name",
+          "catalog": "Catalog",
+          "completeness-percent": "Complete"
+        }
+      },
+      "channel-details": {
+        "new-title": "New channel",
+        "title": "Channel",
+        "labels": {
+          "name": "Name",
+          "name-description": "This field accepts latin symbols, digits and underscore symbol",
+          "name-pattern-error-message": "This field can contain only latin symbols and digits",
+          "languages": "Languages",
+          "languages-description": "List of languages which will be used in product validation",
+          "currencies": "Currencies",
+          "currencies-description": "List of currencies which will be used in product validation",
+          "catalog": "Catalog",
+          "catalog-description": "The catalog for which channel will be created",
+          "evaluator": "Evaluator type",
+          "evaluator-description": "The set of algorithms to evaluate product publishing completeness",
+          "evaluate": "Evaluate"
+        },
+        "placeholders": {
+          "enter-value": "Enter value",
+          "currencies": "Select at least one currency for this channel",
+          "languages": "Select at least one language for this channel",
+          "catalog": "Select catalog",
+          "evaluator": "Select completeness evaluator"
+        }
+      },
+      "channel-select": {
+        "title": "Select a channel",
+        "labels": {
+          "channels": "Select a channel"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "Channel evaluate progress"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "Save changes",
+        "message": "The channel has been modified. Do you want to save changes?"
+      },
+      "channel-delete": {
+        "title": "Delete confirmation",
+        "message": "Are you sure you want to delete selected Catalog Publishing Channels?"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "Completeness for channel ",
+        "no-channels-message": "No channels available"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "Open channels menu",
+    "channel:create": "Create channel",
+    "channel:read": "View channel",
+    "channel:update": "Update channel",
+    "channel:delete": "Delete channel"
+  }
+}

@@ -1,17 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Web", "VirtoCommerce.CatalogPublishingModule.Web\VirtoCommerce.CatalogPublishingModule.Web.csproj", "{D0E913FC-C25F-4BA7-96BE-FA0EF94153C3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{92E3DD37-35D6-4B89-A048-EC0BBF871245}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Core", "VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj", "{451FECD7-A434-4A0B-B54A-56D92C99D17C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6A14233A-7BE8-49E4-88D7-3E37458674B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Data", "VirtoCommerce.CatalogPublishingModule.Data\VirtoCommerce.CatalogPublishingModule.Data.csproj", "{CC97F906-DEB0-4D07-B83D-5D6829094ADA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Core", "src\VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj", "{37591672-9DE9-425B-8328-85F4C78EC804}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Test", "VirtoCommerce.CatalogPublishingModule.Test\VirtoCommerce.CatalogPublishingModule.Test.csproj", "{50874BF9-0F61-4B9A-9645-ADC13F2801AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Data", "src\VirtoCommerce.CatalogPublishingModule.Data\VirtoCommerce.CatalogPublishingModule.Data.csproj", "{702DA601-B998-45E8-B0C1-E97895B4723F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CatalogPublishingModule.Data.Search", "VirtoCommerce.CatalogPublishingModule.Data.Search\VirtoCommerce.CatalogPublishingModule.Data.Search.csproj", "{81B946F3-813C-424A-8748-A27337672ADD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Web", "src\VirtoCommerce.CatalogPublishingModule.Web\VirtoCommerce.CatalogPublishingModule.Web.csproj", "{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CatalogPublishingModule.Test", "tests\VirtoCommerce.CatalogPublishingModule.Test\VirtoCommerce.CatalogPublishingModule.Test.csproj", "{F5C6FDD1-F543-417A-9346-3CBE434085A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,28 +21,33 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D0E913FC-C25F-4BA7-96BE-FA0EF94153C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D0E913FC-C25F-4BA7-96BE-FA0EF94153C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0E913FC-C25F-4BA7-96BE-FA0EF94153C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0E913FC-C25F-4BA7-96BE-FA0EF94153C3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{451FECD7-A434-4A0B-B54A-56D92C99D17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{451FECD7-A434-4A0B-B54A-56D92C99D17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{451FECD7-A434-4A0B-B54A-56D92C99D17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{451FECD7-A434-4A0B-B54A-56D92C99D17C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC97F906-DEB0-4D07-B83D-5D6829094ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC97F906-DEB0-4D07-B83D-5D6829094ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC97F906-DEB0-4D07-B83D-5D6829094ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC97F906-DEB0-4D07-B83D-5D6829094ADA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50874BF9-0F61-4B9A-9645-ADC13F2801AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50874BF9-0F61-4B9A-9645-ADC13F2801AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50874BF9-0F61-4B9A-9645-ADC13F2801AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50874BF9-0F61-4B9A-9645-ADC13F2801AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81B946F3-813C-424A-8748-A27337672ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81B946F3-813C-424A-8748-A27337672ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81B946F3-813C-424A-8748-A27337672ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81B946F3-813C-424A-8748-A27337672ADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37591672-9DE9-425B-8328-85F4C78EC804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37591672-9DE9-425B-8328-85F4C78EC804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37591672-9DE9-425B-8328-85F4C78EC804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37591672-9DE9-425B-8328-85F4C78EC804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{702DA601-B998-45E8-B0C1-E97895B4723F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{702DA601-B998-45E8-B0C1-E97895B4723F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{702DA601-B998-45E8-B0C1-E97895B4723F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{702DA601-B998-45E8-B0C1-E97895B4723F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5C6FDD1-F543-417A-9346-3CBE434085A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5C6FDD1-F543-417A-9346-3CBE434085A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5C6FDD1-F543-417A-9346-3CBE434085A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5C6FDD1-F543-417A-9346-3CBE434085A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{37591672-9DE9-425B-8328-85F4C78EC804} = {92E3DD37-35D6-4B89-A048-EC0BBF871245}
+		{702DA601-B998-45E8-B0C1-E97895B4723F} = {92E3DD37-35D6-4B89-A048-EC0BBF871245}
+		{0C98B81A-B948-47CC-9D6F-ECAEC964F31D} = {92E3DD37-35D6-4B89-A048-EC0BBF871245}
+		{F5C6FDD1-F543-417A-9346-3CBE434085A7} = {6A14233A-7BE8-49E4-88D7-3E37458674B7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {38A7B093-9776-4315-A014-51A42403EDCD}
 	EndGlobalSection
 EndGlobal
