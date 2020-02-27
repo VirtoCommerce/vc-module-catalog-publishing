@@ -206,7 +206,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [Route("channels")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [Authorize(ModuleConstants.Security.Permissions.Delete)]
-        public async Task<ActionResult> DeleteChannels([FromQuery(Name = "ids")] string[] ids)
+        public async Task<ActionResult> DeleteChannels([FromQuery] string[] ids)
         {
             await _completenessService.DeleteChannelsAsync(ids);
 
