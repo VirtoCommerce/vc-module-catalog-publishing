@@ -23,7 +23,7 @@
   <projectUrl>https://virtocommerce.com/apps/extensions/catalog-publishing</projectUrl>
   <iconUrl>Modules/$(VirtoCommerce.CatalogPublishing)/Content/logo.png</iconUrl>
   <releaseNotes>Initial implementation of module features.</releaseNotes>
-  <copyright>Copyright В© 2020 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2020 Virto Commerce. All rights reserved</copyright>
   <tags>publishing filling</tags>
   <assemblyFile>VirtoCommerce.CatalogPublishingModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.CatalogPublishingModule.Web.Module, VirtoCommerce.CatalogPublishingModule.Web</moduleType>
