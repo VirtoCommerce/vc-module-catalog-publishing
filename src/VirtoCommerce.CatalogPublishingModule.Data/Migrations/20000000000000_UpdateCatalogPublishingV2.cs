@@ -10,7 +10,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 @"IF (EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__MigrationHistory'))
                 IF (EXISTS (SELECT 1 FROM __MigrationHistory WHERE ContextKey = 'VirtoCommerce.CatalogPublishingModule.Data.Migrations.Configuration'))
                     BEGIN
-                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20200220125258_InitialCatalogPublishing', '2.2.3-servicing-35854')
+                        INSERT INTO [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20200220125258_InitialCatalogPublishing', '2.2.3-servicing-35854')
                     END");
         }
 
