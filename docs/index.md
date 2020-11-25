@@ -34,25 +34,20 @@ Catalog Publishing Module is a set of tools for assessing the completeness of pr
 
 1. Go to Configuration\Channels
 ![Image](media/screen-channels.png)
-1. Add new channel to calculate completeness percent by specified criteria
+1. Add a new channel to calculate completeness percent by specified criteria
 ![Image](media/screen-create-channel.png)
-1. Define locales, currencies, catalog, evaluator type and create channel 
+1. Define locales, currencies, catalog, evaluator type and create the channel.
 
 ## Evaluating the completeness
 
 1. Click "Evaluate" from sub-menu of the channel to calculate the completeness
-
 ![Image](media/screen-evaluate.png)
 ![Image](media/screen-evaluation-finished.png)
-
 1. Run "Build" to force the Catalog Search Index update
 
-1. After that you can use search filters by range completeness in the catalog search
-
+1. Use the search filters by range completeness in the catalog search
 ![Image](media/screen-build-index.png)
-
 ![Image](media/screen-range-completeness.png)
-
 1. A reddish background indicates that the module is not filled completely
 
 ![Image](media/screen-module-not-filled-completely.png)
@@ -71,7 +66,7 @@ Default completeness evaluator check the following statements:
 
 ## Extensibility
 
-This module provide multiple points of evaluation extensibility to allow fully customize this process. Possible user cases and solutions for them are listed below.
+This module provides multiple points of evaluation extensibility to allow full customization of this process. Possible user cases and solutions for them are listed below.
 
 ### Add new detail to default evaluation process
 
@@ -92,7 +87,7 @@ After that, default product completeness evaluator will include your detail eval
 
 ## Define your own product completeness evaluator
 
-If you want, you may create you own product completeness evaluator implementation by implemening `ICompletenessEvaluator` interface:
+If you want, you can create your own product completeness evaluator implementation by implementing `ICompletenessEvaluator` interface:
 ```csharp
 public class CustomCompletenessEvaluator : ICompletenessEvaluator
 {
@@ -117,7 +112,7 @@ _container.RegisterType<ICompletenessEvaluator, CustomCompletenessEvaluator>(nam
 ```
 After that, your product completeness evaluator will be available in module's RESTful API and UI.
 
-In section below, we will consider only cases when you don't want *define your own* product completeness evaluation process (by creating your own implementation of `ICompletenessEvaluator` interface) and you want only *customize default* product completeness evaluation process used by your product completeness evaluator (inherit from `DefaultCompletenessEvaluator`). If you want to *define your own* product completeness evaluation process, then you may implement same extensibility logic as our:
+In the section below, we will consider only cases when you don't want to *define your own* product completeness evaluation process (by creating your own implementation of `ICompletenessEvaluator` interface) and you want only to *customize default* product completeness evaluation process used by your product completeness evaluator (inherit from `DefaultCompletenessEvaluator`). If you want to *define your own* product completeness evaluation process, then you can implement the same extensibility logic as ours:
 ```csharp
 public class CustomCompletenessEvaluator : ICompletenessEvaluator
 {
