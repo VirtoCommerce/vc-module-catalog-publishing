@@ -4,6 +4,14 @@ Catalog Publishing Module is a set of tools for assessing the completeness of pr
 
 ## Key Features
 
+1. Control product quality (completeness) for Multiple sales channels;
+
+1. View list of incomplete products;
+
+1. Find and Highlight missing information in product details;
+
+1. Extendable evaluation process.
+
 ## Installation
 
 1. Automatically: in VC Manager go to Configuration -> Modules -> Catalog publishing module -> Install
