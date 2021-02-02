@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.catalogPublishingModule')
+angular.module('virtoCommerce.catalogPublishingModule')
     .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.coreModule.currency.currencyApi', 'virtoCommerce.coreModule.currency.currencyUtils', 'virtoCommerce.catalogModule.catalogs', function ($scope, settings, bladeNavigationService, catalogPublishingApi, currencyApi, currencyUtils, catalogApi) {
         var blade = $scope.blade;
         blade.isLoading = false;
@@ -16,7 +16,7 @@
         if (!blade.isNew) {
             blade.toolbarCommands = [{
                 name: 'platform.commands.save',
-                icon: 'fa fa-save',
+                icon: 'fas fa-save',
                 permission: blade.updatePermission,
                 canExecuteMethod: function () {
                     return canSave();
