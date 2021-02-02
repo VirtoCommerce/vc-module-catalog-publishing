@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.catalogPublishingModule')
+angular.module('virtoCommerce.catalogPublishingModule')
     .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', '$localStorage', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.ui-grid.extension', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.productCompletenessBladeFactory', function ($scope, $localStorage, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, gridOptionExtension, catalogPublishingApi, productCompletenessBladeFactory) {
         var blade = $scope.blade;
         blade.isLoading = false;
@@ -107,7 +107,7 @@
 
         blade.toolbarCommands = [{
             name: 'platform.commands.add',
-            icon: 'fa fa-plus',
+            icon: 'fas fa-plus',
             permission: 'channel:create',
             canExecuteMethod: function () {
                 return true;
@@ -126,7 +126,7 @@
             }
         }, {
             name: 'platform.commands.delete',
-            icon: 'fa fa-trash-o',
+            icon: 'fas fa-trash-alt',
             permission: 'channel:delete',
             canExecuteMethod: function () {
                 return $scope.gridApi && _.any($scope.gridApi.selection.getSelectedRows());

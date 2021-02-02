@@ -1,4 +1,4 @@
-﻿<div class="blade-static __bottom" ng-if="pageSettings.itemsPerPageCount < pageSettings.totalItems" ng-include="'pagerTemplate.html'"></div>
+<div class="blade-static __bottom" ng-if="pageSettings.itemsPerPageCount < pageSettings.totalItems" ng-include="'pagerTemplate.html'"></div>
 <div class="blade-content __medium-wide">
     <div class="blade-inner">
         <div class="inner-block" ng-init="setGridOptions({
@@ -34,7 +34,7 @@
                         <i class="menu-ico fa fa-calculator"></i> {{ 'catalog-publishing.blades.channel-details.labels.evaluate' | translate }}
                     </li>
                     <li class="menu-item" ng-click="deleteChannels([contextMenuEntity])" va-permission="channel:delete">
-                        <i class="menu-ico fa fa-trash-o"></i> {{ 'platform.commands.delete' | translate }}
+                        <i class="menu-ico fas fa-trash-alt"></i> {{ 'platform.commands.delete' | translate }}
                     </li>
                 </ul>
             </div>
