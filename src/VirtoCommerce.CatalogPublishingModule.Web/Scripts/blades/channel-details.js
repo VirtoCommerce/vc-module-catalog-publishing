@@ -4,6 +4,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
         blade.isLoading = false;
         blade.isNew = !blade.currentEntity || !blade.currentEntity.id;
         blade.updatePermission = 'channel:update';
+        blade.selectedCatalog = {};
 
         blade.refresh = function () {
             catalogPublishingApi.getChannel({
@@ -62,7 +63,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
         }, function (response) {
             $scope.languages = response;
         });
-        $scope.catalogs = catalogApi.getCatalogs();
+        $scope.catalogDataSource = (criteria) => catalogApi.search(criteria).$promise;
         $scope.evaluators = catalogPublishingApi.getEvaluators();
 
         $scope.openLanguagesDictionarySettingManagement = function () {
@@ -96,8 +97,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
         }
 
         function saveChanges() {
-            var catalog = _.find($scope.catalogs, function (c) { return c.id === blade.currentEntity.catalogId });
-            blade.currentEntity.catalogName = catalog.name;
+            blade.currentEntity.catalogName = blade.selectedCatalog.name;
             blade.isLoading = true;
             if (!blade.isNew) {
                 catalogPublishingApi.updateChannel(blade.currentEntity, function () {
