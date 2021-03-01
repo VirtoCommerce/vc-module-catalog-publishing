@@ -25,10 +25,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
         public void Initialize(IServiceCollection serviceCollection)
         {
-            var configuration = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            serviceCollection.AddDbContext<CatalogPublishingDbContext>((provider, options) =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
+            });
+
             serviceCollection.AddTransient<ICompletenessRepository, CompletenessRepositoryImpl>();
-            var connectionString = configuration.GetConnectionString("VirtoCommerce");
-            serviceCollection.AddDbContext<CatalogPublishingDbContext>(options => options.UseSqlServer(connectionString));
             serviceCollection.AddSingleton<Func<ICompletenessRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<ICompletenessRepository>());
 
             serviceCollection.AddTransient<ICompletenessService, CompletenessServiceImpl>();
