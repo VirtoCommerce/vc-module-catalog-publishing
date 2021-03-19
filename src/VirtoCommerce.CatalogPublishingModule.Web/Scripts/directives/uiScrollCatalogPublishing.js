@@ -17,25 +17,27 @@ angular.module('virtoCommerce.catalogPublishingModule')
                 selectedEntity: '='
             },
             templateUrl: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/directives/uiScrollCatalogPublishing.tpl.html',
-            controller: ['$scope', function(scope) {
+            controller: ['$scope', function (scope) {
                 scope.list = [];
-                
                 scope.pageSize = defaultPageSize;
 
                 scope.setValue = (item) => {
                     scope.selectedId = item.id;
                     scope.selectedEntity = item;
-                }
+                };
 
                 scope.fetch = (select) => {
-                    if (scope.list.length == 0) {
+                    if (scope.list.length === 0) {
                         select.page = 0;
                         if (scope.selectedId) {
                             let criteria = {
                                 objectIds: [scope.selectedId]
                             }
-                            scope.data({criteria: criteria}).then((data) => {
-                                scope.list = data.results;
+                            scope.data({ criteria: criteria }).then((data) => {
+                                if (_.some(data.results)) {
+                                    scope.list = data.results;
+                                    scope.setValue(data.results[0])
+                                }
                                 scope.fetchNext(select);
                             });
                         }
@@ -51,11 +53,11 @@ angular.module('virtoCommerce.catalogPublishingModule')
                         take: scope.pageSize,
                         skip: select.page * scope.pageSize
                     }
-            
-                    scope.data({criteria: criteria}).then((data) => {
+
+                    scope.data({ criteria: criteria }).then((data) => {
                         scope.list = scope.list.concat(data.results);
                         select.page++;
-            
+
                         if (scope.list.length < data.totalCount) {
                             scope.$broadcast('scrollCompleted');
                         }
