@@ -28,14 +28,15 @@ angular.module('virtoCommerce.catalogPublishingModule')
                 }
 
                 scope.fetch = (select) => {
-                    if (scope.list.length == 0) {
+                    if (scope.list.length === 0) {
                         select.page = 0;
                         if (scope.selectedId) {
                             let criteria = {
                                 objectIds: [scope.selectedId]
                             }
-                            scope.data({criteria: criteria}).then((data) => {
+                            scope.data({ criteria: criteria }).then((data) => {
                                 scope.list = data.results;
+                                scope.setValue(data.results[0])
                                 scope.fetchNext(select);
                             });
                         }
