@@ -22,7 +22,7 @@ Catalog Publishing Module is a set of tools for assessing the completeness of pr
 
 ## Documentation
 
-* [Catalog Publishing Module Document](/docs/index.md)
+* [Catalog Publishing Module Document](index.md)
 
 * [View on GitHub](https://github.com/VirtoCommerce/vc-module-catalog-publishing/tree/dev)
 
