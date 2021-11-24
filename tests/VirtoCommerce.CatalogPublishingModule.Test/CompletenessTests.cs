@@ -37,29 +37,29 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
         }
 
-        [Fact]
-        public async Task ChannelTest()
-        {
-            var service = GetCompletenessService();
-            var channel = GetChannel();
-            CompletenessChannel testChannel;
+        //[Fact]
+        //public async Task ChannelTest()
+        //{
+        //    var service = GetCompletenessService();
+        //    var channel = GetChannel();
+        //    CompletenessChannel testChannel;
 
-            await service.SaveChannelsAsync(new[] { channel });
-            testChannel = (await service.GetChannelsByIdsAsync(new[] { channel.Id })).FirstOrDefault();
-            Assert.True(CompareChannels(channel, testChannel));
+        //    await service.SaveChannelsAsync(new[] { channel });
+        //    testChannel = (await service.GetChannelsByIdsAsync(new[] { channel.Id })).FirstOrDefault();
+        //    Assert.True(CompareChannels(channel, testChannel));
 
-            channel.Name = "Changed";
-            await service.SaveChannelsAsync(new[] { channel });
-            testChannel = (await service.GetChannelsByIdsAsync(new[] { channel.Id })).FirstOrDefault();
-            Assert.True(CompareChannels(channel, testChannel));
+        //    channel.Name = "Changed";
+        //    await service.SaveChannelsAsync(new[] { channel });
+        //    testChannel = (await service.GetChannelsByIdsAsync(new[] { channel.Id })).FirstOrDefault();
+        //    Assert.True(CompareChannels(channel, testChannel));
 
-            testChannel = (await service.SearchChannelsAsync(new CompletenessChannelSearchCriteria { CatalogIds = new[] { "Test" } })).Results.FirstOrDefault();
-            Assert.True(CompareChannels(channel, testChannel));
+        //    testChannel = (await service.SearchChannelsAsync(new CompletenessChannelSearchCriteria { CatalogIds = new[] { "Test" } })).Results.FirstOrDefault();
+        //    Assert.True(CompareChannels(channel, testChannel));
 
-            await service.DeleteChannelsAsync(new[] { channel.Id });
-            testChannel = (await service.GetChannelsByIdsAsync(new[] { channel.Id })).FirstOrDefault();
-            Assert.True(CompareChannels(testChannel, null));
-        }
+        //    await service.DeleteChannelsAsync(new[] { channel.Id });
+        //    testChannel = (await service.GetChannelsByIdsAsync(new[] { channel.Id })).FirstOrDefault();
+        //    Assert.True(CompareChannels(testChannel, null));
+        //}
 
 
         // Distributed/Promoted transactions not supported yet
@@ -95,24 +95,24 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         //    Assert.True(CompareEntries(testEntry, correctEntry));
         //}
 
-        [Fact]
-        private async Task DetailsTest()
-        {
-            var service = GetCompletenessService();
-            var channel = GetChannel();
-            var entry = GetEntry();
+        //[Fact]
+        //private async Task DetailsTest()
+        //{
+        //    var service = GetCompletenessService();
+        //    var channel = GetChannel();
+        //    var entry = GetEntry();
 
-            using (var repository = RepositoryFactory())
-            {
-                await service.SaveChannelsAsync(new[] { channel });
-                await service.SaveEntriesAsync(new[] { entry });
+        //    using (var repository = RepositoryFactory())
+        //    {
+        //        await service.SaveChannelsAsync(new[] { channel });
+        //        await service.SaveEntriesAsync(new[] { entry });
 
-                var testEntryEntity = repository.Entries.Include(x => x.Details).FirstOrDefault(x => x.ChannelId == entry.ChannelId);
-                var testDetailsEntities = repository.Details.ToArray().Where(x => x.CompletenessEntryId == (testEntryEntity != null ? testEntryEntity.Id : null)).ToArray();
-                var testDetails = testDetailsEntities.Select(x => x.ToModel(AbstractTypeFactory<CompletenessDetail>.TryCreateInstance())).ToArray();
-                Assert.True(CompareDetails(entry.Details, testDetails));
-            }
-        }
+        //        var testEntryEntity = repository.Entries.Include(x => x.Details).FirstOrDefault(x => x.ChannelId == entry.ChannelId);
+        //        var testDetailsEntities = repository.Details.ToArray().Where(x => x.CompletenessEntryId == (testEntryEntity != null ? testEntryEntity.Id : null)).ToArray();
+        //        var testDetails = testDetailsEntities.Select(x => x.ToModel(AbstractTypeFactory<CompletenessDetail>.TryCreateInstance())).ToArray();
+        //        Assert.True(CompareDetails(entry.Details, testDetails));
+        //    }
+        //}
 
         [Fact]
         public async Task EntitiesTests()
