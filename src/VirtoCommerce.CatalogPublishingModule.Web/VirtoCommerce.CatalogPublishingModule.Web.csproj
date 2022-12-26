@@ -31,6 +31,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data.MySql\VirtoCommerce.CatalogPublishingModule.Data.MySql.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data.PostgreSql\VirtoCommerce.CatalogPublishingModule.Data.PostgreSql.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data.SqlServer\VirtoCommerce.CatalogPublishingModule.Data.SqlServer.csproj" />
     <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Data\VirtoCommerce.CatalogPublishingModule.Data.csproj" />
   </ItemGroup>
 </Project>
