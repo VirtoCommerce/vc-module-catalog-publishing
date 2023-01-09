@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
+namespace VirtoCommerce.CatalogPublishingModule.Data.SqlServer.Migrations
 {
     [DbContext(typeof(CatalogPublishingDbContext))]
-    [Migration("20000000000000_UpdateCatalogPublishingV2")]
-    partial class UpdateCatalogPublishingV2
+    [Migration("20200220125258_InitialCatalogPublishing")]
+    partial class InitialCatalogPublishing
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,9 +32,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<string>("CompletenessChannelEntityId")
-                        .HasColumnType("nvarchar(128)");
-
                     b.Property<string>("CurrencyCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(64)")
@@ -42,8 +40,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChannelId");
-
-                    b.HasIndex("CompletenessChannelEntityId");
 
                     b.ToTable("CompletenessChannelCurrency");
                 });
@@ -104,9 +100,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<string>("CompletenessChannelEntityId")
-                        .HasColumnType("nvarchar(128)");
-
                     b.Property<string>("LanguageCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -114,8 +107,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChannelId");
-
-                    b.HasIndex("CompletenessChannelEntityId");
 
                     b.ToTable("CompletenessChannelLanguage");
                 });
@@ -126,9 +117,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
-
-                    b.Property<string>("CompletenessEntryEntityId")
-                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("CompletenessEntryId")
                         .IsRequired()
@@ -143,8 +131,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .HasMaxLength(128);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompletenessEntryEntityId");
 
                     b.HasIndex("CompletenessEntryId");
 
@@ -194,37 +180,25 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelCurrencyEntity", b =>
                 {
                     b.HasOne("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelEntity", "Channel")
-                        .WithMany()
+                        .WithMany("Currencies")
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelEntity", null)
-                        .WithMany("Currencies")
-                        .HasForeignKey("CompletenessChannelEntityId");
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelLanguageEntity", b =>
                 {
                     b.HasOne("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelEntity", "Channel")
-                        .WithMany()
+                        .WithMany("Languages")
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelEntity", null)
-                        .WithMany("Languages")
-                        .HasForeignKey("CompletenessChannelEntityId");
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessDetailEntity", b =>
                 {
-                    b.HasOne("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessEntryEntity", null)
-                        .WithMany("Details")
-                        .HasForeignKey("CompletenessEntryEntityId");
-
                     b.HasOne("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessEntryEntity", "CompletenessEntry")
-                        .WithMany()
+                        .WithMany("Details")
                         .HasForeignKey("CompletenessEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

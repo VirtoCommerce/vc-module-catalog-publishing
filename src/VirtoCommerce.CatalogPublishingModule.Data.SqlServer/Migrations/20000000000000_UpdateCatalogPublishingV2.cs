@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
+namespace VirtoCommerce.CatalogPublishingModule.Data.SqlServer.Migrations
 {
     public partial class UpdateCatalogPublishingV2 : Migration
     {

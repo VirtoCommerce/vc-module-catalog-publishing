@@ -2,179 +2,177 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
+#nullable disable
+
+namespace VirtoCommerce.CatalogPublishingModule.Data.MySql.Migrations
 {
     [DbContext(typeof(CatalogPublishingDbContext))]
-    [Migration("20200220125258_InitialCatalogPublishing")]
-    partial class InitialCatalogPublishing
+    partial class CatalogPublishingDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelCurrencyEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ChannelId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("CurrencyCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChannelId");
 
-                    b.ToTable("CompletenessChannelCurrency");
+                    b.ToTable("CompletenessChannelCurrency", (string)null);
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("CatalogId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("CatalogName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("EvaluatorType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompletenessChannel");
+                    b.ToTable("CompletenessChannel", (string)null);
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelLanguageEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ChannelId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("LanguageCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChannelId");
 
-                    b.ToTable("CompletenessChannelLanguage");
+                    b.ToTable("CompletenessChannelLanguage", (string)null);
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessDetailEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("CompletenessEntryId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<int>("CompletenessPercent")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompletenessEntryId");
 
-                    b.ToTable("CompletenessDetail");
+                    b.ToTable("CompletenessDetail", (string)null);
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessEntryEntity", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ChannelId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<int>("CompletenessPercent")
                         .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(64)")
-                        .HasMaxLength(64);
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ProductId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChannelId");
 
-                    b.ToTable("CompletenessEntry");
+                    b.ToTable("CompletenessEntry", (string)null);
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelCurrencyEntity", b =>
@@ -184,6 +182,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Channel");
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelLanguageEntity", b =>
@@ -193,6 +193,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Channel");
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessDetailEntity", b =>
@@ -202,6 +204,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .HasForeignKey("CompletenessEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CompletenessEntry");
                 });
 
             modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessEntryEntity", b =>
@@ -211,6 +215,20 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Channel");
+                });
+
+            modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessChannelEntity", b =>
+                {
+                    b.Navigation("Currencies");
+
+                    b.Navigation("Languages");
+                });
+
+            modelBuilder.Entity("VirtoCommerce.CatalogPublishingModule.Data.Model.CompletenessEntryEntity", b =>
+                {
+                    b.Navigation("Details");
                 });
 #pragma warning restore 612, 618
         }

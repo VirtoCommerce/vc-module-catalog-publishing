@@ -1,9 +1,11 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
+#nullable disable
+
+namespace VirtoCommerce.CatalogPublishingModule.Data.PostgreSql.Migrations
 {
-    public partial class InitialCatalogPublishing : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,15 +13,15 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 name: "CompletenessChannel",
                 columns: table => new
                 {
-                    Id = table.Column<string>(maxLength: 128, nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    CreatedBy = table.Column<string>(maxLength: 64, nullable: true),
-                    ModifiedBy = table.Column<string>(maxLength: 64, nullable: true),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
-                    CatalogId = table.Column<string>(maxLength: 128, nullable: false),
-                    CatalogName = table.Column<string>(maxLength: 128, nullable: false),
-                    EvaluatorType = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CatalogId = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CatalogName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    EvaluatorType = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    ModifiedBy = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,9 +32,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 name: "CompletenessChannelCurrency",
                 columns: table => new
                 {
-                    Id = table.Column<string>(maxLength: 128, nullable: false),
-                    CurrencyCode = table.Column<string>(maxLength: 64, nullable: false),
-                    ChannelId = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CurrencyCode = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    ChannelId = table.Column<string>(type: "character varying(128)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,9 +51,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 name: "CompletenessChannelLanguage",
                 columns: table => new
                 {
-                    Id = table.Column<string>(maxLength: 128, nullable: false),
-                    LanguageCode = table.Column<string>(nullable: false),
-                    ChannelId = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    LanguageCode = table.Column<string>(type: "text", nullable: false),
+                    ChannelId = table.Column<string>(type: "character varying(128)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,14 +70,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 name: "CompletenessEntry",
                 columns: table => new
                 {
-                    Id = table.Column<string>(maxLength: 128, nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    CreatedBy = table.Column<string>(maxLength: 64, nullable: true),
-                    ModifiedBy = table.Column<string>(maxLength: 64, nullable: true),
-                    ProductId = table.Column<string>(maxLength: 128, nullable: false),
-                    CompletenessPercent = table.Column<int>(nullable: false),
-                    ChannelId = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ProductId = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CompletenessPercent = table.Column<int>(type: "integer", nullable: false),
+                    ChannelId = table.Column<string>(type: "character varying(128)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    ModifiedBy = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,10 +94,10 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Migrations
                 name: "CompletenessDetail",
                 columns: table => new
                 {
-                    Id = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
-                    CompletenessPercent = table.Column<int>(nullable: false),
-                    CompletenessEntryId = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CompletenessPercent = table.Column<int>(type: "integer", nullable: false),
+                    CompletenessEntryId = table.Column<string>(type: "character varying(128)", nullable: false)
                 },
                 constraints: table =>
                 {
