@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <id>VirtoCommerce.CatalogPublishing</id>
-  <version>3.200.0</version>
+  <version>3.201.0</version>
   <version-tag />
   <platformVersion>3.200.0</platformVersion>
   <title>Catalog publishing module</title>
@@ -19,7 +19,7 @@
   <iconUrl>Modules/$(VirtoCommerce.CatalogPublishing)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <releaseNotes>Initial implementation of module features.</releaseNotes>
-  <copyright>Copyright © 2020 - 2021 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2020 - 2023 Virto Commerce. All rights reserved</copyright>
   <tags>publishing filling</tags>
   <assemblyFile>VirtoCommerce.CatalogPublishingModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.CatalogPublishingModule.Web.Module, VirtoCommerce.CatalogPublishingModule.Web</moduleType>
