@@ -4,7 +4,7 @@
   <version>3.204.0</version>
   <version-tag />
   <platformVersion>3.200.0</platformVersion>
-  <title>Catalog publishing module</title>
+  <title>Catalog Publishing</title>
   <description>Allow you to see progress on filling in information about products and marks missed info.</description>
   <authors>
     <author>Alexey Antonov</author>
