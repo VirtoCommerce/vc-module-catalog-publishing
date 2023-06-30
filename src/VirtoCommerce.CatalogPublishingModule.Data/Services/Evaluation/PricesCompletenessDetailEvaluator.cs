@@ -11,20 +11,20 @@ using VirtoCommerce.PricingModule.Core.Services;
 namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 {
     /// <summary>
-    ///  Prices valiator. Check that products have at least one price per channel currency, which list price is greater than zero.
+    ///  Prices validator. Check that products have at least one price per channel currency, which list price is greater than zero.
     /// </summary>
     public class PricesCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
-        private readonly IPricingSearchService _pricingSearchService;
+        private readonly IPriceSearchService _pricingSearchService;
 
-        public PricesCompletenessDetailEvaluator(IPricingSearchService pricingSearchService)
+        public PricesCompletenessDetailEvaluator(IPriceSearchService pricingSearchService)
         {
             _pricingSearchService = pricingSearchService;
         }
 
         public async Task<CompletenessDetail[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)
         {
-            var prices = (await _pricingSearchService.SearchPricesAsync(new PricesSearchCriteria
+            var prices = (await _pricingSearchService.SearchNoCloneAsync(new PricesSearchCriteria
             {
                 ProductIds = products.Select(x => x.Id).ToArray(),
                 Take = int.MaxValue
