@@ -53,6 +53,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         public async Task TestDocumentBuilder()
         {
             var documentBuilder = new ProductCompletenessDocumentBuilder(GetItemService(), GetCompletenessService(), new[] { GetCompletenessEvaluator() });
+
+            var emptyDocuments = await documentBuilder.GetDocumentsAsync(new[] { "UnknownProductId" });
+            Assert.NotNull(emptyDocuments);
+            Assert.Empty(emptyDocuments);
+
             var productIds = _products.Select(p => p.Id).ToArray();
 
             var documents = await documentBuilder.GetDocumentsAsync(productIds);
@@ -144,8 +149,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         private IItemService GetItemService()
         {
             var service = new Mock<IItemService>();
-            service.Setup(x => x.GetByIdsAsync(It.IsAny<string[]>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns<string[], string, string>((ids, rg, c) => Task.FromResult(_products.Where(p => ids.Contains(p.Id)).ToArray()));
+            service.Setup(x => x.GetAsync(It.IsAny<IList<string>>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Returns<IList<string>, string, bool>((ids, rg, c) => Task.FromResult<IList<CatalogProduct>>(_products.Where(p => ids.Contains(p.Id)).ToArray()));
             return service.Object;
         }
 

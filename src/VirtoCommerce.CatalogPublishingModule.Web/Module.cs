@@ -48,7 +48,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
                 }
             });
 
-
             serviceCollection.AddTransient<ICompletenessRepository, CompletenessRepositoryImpl>();
             serviceCollection.AddSingleton<Func<ICompletenessRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<ICompletenessRepository>());
 
@@ -65,8 +64,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
         public void PostInitialize(IApplicationBuilder appBuilder)
         {
-            var permissionsProvider = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
-            permissionsProvider.RegisterPermissions(ModuleConstants.Security.Permissions.AllPermissions.Select(x => new Permission() { GroupName = "CatalogPublishing", Name = x }).ToArray());
+            var permissionsRegistrar = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
+            permissionsRegistrar.RegisterPermissions(ModuleInfo.Id, "CatalogPublishing", ModuleConstants.Security.Permissions.AllPermissions);
 
             var productIndexingConfigurations = appBuilder.ApplicationServices.GetServices<IndexDocumentConfiguration>();
 
@@ -80,11 +79,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
 
                 foreach (var configuration in productIndexingConfigurations.Where(c => c.DocumentType == KnownDocumentTypes.Product))
                 {
-                    if (configuration.RelatedSources == null)
-                    {
-                        configuration.RelatedSources = new List<IndexDocumentSource>();
-                    }
-
+                    configuration.RelatedSources ??= new List<IndexDocumentSource>();
                     configuration.RelatedSources.Add(productCompletenessDocumentSource);
                 }
             }
