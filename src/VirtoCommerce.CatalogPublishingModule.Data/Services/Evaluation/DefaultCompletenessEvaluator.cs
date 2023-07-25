@@ -29,8 +29,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
         {
             ValidateParameters(channel, products);
 
-            products = (await _productService.GetByIdsAsync(products.Select(x => x.Id).ToArray(), ItemResponseGroup.ItemLarge.ToString())).ToArray();
-            products = products.Where(x => x.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == channel.CatalogId)).ToArray();
+            products = (await _productService.GetAsync(products.Select(x => x.Id).ToArray(), ItemResponseGroup.ItemLarge.ToString()))
+                .Where(x => x.Outlines.Any(o => o.Items.FirstOrDefault()?.Id == channel.CatalogId))
+                .ToArray();
 
             var details = new List<CompletenessDetail>(products.Length * DetailEvaluators.Count);
             foreach (var detailEvaluator in DetailEvaluators)

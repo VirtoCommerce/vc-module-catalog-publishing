@@ -1,21 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Internal;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
-using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
-using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
-using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
-using VirtoCommerce.CatalogPublishingModule.Data.Services;
-using VirtoCommerce.Platform.Caching;
-using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using Xunit;
 
@@ -25,17 +10,16 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
     public class CompletenessTests
     {
 
-        private readonly Mock<IOptions<CachingOptions>> _cachingOptionsMock;
-        private readonly Mock<ILogger<PlatformMemoryCache>> _log;
+        //private readonly Mock<IOptions<CachingOptions>> _cachingOptionsMock;
+        //private readonly Mock<ILogger<PlatformMemoryCache>> _log;
 
 
-        public CompletenessTests()
-        {
-            _cachingOptionsMock = new Mock<IOptions<CachingOptions>>();
-            _cachingOptionsMock.Setup(x => x.Value).Returns(new CachingOptions { CacheEnabled = true });
-            _log = new Mock<ILogger<PlatformMemoryCache>>();
-
-        }
+        //public CompletenessTests()
+        //{
+        //    _cachingOptionsMock = new Mock<IOptions<CachingOptions>>();
+        //    _cachingOptionsMock.Setup(x => x.Value).Returns(new CachingOptions { CacheEnabled = true });
+        //    _log = new Mock<ILogger<PlatformMemoryCache>>();
+        //}
 
         //[Fact]
         //public async Task ChannelTest()
@@ -115,7 +99,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
         //}
 
         [Fact]
-        public async Task EntitiesTests()
+        public void EntitiesTests()
         {
             var channel = new CompletenessChannelEntity();
             var entry = new CompletenessEntryEntity();
@@ -135,125 +119,125 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             Assert.Throws<ArgumentNullException>(() => detail.Patch(null));
         }
 
-        private CompletenessChannel GetChannel()
-        {
-            return new CompletenessChannel
-            {
-                Id = "Test",
-                Name = "Test",
-                Languages = new List<string> { "Test1", "Test2" },
-                Currencies = new List<string> { "Test1", "Test2" },
-                CatalogId = "Test",
-                CatalogName = "Test",
-                EvaluatorType = "DefaultEvaluatorType",
-                CompletenessPercent = 50,
-                CreatedDate = DateTime.Now,
-                CreatedBy = "Test"
-            };
-        }
+        //private CompletenessChannel GetChannel()
+        //{
+        //    return new CompletenessChannel
+        //    {
+        //        Id = "Test",
+        //        Name = "Test",
+        //        Languages = new List<string> { "Test1", "Test2" },
+        //        Currencies = new List<string> { "Test1", "Test2" },
+        //        CatalogId = "Test",
+        //        CatalogName = "Test",
+        //        EvaluatorType = "DefaultEvaluatorType",
+        //        CompletenessPercent = 50,
+        //        CreatedDate = DateTime.Now,
+        //        CreatedBy = "Test"
+        //    };
+        //}
 
-        private bool CompareChannels(CompletenessChannel first, CompletenessChannel second)
-        {
-            // Do not include CompletenessPercent here, because it calculated in runtime and not saved to database
-            return first == null && second == null || first != null && second != null &&
-                   first.Id == second.Id &&
-                   first.Name == second.Name &&
-                   first.Languages.Count == second.Languages.Count && !first.Languages.Except(second.Languages).Any() &&
-                   first.Currencies.Count == second.Currencies.Count && !first.Currencies.Except(second.Currencies).Any() &&
-                   first.CatalogId == second.CatalogId &&
-                   first.EvaluatorType == second.EvaluatorType;
-        }
+        //private bool CompareChannels(CompletenessChannel first, CompletenessChannel second)
+        //{
+        //    // Do not include CompletenessPercent here, because it calculated in runtime and not saved to database
+        //    return first == null && second == null || first != null && second != null &&
+        //           first.Id == second.Id &&
+        //           first.Name == second.Name &&
+        //           first.Languages.Count == second.Languages.Count && !first.Languages.Except(second.Languages).Any() &&
+        //           first.Currencies.Count == second.Currencies.Count && !first.Currencies.Except(second.Currencies).Any() &&
+        //           first.CatalogId == second.CatalogId &&
+        //           first.EvaluatorType == second.EvaluatorType;
+        //}
 
-        private CompletenessEntry GetEntry()
-        {
-            return new CompletenessEntry
-            {
-                Id = "Test",
-                CreatedBy = "Test",
-                CreatedDate = DateTime.Now,
-                ModifiedBy = null,
-                ModifiedDate = null,
-                ChannelId = "Test",
-                ProductId = "Test",
-                CompletenessPercent = 50,
-                Details = new[]
-                {
-                    new CompletenessDetail
-                    {
-                        Name= "Test1",
-                        CompletenessPercent = 25
-                    },
-                    new CompletenessDetail
-                    {
-                        Name= "Test2",
-                        CompletenessPercent = 25
-                    },
-                    new CompletenessDetail
-                    {
-                        Name= "Test3",
-                        CompletenessPercent = 25
-                    },
-                    new CompletenessDetail
-                    {
-                        Name= "Test4",
-                        CompletenessPercent = 25
-                    }
-                }
-            };
-        }
+        //private CompletenessEntry GetEntry()
+        //{
+        //    return new CompletenessEntry
+        //    {
+        //        Id = "Test",
+        //        CreatedBy = "Test",
+        //        CreatedDate = DateTime.Now,
+        //        ModifiedBy = null,
+        //        ModifiedDate = null,
+        //        ChannelId = "Test",
+        //        ProductId = "Test",
+        //        CompletenessPercent = 50,
+        //        Details = new[]
+        //        {
+        //            new CompletenessDetail
+        //            {
+        //                Name= "Test1",
+        //                CompletenessPercent = 25
+        //            },
+        //            new CompletenessDetail
+        //            {
+        //                Name= "Test2",
+        //                CompletenessPercent = 25
+        //            },
+        //            new CompletenessDetail
+        //            {
+        //                Name= "Test3",
+        //                CompletenessPercent = 25
+        //            },
+        //            new CompletenessDetail
+        //            {
+        //                Name= "Test4",
+        //                CompletenessPercent = 25
+        //            }
+        //        }
+        //    };
+        //}
 
-        private bool CompareEntries(CompletenessEntry first, CompletenessEntry second)
-        {
-            return first == null && second == null || first != null && second != null &&
-                   first.ChannelId == second.ChannelId &&
-                   first.ProductId == second.ProductId &&
-                   first.CompletenessPercent == second.CompletenessPercent &&
-                   CompareDetails(first.Details, second.Details);
-        }
+        //private bool CompareEntries(CompletenessEntry first, CompletenessEntry second)
+        //{
+        //    return first == null && second == null || first != null && second != null &&
+        //           first.ChannelId == second.ChannelId &&
+        //           first.ProductId == second.ProductId &&
+        //           first.CompletenessPercent == second.CompletenessPercent &&
+        //           CompareDetails(first.Details, second.Details);
+        //}
 
-        private bool CompareDetails(CompletenessDetail[] first, CompletenessDetail[] second)
-        {
-            return first.Length == second.Length && first.All(x => second.Any(y => CompareDetail(x, y)));
-        }
+        //private bool CompareDetails(CompletenessDetail[] first, CompletenessDetail[] second)
+        //{
+        //    return first.Length == second.Length && first.All(x => second.Any(y => CompareDetail(x, y)));
+        //}
 
-        private bool CompareDetail(CompletenessDetail first, CompletenessDetail second)
-        {
-            return first == null && second == null || first != null && second != null && first.Name == second.Name && first.CompletenessPercent == second.CompletenessPercent;
-        }
+        //private bool CompareDetail(CompletenessDetail first, CompletenessDetail second)
+        //{
+        //    return first == null && second == null || first != null && second != null && first.Name == second.Name && first.CompletenessPercent == second.CompletenessPercent;
+        //}
 
 
-        private ICompletenessService GetCompletenessService()
-        {
-            return new CompletenessServiceImpl(RepositoryFactory, GetPlatformMemoryCache());
-        }
+        //private ICompletenessService GetCompletenessService()
+        //{
+        //    return new CompletenessServiceImpl(RepositoryFactory, GetPlatformMemoryCache());
+        //}
 
-        private IMemoryCache CreateCache()
-        {
-            return CreateCache(new SystemClock());
-        }
+        //private IMemoryCache CreateCache()
+        //{
+        //    return CreateCache(new SystemClock());
+        //}
 
-        private IMemoryCache CreateCache(ISystemClock clock)
-        {
-            return new MemoryCache(new MemoryCacheOptions()
-            {
-                Clock = clock,
-            });
-        }
+        //private IMemoryCache CreateCache(ISystemClock clock)
+        //{
+        //    return new MemoryCache(new MemoryCacheOptions()
+        //    {
+        //        Clock = clock,
+        //    });
+        //}
 
-        private IPlatformMemoryCache GetPlatformMemoryCache()
-        {
-            return new PlatformMemoryCache(CreateCache(), _cachingOptionsMock.Object, _log.Object);
-        }
+        //private IPlatformMemoryCache GetPlatformMemoryCache()
+        //{
+        //    return new PlatformMemoryCache(CreateCache(), _cachingOptionsMock.Object, _log.Object);
+        //}
 
-        private static ICompletenessRepository RepositoryFactory()
-        {
-            var options = new DbContextOptionsBuilder<CatalogPublishingDbContext>()
-                .UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30");
+        //private static ICompletenessRepository RepositoryFactory()
+        //{
+        //    var options = new DbContextOptionsBuilder<CatalogPublishingDbContext>()
+        //        .UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30");
 
-            var context = new CatalogPublishingDbContext(options.Options);
+        //    var context = new CatalogPublishingDbContext(options.Options);
 
-            var repository = new CompletenessRepositoryImpl(context);
-            return repository;
-        }
+        //    var repository = new CompletenessRepositoryImpl(context);
+        //    return repository;
+        //}
     }
 }
