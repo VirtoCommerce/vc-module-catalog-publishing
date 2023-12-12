@@ -96,7 +96,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
                     {
                         PropertyIds = new[] { propertyId },
                         Take = 0,
-                    });
+                    }, false);
                 _propertyDictionaryHasItemsCache.Add(propertyId, items.TotalCount > 0);
             }
         }
