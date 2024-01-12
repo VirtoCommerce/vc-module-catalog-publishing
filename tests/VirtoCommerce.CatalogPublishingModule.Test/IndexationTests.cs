@@ -66,7 +66,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             {
                 var document = documents.FirstOrDefault(d => d.Id.EqualsInvariant(product.Id));
                 Assert.NotNull(document);
-                Assert.Equal(1, document.Fields.Count);
+                Assert.Single(document.Fields);
 
                 var catalogId = product.Outlines.First().Items.First().Id;
                 var fieldName = $"completeness_{catalogId}";

@@ -2,10 +2,11 @@ using System.Reflection;
 using EntityFrameworkCore.Triggers;
 using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.CatalogPublishingModule.Data.Model;
+using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Repositories
 {
-    public class CatalogPublishingDbContext : DbContextWithTriggers
+    public class CatalogPublishingDbContext : DbContextBase
     {
         public CatalogPublishingDbContext(DbContextOptions<CatalogPublishingDbContext> options)
             : base(options)
