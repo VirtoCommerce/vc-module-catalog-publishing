@@ -1,13 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <id>VirtoCommerce.CatalogPublishing</id>
   <version>3.800.0</version>
   <version-tag />
-  <platformVersion>3.800.0-alpha.12831-net8</platformVersion>
+  <platformVersion>3.800.0</platformVersion>
+
   <dependencies>
-	<dependency id="VirtoCommerce.Catalog" version="3.800.0-alpha.2182-pt-14740-net8" />
-    <dependency id="VirtoCommerce.Pricing" version="3.800.0-alpha.712-pt-14740-net8" />
+    <dependency id="VirtoCommerce.Catalog" version="3.800.0" />
+    <dependency id="VirtoCommerce.Pricing" version="3.800.0" />
   </dependencies>
+
   <title>Catalog Publishing</title>
   <description>Allow you to see progress on filling in information about products and marks missed info.</description>
   <authors>
