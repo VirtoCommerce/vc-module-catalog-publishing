@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "チャネル",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "開始",
+          "end": "終了",
+          "total": "合計",
+          "processed": "処理済み",
+          "errors": "エラー",
+          "errors-count": "エラー数"
+        }
+      },
+      "channel-list": {
+        "title": "チャネル",
+        "labels": {
+          "name": "名前",
+          "catalog": "カタログ",
+          "completeness-percent": "完了"
+        }
+      },
+      "channel-details": {
+        "new-title": "新しいチャネル",
+        "title": "チャネル",
+        "labels": {
+          "name": "名前",
+          "name-description": "ラテン文字、数字、またはアンダースコアを使用して名前を入力してください",
+          "name-pattern-error-message": "名前にはラテン文字と数字のみを含めることができます",
+          "languages": "言語",
+          "languages-description": "製品検証に使用する言語を指定してください",
+          "currencies": "通貨",
+          "currencies-description": "製品検証に使用する通貨を指定してください",
+          "catalog": "カタログ",
+          "catalog-description": "このチャネルに関連付けられたカタログを選択してください",
+          "evaluator": "評価者タイプ",
+          "evaluator-description": "製品公開の完全性を評価するために使用されるアルゴリズムを選択してください",
+          "evaluate": "評価"
+        },
+        "placeholders": {
+          "enter-value": "値を入力",
+          "currencies": "このチャネルのために少なくとも1つの通貨を選択してください",
+          "languages": "このチャネルのために少なくとも1つの言語を選択してください",
+          "catalog": "カタログを選択",
+          "evaluator": "完全性評価者を選択"
+        }
+      },
+      "channel-select": {
+        "title": "チャネルを選択",
+        "labels": {
+          "channels": "チャネルを選択"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "チャネル評価の進捗"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "変更を保存",
+        "message": "チャネルが変更されました。変更を保存しますか？"
+      },
+      "channel-delete": {
+        "title": "削除の確認",
+        "message": "選択したカタログ公開チャネルを削除してもよろしいですか？"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "チャネルの完全性",
+        "no-channels-message": "利用可能なチャネルがありません"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "チャネルメニューを開く",
+    "channel:create": "チャネルを作成",
+    "channel:read": "チャネルを表示",
+    "channel:update": "チャネルを更新",
+    "channel:delete": "チャネルを削除"
+  }
+}
