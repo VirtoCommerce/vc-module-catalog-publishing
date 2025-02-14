@@ -15,6 +15,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
     /// </summary>
     public class PricesCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
+        private const int _pageSize = 100;
         private readonly IPriceSearchService _pricingSearchService;
 
         public PricesCompletenessDetailEvaluator(IPriceSearchService pricingSearchService)
@@ -24,11 +25,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
 
         public async Task<CompletenessDetail[]> EvaluateCompletenessAsync(CompletenessChannel channel, CatalogProduct[] products)
         {
-            var prices = (await _pricingSearchService.SearchNoCloneAsync(new PricesSearchCriteria
+            var prices = (await _pricingSearchService.SearchAllNoCloneAsync(new PricesSearchCriteria
             {
                 ProductIds = products.Select(x => x.Id).ToArray(),
-                Take = int.MaxValue
-            })).Results;
+                Take = _pageSize,
+            }));
+
             return products.Select(x =>
             {
                 var detail = new CompletenessDetail { Name = "Prices", ProductId = x.Id };
