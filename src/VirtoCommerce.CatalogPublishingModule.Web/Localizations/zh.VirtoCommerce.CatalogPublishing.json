@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "渠道",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "开始",
+          "end": "结束",
+          "total": "总计",
+          "processed": "已处理",
+          "errors": "错误",
+          "errors-count": "错误计数"
+        }
+      },
+      "channel-list": {
+        "title": "渠道",
+        "labels": {
+          "name": "名称",
+          "catalog": "目录",
+          "completeness-percent": "完整度"
+        }
+      },
+      "channel-details": {
+        "new-title": "新渠道",
+        "title": "渠道",
+        "labels": {
+          "name": "名称",
+          "name-description": "使用拉丁字母、数字或下划线输入名称",
+          "name-pattern-error-message": "名称只能包含拉丁字母和数字",
+          "languages": "语言",
+          "languages-description": "指定用于产品验证的语言",
+          "currencies": "货币",
+          "currencies-description": "指定用于产品验证的货币",
+          "catalog": "目录",
+          "catalog-description": "选择与此渠道关联的目录",
+          "evaluator": "评估器类型",
+          "evaluator-description": "选择用于评估产品发布完整性的算法",
+          "evaluate": "评估"
+        },
+        "placeholders": {
+          "enter-value": "输入值",
+          "currencies": "为此渠道选择至少一种货币",
+          "languages": "为此渠道选择至少一种语言",
+          "catalog": "选择目录",
+          "evaluator": "选择完整性评估器"
+        }
+      },
+      "channel-select": {
+        "title": "选择渠道",
+        "labels": {
+          "channels": "选择渠道"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "渠道评估进度"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "保存更改",
+        "message": "渠道已被修改。您要保存更改吗？"
+      },
+      "channel-delete": {
+        "title": "删除确认",
+        "message": "您确定要删除选定的目录发布渠道吗？"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "渠道完整性",
+        "no-channels-message": "没有可用的渠道"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "打开渠道菜单",
+    "channel:create": "创建渠道",
+    "channel:read": "查看渠道",
+    "channel:update": "更新渠道",
+    "channel:delete": "删除渠道"
+  }
+}

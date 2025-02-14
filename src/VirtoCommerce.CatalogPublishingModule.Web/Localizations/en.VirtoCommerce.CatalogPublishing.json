@@ -25,16 +25,16 @@
         "title": "Channel",
         "labels": {
           "name": "Name",
-          "name-description": "This field accepts latin symbols, digits and underscore symbol",
-          "name-pattern-error-message": "This field can contain only latin symbols and digits",
+          "name-description": "Enter name using Latin letters, numbers, or underscores",
+          "name-pattern-error-message": "The name can only include Latin letters and numbers",
           "languages": "Languages",
-          "languages-description": "List of languages which will be used in product validation",
+          "languages-description": "Specify the languages to use for product validation",
           "currencies": "Currencies",
-          "currencies-description": "List of currencies which will be used in product validation",
+          "currencies-description": "Specify the currencies to use for product validation",
           "catalog": "Catalog",
-          "catalog-description": "The catalog for which channel will be created",
+          "catalog-description": "Select the catalog associated with this channel",
           "evaluator": "Evaluator type",
-          "evaluator-description": "The set of algorithms to evaluate product publishing completeness",
+          "evaluator-description": "Choose the algorithms used to evaluate product publishing completeness",
           "evaluate": "Evaluate"
         },
         "placeholders": {
@@ -46,9 +46,9 @@
         }
       },
       "channel-select": {
-        "title": "Select a channel",
+        "title": "Select channel",
         "labels": {
-          "channels": "Select a channel"
+          "channels": "Select channel"
         }
       },
       "channel-evaluate-details": {
@@ -62,7 +62,7 @@
       },
       "channel-delete": {
         "title": "Delete confirmation",
-        "message": "Are you sure you want to delete selected Catalog Publishing Channels?"
+        "message": "Are you sure you want to delete selected catalog publishing channels?"
       }
     },
     "widgets": {
