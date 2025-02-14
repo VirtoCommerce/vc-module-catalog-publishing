@@ -15,7 +15,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
     /// </summary>
     public class PricesCompletenessDetailEvaluator : ICompletenessDetailEvaluator
     {
-        const int _pageSize = 100;
+        private const int _pageSize = 100;
         private readonly IPriceSearchService _pricingSearchService;
 
         public PricesCompletenessDetailEvaluator(IPriceSearchService pricingSearchService)
