@@ -28,7 +28,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation
             var prices = (await _pricingSearchService.SearchAllNoCloneAsync(new PricesSearchCriteria
             {
                 ProductIds = products.Select(x => x.Id).ToArray(),
-                Take = _pageSize
+                Take = _pageSize,
             }));
 
             return products.Select(x =>
