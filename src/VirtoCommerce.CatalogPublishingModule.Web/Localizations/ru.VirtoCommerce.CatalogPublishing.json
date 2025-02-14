@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "Каналы",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "Начало",
+          "end": "Конец",
+          "total": "Всего",
+          "processed": "Обработано",
+          "errors": "Ошибки",
+          "errors-count": "Количество ошибок"
+        }
+      },
+      "channel-list": {
+        "title": "Каналы",
+        "labels": {
+          "name": "Имя",
+          "catalog": "Каталог",
+          "completeness-percent": "Завершено"
+        }
+      },
+      "channel-details": {
+        "new-title": "Новый канал",
+        "title": "Канал",
+        "labels": {
+          "name": "Имя",
+          "name-description": "Введите имя, используя латинские буквы, цифры или подчеркивания",
+          "name-pattern-error-message": "Имя может содержать только латинские буквы и цифры",
+          "languages": "Языки",
+          "languages-description": "Укажите языки для проверки продукта",
+          "currencies": "Валюты",
+          "currencies-description": "Укажите валюты для проверки продукта",
+          "catalog": "Каталог",
+          "catalog-description": "Выберите каталог, связанный с этим каналом",
+          "evaluator": "Тип оценщика",
+          "evaluator-description": "Выберите алгоритмы, используемые для оценки полноты публикации продукта",
+          "evaluate": "Оценить"
+        },
+        "placeholders": {
+          "enter-value": "Введите значение",
+          "currencies": "Выберите хотя бы одну валюту для этого канала",
+          "languages": "Выберите хотя бы один язык для этого канала",
+          "catalog": "Выберите каталог",
+          "evaluator": "Выберите оценщика полноты"
+        }
+      },
+      "channel-select": {
+        "title": "Выбрать канал",
+        "labels": {
+          "channels": "Выбрать канал"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "Прогресс оценки канала"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "Сохранить изменения",
+        "message": "Канал был изменен. Хотите сохранить изменения?"
+      },
+      "channel-delete": {
+        "title": "Подтверждение удаления",
+        "message": "Вы уверены, что хотите удалить выбранные каналы публикации каталога?"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "Полнота для канала",
+        "no-channels-message": "Нет доступных каналов"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "Открыть меню каналов",
+    "channel:create": "Создать канал",
+    "channel:read": "Просмотр канала",
+    "channel:update": "Обновить канал",
+    "channel:delete": "Удалить канал"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "Canali",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "Inizio",
+          "end": "Fine",
+          "total": "Totale",
+          "processed": "Elaborato",
+          "errors": "Errori",
+          "errors-count": "Conteggio errori"
+        }
+      },
+      "channel-list": {
+        "title": "Canali",
+        "labels": {
+          "name": "Nome",
+          "catalog": "Catalogo",
+          "completeness-percent": "Completo"
+        }
+      },
+      "channel-details": {
+        "new-title": "Nuovo canale",
+        "title": "Canale",
+        "labels": {
+          "name": "Nome",
+          "name-description": "Inserisci il nome usando lettere latine, numeri o trattini bassi",
+          "name-pattern-error-message": "Il nome può includere solo lettere latine e numeri",
+          "languages": "Lingue",
+          "languages-description": "Specifica le lingue da utilizzare per la validazione del prodotto",
+          "currencies": "Valute",
+          "currencies-description": "Specifica le valute da utilizzare per la validazione del prodotto",
+          "catalog": "Catalogo",
+          "catalog-description": "Seleziona il catalogo associato a questo canale",
+          "evaluator": "Tipo di valutatore",
+          "evaluator-description": "Scegli gli algoritmi utilizzati per valutare la completezza della pubblicazione del prodotto",
+          "evaluate": "Valuta"
+        },
+        "placeholders": {
+          "enter-value": "Inserisci valore",
+          "currencies": "Seleziona almeno una valuta per questo canale",
+          "languages": "Seleziona almeno una lingua per questo canale",
+          "catalog": "Seleziona catalogo",
+          "evaluator": "Seleziona valutatore di completezza"
+        }
+      },
+      "channel-select": {
+        "title": "Seleziona canale",
+        "labels": {
+          "channels": "Seleziona canale"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "Progresso della valutazione del canale"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "Salva modifiche",
+        "message": "Il canale è stato modificato. Vuoi salvare le modifiche?"
+      },
+      "channel-delete": {
+        "title": "Conferma eliminazione",
+        "message": "Sei sicuro di voler eliminare i canali di pubblicazione del catalogo selezionati?"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "Completezza per canale",
+        "no-channels-message": "Nessun canale disponibile"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "Apri menu canali",
+    "channel:create": "Crea canale",
+    "channel:read": "Visualizza canale",
+    "channel:update": "Aggiorna canale",
+    "channel:delete": "Elimina canale"
+  }
+}
