@@ -30,28 +30,31 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         {
             var cacheKey = CacheKey.With(GetType(), nameof(GetChannelsByIdsAsync), string.Join("-", ids));
 
-            return await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
-            {
-                cacheEntry.AddExpirationToken(CompletenessCacheRegion.CreateChangeToken());
-
-                CompletenessChannel[] result = null;
-                if (ids != null)
+            return await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey,
+                async (cacheEntry) =>
                 {
-                    using (var repository = _repositoryFactory())
+                    cacheEntry.AddExpirationToken(CompletenessCacheRegion.CreateChangeToken());
+
+                    CompletenessChannel[] result = null;
+                    if (ids != null)
                     {
+                        using var repository = _repositoryFactory();
                         repository.DisableChangesTracking();
 
                         var channelEntities = await repository.GetChannelsByIdsAsync(ids);
                         result = channelEntities.Select(x =>
-                        {
-                            var channel = x.ToModel(AbstractTypeFactory<CompletenessChannel>.TryCreateInstance());
-                            channel.CompletenessPercent = (int)Math.Floor(repository.Entries.Where(e => e.ChannelId == x.Id).Average(e => (int?)e.CompletenessPercent) ?? 0);
-                            return channel;
-                        }).ToArray();
+                            {
+                                var channel = x.ToModel(AbstractTypeFactory<CompletenessChannel>.TryCreateInstance());
+                                var entriesCompletenessPercent = repository.Entries.Where(e => e.ChannelId == x.Id).Average(e => e.CompletenessPercent);
+                                channel.CompletenessPercent ??= entriesCompletenessPercent;
+
+                                return channel;
+                            })
+                            .ToArray();
                     }
-                }
-                return result;
-            });
+
+                    return result;
+                });
         }
 
         public async Task<CompletenessEntry[]> GetCompletenessEntriesByIdsAsync(string[] ids)
@@ -117,7 +120,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
 
                 foreach (var entry in entries)
                 {
-                    var sourceEntity = AbstractTypeFactory<CompletenessEntryEntity>.TryCreateInstance().FromModel(entry);
+                    var sourceEntity = AbstractTypeFactory<CompletenessEntryEntity>.TryCreateInstance().FromModel(entry, new PrimaryKeyResolvingMap());
                     var targetEntity = alreadyExistEntities.FirstOrDefault(x => CompareEntries(entry, x));
                     if (targetEntity != null)
                     {

@@ -72,7 +72,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
                 var fieldName = $"completeness_{catalogId}";
                 var completenessField = document.Fields.FirstOrDefault(f => f.Name.EqualsInvariant(fieldName));
                 Assert.NotNull(completenessField);
-                Assert.Equal(50, completenessField.Value);
+                Assert.Equal(50m, completenessField.Value);
             }
         }
 
