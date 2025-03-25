@@ -57,7 +57,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             return entry;
         }
 
-        public CompletenessEntryEntity FromModel(CompletenessEntry model, PrimaryKeyResolvingMap pkMap)
+        public virtual CompletenessEntryEntity FromModel(CompletenessEntry model, PrimaryKeyResolvingMap pkMap)
         {
             ArgumentNullException.ThrowIfNull(model);
             ArgumentNullException.ThrowIfNull(pkMap);

@@ -13,7 +13,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.MySql.Migrations
             migrationBuilder.AlterColumn<decimal>(
                 name: "CompletenessPercent",
                 table: "CompletenessEntry",
-                type: "decimal(65,30)",
+                type: "decimal(18,2)",
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
@@ -21,7 +21,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.MySql.Migrations
             migrationBuilder.AlterColumn<decimal>(
                 name: "CompletenessPercent",
                 table: "CompletenessDetail",
-                type: "decimal(65,30)",
+                type: "decimal(18,2)",
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
@@ -29,7 +29,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.MySql.Migrations
             migrationBuilder.AddColumn<decimal>(
                 name: "CompletenessPercent",
                 table: "CompletenessChannel",
-                type: "decimal(65,30)",
+                type: "decimal(18,2)",
                 nullable: true);
         }
 

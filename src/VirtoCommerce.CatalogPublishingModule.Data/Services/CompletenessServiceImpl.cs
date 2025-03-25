@@ -68,13 +68,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 CompletenessEntry[] result = null;
                 if (ids != null)
                 {
-                    using (var repository = _repositoryFactory())
-                    {
-                        repository.DisableChangesTracking();
+                    using var repository = _repositoryFactory();
+                    repository.DisableChangesTracking();
 
-                        var entryEntities = await repository.GetEntriesByIdsAsync(ids);
-                        result = entryEntities.Select(x => x.ToModel(AbstractTypeFactory<CompletenessEntry>.TryCreateInstance())).ToArray();
-                    }
+                    var entryEntities = await repository.GetEntriesByIdsAsync(ids);
+                    result = entryEntities.Select(x => x.ToModel(AbstractTypeFactory<CompletenessEntry>.TryCreateInstance())).ToArray();
                 }
                 return result;
             });
@@ -84,58 +82,56 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
         {
             var pkMap = new PrimaryKeyResolvingMap();
 
-            using (var repository = _repositoryFactory())
+            using var repository = _repositoryFactory();
+            var ids = channels.Select(x => x.Id).Where(x => x != null).Distinct().ToArray();
+            var alreadyExistEntities = await repository.Channels.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+
+            foreach (var channel in channels)
             {
-                var ids = channels.Select(x => x.Id).Where(x => x != null).Distinct().ToArray();
-                var alreadyExistEntities = await repository.Channels.Where(x => ids.Contains(x.Id)).ToArrayAsync();
-
-                foreach (var channel in channels)
+                var sourceEntity = AbstractTypeFactory<CompletenessChannelEntity>.TryCreateInstance().FromModel(channel, pkMap);
+                var targetEntity = alreadyExistEntities.FirstOrDefault(x => x.Id == channel.Id);
+                if (targetEntity != null)
                 {
-                    var sourceEntity = AbstractTypeFactory<CompletenessChannelEntity>.TryCreateInstance().FromModel(channel, pkMap);
-                    var targetEntity = alreadyExistEntities.FirstOrDefault(x => x.Id == channel.Id);
-                    if (targetEntity != null)
-                    {
-                        sourceEntity.Patch(targetEntity);
-                    }
-                    else
-                    {
-                        repository.Add(sourceEntity);
-                    }
+                    sourceEntity.Patch(targetEntity);
                 }
-
-                await repository.UnitOfWork.CommitAsync();
-
-                pkMap.ResolvePrimaryKeys();
-
-                CompletenessCacheRegion.ExpireRegion();
+                else
+                {
+                    repository.Add(sourceEntity);
+                }
             }
+
+            await repository.UnitOfWork.CommitAsync();
+
+            pkMap.ResolvePrimaryKeys();
+
+            CompletenessCacheRegion.ExpireRegion();
         }
 
         public async Task SaveEntriesAsync(CompletenessEntry[] entries)
         {
-            using (var repository = _repositoryFactory())
+            using var repository = _repositoryFactory();
+            var allDbEntries = await repository.Entries.Include(x => x.Details).ToArrayAsync();
+            var alreadyExistEntities = allDbEntries.Where(x => entries.Any(y => CompareEntries(y, x))).ToArray();
+            var pkMap = new PrimaryKeyResolvingMap();
+            foreach (var entry in entries)
             {
-                var allDbEntries = await repository.Entries.Include(x => x.Details).ToArrayAsync();
-                var alreadyExistEntities = allDbEntries.Where(x => entries.Any(y => CompareEntries(y, x))).ToArray();
-
-                foreach (var entry in entries)
+                var sourceEntity = AbstractTypeFactory<CompletenessEntryEntity>.TryCreateInstance().FromModel(entry,pkMap);
+                var targetEntity = alreadyExistEntities.FirstOrDefault(x => CompareEntries(entry, x));
+                if (targetEntity != null)
                 {
-                    var sourceEntity = AbstractTypeFactory<CompletenessEntryEntity>.TryCreateInstance().FromModel(entry, new PrimaryKeyResolvingMap());
-                    var targetEntity = alreadyExistEntities.FirstOrDefault(x => CompareEntries(entry, x));
-                    if (targetEntity != null)
-                    {
-                        sourceEntity.Patch(targetEntity);
-                    }
-                    else
-                    {
-                        repository.Add(sourceEntity);
-                    }
+                    sourceEntity.Patch(targetEntity);
                 }
-
-                await repository.UnitOfWork.CommitAsync();
-
-                CompletenessCacheRegion.ExpireRegion();
+                else
+                {
+                    repository.Add(sourceEntity);
+                }
             }
+
+            await repository.UnitOfWork.CommitAsync();
+
+            pkMap.ResolvePrimaryKeys();
+
+            CompletenessCacheRegion.ExpireRegion();
         }
 
         public async Task<CompletenessChannelSearchResult> SearchChannelsAsync(CompletenessChannelSearchCriteria criteria)
@@ -152,43 +148,39 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                 cacheEntry.AddExpirationToken(CompletenessCacheRegion.CreateChangeToken());
 
                 var result = AbstractTypeFactory<CompletenessChannelSearchResult>.TryCreateInstance();
-                using (var repository = _repositoryFactory())
+                using var repository = _repositoryFactory();
+                repository.DisableChangesTracking();
+
+                var query = repository.Channels;
+                if (!criteria.CatalogIds.IsNullOrEmpty())
                 {
-                    repository.DisableChangesTracking();
-
-                    var query = repository.Channels;
-                    if (!criteria.CatalogIds.IsNullOrEmpty())
-                    {
-                        query = query.Where(x => criteria.CatalogIds.Contains(x.CatalogId));
-                    }
-
-                    var sortInfos = criteria.SortInfos;
-                    if (sortInfos.IsNullOrEmpty())
-                    {
-                        sortInfos = new[] { new SortInfo { SortColumn = ReflectionUtility.GetPropertyName<CompletenessChannel>(x => x.Name) } };
-                    }
-                    query = query.OrderBySortInfos(sortInfos);
-
-                    result.TotalCount = query.Count();
-                    query = query.Skip(criteria.Skip).Take(criteria.Take);
-
-                    var ids = query.Select(x => x.Id).ToArray();
-                    result.Results = (await GetChannelsByIdsAsync(ids)).AsQueryable().OrderBySortInfos(sortInfos).ToList();
+                    query = query.Where(x => criteria.CatalogIds.Contains(x.CatalogId));
                 }
+
+                var sortInfos = criteria.SortInfos;
+                if (sortInfos.IsNullOrEmpty())
+                {
+                    sortInfos = new[] { new SortInfo { SortColumn = ReflectionUtility.GetPropertyName<CompletenessChannel>(x => x.Name) } };
+                }
+                query = query.OrderBySortInfos(sortInfos);
+
+                result.TotalCount = query.Count();
+                query = query.Skip(criteria.Skip).Take(criteria.Take);
+
+                var ids = query.Select(x => x.Id).ToArray();
+                result.Results = (await GetChannelsByIdsAsync(ids)).AsQueryable().OrderBySortInfos(sortInfos).ToList();
                 return result;
             });
         }
 
         public async Task DeleteChannelsAsync(string[] ids)
         {
-            using (var repository = _repositoryFactory())
-            {
-                await repository.DeleteChannelsAsync(ids);
+            using var repository = _repositoryFactory();
+            await repository.DeleteChannelsAsync(ids);
 
-                await repository.UnitOfWork.CommitAsync();
+            await repository.UnitOfWork.CommitAsync();
 
-                CompletenessCacheRegion.ExpireRegion();
-            }
+            CompletenessCacheRegion.ExpireRegion();
         }
 
         private bool CompareEntries(CompletenessEntry entry, CompletenessEntryEntity entity)

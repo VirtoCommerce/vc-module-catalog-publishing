@@ -19,7 +19,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
         public object Clone()
         {
             var result = (CompletenessEntry)MemberwiseClone();
-            result.Details = Details.CloneTyped();
+            result.Details = Details?.CloneTyped();
 
             return result;
         }
