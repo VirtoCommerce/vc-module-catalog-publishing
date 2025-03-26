@@ -93,7 +93,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
                                     _.each(response, function(entry) {
                                         var item = _.find(items, function(i) { return i.id === entry.productId });
                                         if (item) {
-                                            item.completenessPercent = entry.completenessPercent;
+                                            item.completenessPercent = Number(entry.completenessPercent.toFixed(1));;
                                         } else {
                                             item.completenessPercent = 0;
                                         }
