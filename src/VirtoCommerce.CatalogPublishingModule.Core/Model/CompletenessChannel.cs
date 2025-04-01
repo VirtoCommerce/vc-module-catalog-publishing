@@ -22,6 +22,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
         public string EvaluatorType { get; set; }
 
         public decimal? CompletenessPercent { get; set; }
+
         public object Clone()
         {
             return MemberwiseClone();

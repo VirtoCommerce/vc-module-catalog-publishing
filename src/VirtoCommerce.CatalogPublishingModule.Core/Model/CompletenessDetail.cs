@@ -13,6 +13,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
         public string ProductId { get; set; }
 
         public decimal CompletenessPercent { get; set; }
+
         public object Clone()
         {
             return MemberwiseClone();

@@ -82,8 +82,8 @@ angular.module('virtoCommerce.catalogPublishingModule')
                         cellTemplate: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/completeness.cell.html'
                     }],
                     fnGetBladeForItem: function (product) {
-                        //Extension point used for define custom views for product completeness 
-                        return productCompletenessBladeFactory(product);                    
+                        //Extension point used for define custom views for product completeness
+                        return productCompletenessBladeFactory(product);
                     },
                     onItemsLoaded: function(items) {
                         var itemIds = _.map(_.where(items, { type: 'product' }), function(i) { return i.id });
@@ -93,7 +93,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
                                     _.each(response, function(entry) {
                                         var item = _.find(items, function(i) { return i.id === entry.productId });
                                         if (item) {
-                                            item.completenessPercent = Number(entry.completenessPercent.toFixed(1));;
+                                            item.completenessPercent = Number(entry.completenessPercent.toFixed(1));
                                         } else {
                                             item.completenessPercent = 0;
                                         }

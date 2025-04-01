@@ -16,6 +16,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
         public decimal CompletenessPercent { get; set; }
 
         public CompletenessDetail[] Details { get; set; }
+
         public object Clone()
         {
             var result = (CompletenessEntry)MemberwiseClone();
