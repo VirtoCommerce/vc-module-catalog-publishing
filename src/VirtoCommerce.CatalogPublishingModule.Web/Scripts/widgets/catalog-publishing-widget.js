@@ -41,7 +41,7 @@
                 function (response) {
                     if (response.length) {
                         var entry = response[0];
-                        $scope.completenessPercent = Number(entry.completenessPercent.toFixed(1));
+                        $scope.completenessPercent = Number(entry.completenessPercent)?.toFixed(1);
                         _.each(entry.details, function (detail) {
                             var widgetControllerName = widgetMapperService.get(detail.name);
                             if (widgetControllerName) {
