@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.catalogPublishingModule')
     .controller('virtoCommerce.catalogPublishingModule.channelListController', ['$scope', '$localStorage', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.bladeUtils', 'platformWebApp.ui-grid.extension', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.productCompletenessBladeFactory', function ($scope, $localStorage, uiGridHelper, bladeNavigationService, dialogService, bladeUtils, gridOptionExtension, catalogPublishingApi, productCompletenessBladeFactory) {
-        var blade = $scope.blade;
+        const blade = $scope.blade;
         blade.isLoading = false;
 
         blade.refresh = function () {
@@ -10,6 +10,12 @@ angular.module('virtoCommerce.catalogPublishingModule')
                 skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
                 take: $scope.pageSettings.itemsPerPageCount
             }, function (response) {
+                if (response.results?.length > 0) {
+                    _.each(response.results, function(entry) {
+                        entry.completenessPercent = getFormattedNumber(entry.completenessPercent);
+                    });
+                }
+
                 blade.currentEntities = response.results;
                 $scope.pageSettings.totalItems = response.totalCount;
                 blade.isLoading = false;
@@ -34,31 +40,31 @@ angular.module('virtoCommerce.catalogPublishingModule')
             catalogPublishingApi.evaluateChannel({
                 id: channel.id
             }, function (response) {
-                var newBlade = {
+                const newBlade = {
                     id: 'evaluateProgress',
                     title: 'catalog-publishing.blades.channel-evaluate-details.title',
                     notification: response,
                     controller: 'virtoCommerce.catalogPublishingModule.channelEvaluateDetailsController',
                     template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-evaluate-details.tpl.html'
-                }
+                };
                 bladeNavigationService.showBlade(newBlade, blade);
             });
         }
 
         $scope.deleteChannels = function (selectedItems) {
-            var dialog = {
+            const dialog = {
                 id: 'deleteCatalogPublishingChannelsDialog',
                 title: 'catalog-publishing.dialogs.channel-delete.title',
                 message: 'catalog-publishing.dialogs.channel-delete.message',
                 callback: function (remove) {
                     if (remove) {
                         bladeNavigationService.closeChildrenBlades(blade, function () {
-                            var ids = _.pluck(selectedItems, 'id');
-                            catalogPublishingApi.deleteChannels({ ids: ids }, blade.refresh);
+                            const ids = _.pluck(selectedItems, 'id');
+                            catalogPublishingApi.deleteChannels({ids: ids}, blade.refresh);
                         });
                     }
                 }
-            }
+            };
             dialogService.showConfirmationDialog(dialog);
         }
 
@@ -86,14 +92,16 @@ angular.module('virtoCommerce.catalogPublishingModule')
                         return productCompletenessBladeFactory(product);
                     },
                     onItemsLoaded: function(items) {
-                        var itemIds = _.map(_.where(items, { type: 'product' }), function(i) { return i.id });
+                        const itemIds = _.map(_.where(items, { type: 'product' }), function(i) { return i.id });
                         if (itemIds && itemIds.length) {
                             catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, itemIds,
                                 function(response) {
                                     _.each(response, function(entry) {
-                                        var item = _.find(items, function(i) { return i.id === entry.productId });
+                                        const item = _.find(items, function (i) {
+                                            return i.id === entry.productId
+                                        });
                                         if (item) {
-                                            item.completenessPercent = Number(entry.completenessPercent)?.toFixed(1);
+                                            item.completenessPercent = getFormattedNumber(entry.completenessPercent);
                                         } else {
                                             item.completenessPercent = 0;
                                         }
@@ -103,6 +111,16 @@ angular.module('virtoCommerce.catalogPublishingModule')
                     }
                 }
             }, blade);
+        }
+
+        function getFormattedNumber(entry) {
+            const percentNumber = Number(entry);
+            if (percentNumber % 1 === 0) {
+                return  percentNumber.toFixed(0);
+            }
+            else {
+                return  percentNumber.toFixed(1);
+            }
         }
 
         blade.toolbarCommands = [{

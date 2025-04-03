@@ -1,13 +1,15 @@
 ﻿angular.module('virtoCommerce.catalogPublishingModule')
     .controller('virtoCommerce.catalogPublishingModule.catalogPublishingWidgetController', ['$scope', '$localStorage', 'platformWebApp.authService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.catalogPublishingModule.widgetMapperService', function ($scope, $localStorage, authService, widgetService, bladeNavigationService, catalogPublishingApi, widgetMapperService) {
-        var blade = $scope.blade;
-        var channel = $localStorage.catalogPublishingChannel;
+        const blade = $scope.blade;
+        const channel = $localStorage.catalogPublishingChannel;
 
         $scope.$watch("blade.currentEntity", function (currentEntity, oldCurrentEntity, scope) {
             if (currentEntity) {
-                var catalogIds = [];
+                const catalogIds = [];
                 _.each(currentEntity.outlines, function(outline) {
-                    var catalogItem = _.find(outline.items, function(item) { return item.seoObjectType === 'Catalog' });
+                    const catalogItem = _.find(outline.items, function (item) {
+                        return item.seoObjectType === 'Catalog'
+                    });
                     if (catalogItem) {
                         catalogIds.push(catalogItem.id);
                     }
@@ -18,9 +20,9 @@
                     take: Math.pow(2, 31) - 1,
                     catalogIds: catalogIds
                 }, function(response) {
-                    var allChannels = response.results;
+                    const allChannels = response.results;
                     if (allChannels && allChannels.length) {
-                        var existingChannel = null;
+                        let existingChannel = null;
                         if (channel) {
                             existingChannel = _.find(allChannels, function(c) { return c.id === channel.id });
                         }
@@ -40,12 +42,14 @@
             catalogPublishingApi.evaluateChannelProducts({ id: channelId }, [productId],
                 function (response) {
                     if (response.length) {
-                        var entry = response[0];
-                        $scope.completenessPercent = Number(entry.completenessPercent)?.toFixed(1);
+                        const entry = response[0];
+                        $scope.completenessPercent = getFormattedNumber(entry.completenessPercent);
                         _.each(entry.details, function (detail) {
-                            var widgetControllerName = widgetMapperService.get(detail.name);
+                            const widgetControllerName = widgetMapperService.get(detail.name);
                             if (widgetControllerName) {
-                                var widget = _.find($scope.widgets, function (w) { return w.controller === widgetControllerName });
+                                const widget = _.find($scope.widgets, function (w) {
+                                    return w.controller === widgetControllerName
+                                });
                                 if (widget && detail.completenessPercent < 100) {
                                     widget.UIclass = 'error';
                                 } else {
@@ -62,8 +66,20 @@
                 });
         }
 
+        function getFormattedNumber(entry) {
+            const percentNumber = Number(entry);
+            if (percentNumber % 1 === 0) {
+                return  percentNumber.toFixed(0);
+            }
+            else {
+                return  percentNumber.toFixed(1);
+            }
+        }
+
         $scope.changeChannel = function() {
-            var channel = _.find($scope.channels, function (c) { return c.id === $scope.channel.id });
+            const channel = _.find($scope.channels, function (c) {
+                return c.id === $scope.channel.id
+            });
             $localStorage.catalogPublishingChannel = channel;
             evaluate(channel.id, blade.currentEntityId, true);
         };
