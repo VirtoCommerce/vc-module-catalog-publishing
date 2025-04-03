@@ -6,7 +6,7 @@
         $scope.$watch("blade.currentEntity", function (currentEntity, oldCurrentEntity, scope) {
             if (currentEntity) {
                 const catalogIds = [];
-                _.each(currentEntity.outlines, function(outline) {
+                _.each(currentEntity.outlines, function (outline) {
                     const catalogItem = _.find(outline.items, function (item) {
                         return item.seoObjectType === 'Catalog'
                     });
@@ -19,12 +19,14 @@
                     skip: 0,
                     take: Math.pow(2, 31) - 1,
                     catalogIds: catalogIds
-                }, function(response) {
+                }, function (response) {
                     const allChannels = response.results;
                     if (allChannels && allChannels.length) {
                         let existingChannel = null;
                         if (channel) {
-                            existingChannel = _.find(allChannels, function(c) { return c.id === channel.id });
+                            existingChannel = _.find(allChannels, function (c) {
+                                return c.id === channel.id
+                            });
                         }
                         $scope.channels = angular.copy(allChannels);
                         $scope.channel = existingChannel || allChannels[0];
@@ -39,7 +41,7 @@
         }
 
         function evaluate(channelId, productId, saveEntities) {
-            catalogPublishingApi.evaluateChannelProducts({ id: channelId }, [productId],
+            catalogPublishingApi.evaluateChannelProducts({id: channelId}, [productId],
                 function (response) {
                     if (response.length) {
                         const entry = response[0];
@@ -69,18 +71,17 @@
         function getFormattedNumber(entry) {
             const percentNumber = Number(entry);
             if (percentNumber % 1 === 0) {
-                return  percentNumber.toFixed(0);
-            }
-            else {
-                return  percentNumber.toFixed(1);
+                return percentNumber.toFixed(0);
+            } else {
+                return percentNumber.toFixed(1);
             }
         }
 
-        $scope.changeChannel = function() {
-            const channel = _.find($scope.channels, function (c) {
+        $scope.changeChannel = function () {
+            const changedChannel = _.find($scope.channels, function (c) {
                 return c.id === $scope.channel.id
             });
-            $localStorage.catalogPublishingChannel = channel;
-            evaluate(channel.id, blade.currentEntityId, true);
+            $localStorage.catalogPublishingChannel = changedChannel;
+            evaluate(changedChannel.id, blade.currentEntityId, true);
         };
     }]);

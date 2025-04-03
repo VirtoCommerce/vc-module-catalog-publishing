@@ -11,7 +11,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
                 take: $scope.pageSettings.itemsPerPageCount
             }, function (response) {
                 if (response.results?.length > 0) {
-                    _.each(response.results, function(entry) {
+                    _.each(response.results, function (entry) {
                         entry.completenessPercent = getFormattedNumber(entry.completenessPercent);
                     });
                 }
@@ -68,7 +68,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
             dialogService.showConfirmationDialog(dialog);
         }
 
-        $scope.selectCatalogItem = function(channel) {
+        $scope.selectCatalogItem = function (channel) {
             $scope.selectedNodeId = channel.id;
             $localStorage.catalogPublishingChannel = channel;
             bladeNavigationService.showBlade({
@@ -91,12 +91,14 @@ angular.module('virtoCommerce.catalogPublishingModule')
                         //Extension point used for define custom views for product completeness
                         return productCompletenessBladeFactory(product);
                     },
-                    onItemsLoaded: function(items) {
-                        const itemIds = _.map(_.where(items, { type: 'product' }), function(i) { return i.id });
+                    onItemsLoaded: function (items) {
+                        const itemIds = _.map(_.where(items, {type: 'product'}), function (i) {
+                            return i.id
+                        });
                         if (itemIds && itemIds.length) {
-                            catalogPublishingApi.evaluateChannelProducts({ id: channel.id }, itemIds,
-                                function(response) {
-                                    _.each(response, function(entry) {
+                            catalogPublishingApi.evaluateChannelProducts({id: channel.id}, itemIds,
+                                function (response) {
+                                    _.each(response, function (entry) {
                                         const item = _.find(items, function (i) {
                                             return i.id === entry.productId
                                         });
@@ -116,10 +118,9 @@ angular.module('virtoCommerce.catalogPublishingModule')
         function getFormattedNumber(entry) {
             const percentNumber = Number(entry);
             if (percentNumber % 1 === 0) {
-                return  percentNumber.toFixed(0);
-            }
-            else {
-                return  percentNumber.toFixed(1);
+                return percentNumber.toFixed(0);
+            } else {
+                return percentNumber.toFixed(1);
             }
         }
 
