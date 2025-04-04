@@ -93,6 +93,4 @@ angular.module(moduleName, [])
             }
         };
         pushNotificationTemplateResolver.register(historyExportTemplate);
-
-
     }]);
