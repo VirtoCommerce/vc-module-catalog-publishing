@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CatalogPublishingModule.Core.Model
@@ -6,7 +7,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
     /// <summary>
     /// Completeness channel is a provider of completeness of specified catalog
     /// </summary>
-    public class CompletenessChannel : AuditableEntity
+    public class CompletenessChannel : AuditableEntity, ICloneable
     {
         public string Name { get; set; }
 
@@ -20,6 +21,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Core.Model
 
         public string EvaluatorType { get; set; }
 
-        public int CompletenessPercent { get; set; }
+        public decimal? CompletenessPercent { get; set; }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.catalogPublishingModule')
     .controller('virtoCommerce.catalogPublishingModule.channelDetailsController', ['$scope', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'virtoCommerce.catalogPublishingModule.catalogPublishing', 'virtoCommerce.coreModule.currency.currencyApi', 'virtoCommerce.coreModule.currency.currencyUtils', 'virtoCommerce.catalogModule.catalogs', function ($scope, settings, bladeNavigationService, catalogPublishingApi, currencyApi, currencyUtils, catalogApi) {
-        var blade = $scope.blade;
+        const blade = $scope.blade;
         blade.isLoading = false;
         blade.isNew = !blade.currentEntity || !blade.currentEntity.id;
         blade.updatePermission = 'channel:update';
@@ -36,13 +36,13 @@ angular.module('virtoCommerce.catalogPublishingModule')
                     catalogPublishingApi.evaluateChannel({
                         id: blade.currentEntity.id
                     }, function (response) {
-                        var newBlade = {
+                        const newBlade = {
                             id: 'evaluateProgress',
                             title: 'catalog-publishing.blades.channel-evaluate-details.title',
                             notification: response,
                             controller: 'virtoCommerce.catalogPublishingModule.channelEvaluateDetailsController',
                             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/channel-evaluate-details.tpl.html'
-                        }
+                        };
                         bladeNavigationService.showBlade(newBlade, blade);
                     });
                 }
@@ -67,11 +67,13 @@ angular.module('virtoCommerce.catalogPublishingModule')
         $scope.evaluators = catalogPublishingApi.getEvaluators();
 
         $scope.openLanguagesDictionarySettingManagement = function () {
-            var newBlade = {
+            const newBlade = {
                 id: 'settingDetailChild',
                 isApiSave: true,
                 currentEntityId: 'VirtoCommerce.Core.General.Languages',
-                parentRefresh: function (data) { $scope.languages = data; },
+                parentRefresh: function (data) {
+                    $scope.languages = data;
+                },
                 controller: 'platformWebApp.settingDictionaryController',
                 template: '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html'
             };

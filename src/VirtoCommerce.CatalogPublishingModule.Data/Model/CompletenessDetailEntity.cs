@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 {
-    public class CompletenessDetailEntity : Entity
+    public class CompletenessDetailEntity : Entity, IDataEntity<CompletenessDetailEntity, CompletenessDetail>
     {
         [Required]
         [StringLength(128)]
         public string Name { get; set; }
-        
+
         [Range(0, 100)]
-        public int CompletenessPercent { get; set; }
+        public decimal CompletenessPercent { get; set; }
 
         #region Navigation properties
 
@@ -27,20 +28,22 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         {
             if (detail == null)
                 throw new ArgumentNullException(nameof(detail));
-            
+
             detail.Name = Name;
             detail.CompletenessPercent = CompletenessPercent;
 
             return detail;
         }
 
-        public virtual CompletenessDetailEntity FromModel(CompletenessDetail detail)
+        public virtual CompletenessDetailEntity FromModel(CompletenessDetail model, PrimaryKeyResolvingMap pkMap)
         {
-            if (detail == null)
-                throw new ArgumentNullException(nameof(detail));
+            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(pkMap);
 
-            Name = detail.Name;
-            CompletenessPercent = detail.CompletenessPercent;
+            pkMap.AddPair(model, this);
+
+            Name = model.Name;
+            CompletenessPercent = model.CompletenessPercent;
 
             return this;
         }
