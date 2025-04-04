@@ -49,7 +49,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing
                 {
                     var document = documentsByProductId[completenessEntry.ProductId];
                     var fieldName = $"completeness_{channel.Name}".ToLower();
-                    document.AddFilterableInteger(fieldName, completenessEntry.CompletenessPercent);
+                    document.AddFilterableDecimal(fieldName, completenessEntry.CompletenessPercent);
                 }
             }
 

@@ -111,11 +111,11 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
             Assert.Throws<ArgumentNullException>(() => channel.Patch(null));
 
             Assert.Throws<ArgumentNullException>(() => entry.ToModel(null));
-            Assert.Throws<ArgumentNullException>(() => entry.FromModel(null));
+            Assert.Throws<ArgumentNullException>(() => entry.FromModel(null, null));
             Assert.Throws<ArgumentNullException>(() => entry.Patch(null));
 
             Assert.Throws<ArgumentNullException>(() => detail.ToModel(null));
-            Assert.Throws<ArgumentNullException>(() => detail.FromModel(null));
+            Assert.Throws<ArgumentNullException>(() => detail.FromModel(null, null));
             Assert.Throws<ArgumentNullException>(() => detail.Patch(null));
         }
 

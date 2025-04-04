@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 {
-    public class CompletenessChannelEntity : AuditableEntity
+    public class CompletenessChannelEntity : AuditableEntity, IDataEntity<CompletenessChannelEntity, CompletenessChannel>
     {
         public CompletenessChannelEntity()
         {
@@ -18,7 +19,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         [Required]
         [StringLength(128)]
         public string Name { get; set; }
-        
+
         [Required]
         [StringLength(128)]
         public string CatalogId { get; set; }
@@ -30,10 +31,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         [Required]
         public string EvaluatorType { get; set; }
 
+        [Range(0, 100)]
+        public decimal? CompletenessPercent { get; set; }
+
         #region Navigation Properties
-        
+
         public virtual ObservableCollection<CompletenessChannelLanguageEntity> Languages { get; set; }
-        
+
         public virtual ObservableCollection<CompletenessChannelCurrencyEntity> Currencies { get; set; }
 
         #endregion
@@ -56,6 +60,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             channel.Languages = Languages.Select(x => x.LanguageCode).ToList();
             channel.Currencies = Currencies.Select(x => x.CurrencyCode).ToList();
             channel.EvaluatorType = EvaluatorType;
+            channel.CompletenessPercent = CompletenessPercent;
 
             return channel;
         }
@@ -79,6 +84,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             Name = channel.Name;
             CatalogId = channel.CatalogId;
             CatalogName = channel.CatalogName;
+            CompletenessPercent = channel.CompletenessPercent;
+
             if (channel.Languages != null)
             {
                 Languages = new ObservableCollection<CompletenessChannelLanguageEntity>(channel.Languages.Select(x => new CompletenessChannelLanguageEntity
@@ -106,6 +113,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             channel.Name = Name;
             channel.CatalogId = CatalogId;
             channel.CatalogName = CatalogName;
+            channel.CompletenessPercent = CompletenessPercent;
+
             if (!Languages.IsNullCollection())
             {
                 var languageComparer = AnonymousComparer.Create((CompletenessChannelLanguageEntity x) => x.LanguageCode);

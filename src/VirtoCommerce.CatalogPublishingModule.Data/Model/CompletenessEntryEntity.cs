@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.CatalogPublishingModule.Data.Model
 {
-    public class CompletenessEntryEntity : AuditableEntity
+    public class CompletenessEntryEntity : AuditableEntity, IDataEntity<CompletenessEntryEntity, CompletenessEntry>
     {
         public CompletenessEntryEntity()
         {
@@ -17,14 +18,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
         [Required]
         [StringLength(128)]
         public string ProductId { get; set; }
-        
+
         [Range(0, 100)]
-        public int CompletenessPercent { get; set; }
+        public decimal CompletenessPercent { get; set; }
 
         #region Navigation properties
 
         public virtual ObservableCollection<CompletenessDetailEntity> Details { get; set; }
-        
+
         public string ChannelId { get; set; }
 
         public virtual CompletenessChannelEntity Channel { get; set; }
@@ -56,24 +57,26 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Model
             return entry;
         }
 
-        public virtual CompletenessEntryEntity FromModel(CompletenessEntry entry)
+        public virtual CompletenessEntryEntity FromModel(CompletenessEntry model, PrimaryKeyResolvingMap pkMap)
         {
-            if (entry == null)
-                throw new ArgumentNullException(nameof(entry));
+            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(pkMap);
 
-            Id = entry.Id;
+            pkMap.AddPair(model, this);
 
-            CreatedBy = entry.CreatedBy;
-            CreatedDate = entry.CreatedDate;
-            ModifiedBy = entry.ModifiedBy;
-            ModifiedDate = entry.ModifiedDate;
+            Id = model.Id;
 
-            ChannelId = entry.ChannelId;
-            ProductId = entry.ProductId;
-            CompletenessPercent = entry.CompletenessPercent;
-            if (entry.Details != null)
+            CreatedBy = model.CreatedBy;
+            CreatedDate = model.CreatedDate;
+            ModifiedBy = model.ModifiedBy;
+            ModifiedDate = model.ModifiedDate;
+
+            ChannelId = model.ChannelId;
+            ProductId = model.ProductId;
+            CompletenessPercent = model.CompletenessPercent;
+            if (model.Details != null)
             {
-                Details = new ObservableCollection<CompletenessDetailEntity>(entry.Details.Select(x => AbstractTypeFactory<CompletenessDetailEntity>.TryCreateInstance().FromModel(x)));
+                Details = new ObservableCollection<CompletenessDetailEntity>(model.Details.Select(x => AbstractTypeFactory<CompletenessDetailEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
 
             return this;

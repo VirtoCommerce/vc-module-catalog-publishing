@@ -84,16 +84,14 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
                 }
             }
 
-            using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
+            using var serviceScope = appBuilder.ApplicationServices.CreateScope();
+            var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
+            var dbContext = serviceScope.ServiceProvider.GetRequiredService<CatalogPublishingDbContext>();
+            if (databaseProvider == "SqlServer")
             {
-                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
-                var dbContext = serviceScope.ServiceProvider.GetRequiredService<CatalogPublishingDbContext>();
-                if (databaseProvider == "SqlServer")
-                {
-                    dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
-                }
-                dbContext.Database.Migrate();
+                dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
             }
+            dbContext.Database.Migrate();
         }
 
         public void Uninstall()

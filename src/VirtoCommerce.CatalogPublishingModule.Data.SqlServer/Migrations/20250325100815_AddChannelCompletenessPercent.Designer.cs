@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 
@@ -11,9 +12,11 @@ using VirtoCommerce.CatalogPublishingModule.Data.Repositories;
 namespace VirtoCommerce.CatalogPublishingModule.Data.SqlServer.Migrations
 {
     [DbContext(typeof(CatalogPublishingDbContext))]
-    partial class CatalogPublishingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250325100815_AddChannelCompletenessPercent")]
+    partial class AddChannelCompletenessPercent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

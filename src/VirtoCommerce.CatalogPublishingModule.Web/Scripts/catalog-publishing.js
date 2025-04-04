@@ -1,4 +1,4 @@
-var moduleName = 'virtoCommerce.catalogPublishingModule';
+const moduleName = 'virtoCommerce.catalogPublishingModule';
 
 if (AppDependencies !== undefined) {
     AppDependencies.push(moduleName);
@@ -9,7 +9,7 @@ angular.module(moduleName, [])
         $stateProvider.state('workspace.catalogPublishingModule', {
             url: '/catalogPublishing',
             controller: ['$scope', 'platformWebApp.bladeNavigationService', function ($scope, bladeNavigationService) {
-                var blade = {
+                const blade = {
                     id: 'catalogPublishing',
                     title: 'catalog-publishing.blades.channel-list.title',
                     headIcon: 'fa fa-tasks',
@@ -24,7 +24,7 @@ angular.module(moduleName, [])
         });
     }])
     .factory('virtoCommerce.catalogPublishingModule.widgetMapperService', function() {
-        var mapping = {};
+        const mapping = {};
 
         function map(detailName, widgetController) {
             mapping[detailName] = widgetController;
@@ -57,28 +57,32 @@ angular.module(moduleName, [])
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/widgets/catalog-publishing-widget.tpl.html',
             isVisible: function (blade) { return authService.checkPermission('channel:read');}
         }, 'itemDetail');
-        
+
         widgetMapperService.map("Properties", "virtoCommerce.catalogModule.itemPropertyWidgetController");
         widgetMapperService.map("Descriptions", "virtoCommerce.catalogModule.editorialReviewWidgetController");
         widgetMapperService.map("Prices", "virtoCommerce.pricingModule.itemPricesWidgetController");
         widgetMapperService.map("Seo", "virtoCommerce.coreModule.seo.seoWidgetController");
 
-        var menuExportTemplate = {
+        const menuExportTemplate = {
             priority: 900,
-            satisfy: function (notify, place) { return place === 'menu' && (notify.notifyType === 'EvaluateCompleteness'); },
+            satisfy: function (notify, place) {
+                return place === 'menu' && (notify.notifyType === 'EvaluateCompleteness');
+            },
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/notifications/menuEvaluation.tpl.html',
-            action: function (notify) { $state.go('workspace.pushNotificationsHistory', notify) }
+            action: function (notify) {
+                $state.go('workspace.pushNotificationsHistory', notify)
+            }
         };
         pushNotificationTemplateResolver.register(menuExportTemplate);
 
-        var historyExportTemplate = {
+        const historyExportTemplate = {
             priority: 900,
             satisfy: function (notify, place) {
                 return place === 'history' && (notify.notifyType === 'EvaluateCompleteness');
             },
             template: 'Modules/$(VirtoCommerce.CatalogPublishing)/Scripts/blades/notifications/historyEvaluation.tpl.html',
             action: function (notify) {
-                var blade = {
+                const blade = {
                     id: 'evaluateProgress',
                     title: 'catalog-publishing.blades.channel-evaluate-details.title',
                     notification: notify,

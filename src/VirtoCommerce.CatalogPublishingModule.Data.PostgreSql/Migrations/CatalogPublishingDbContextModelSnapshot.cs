@@ -17,7 +17,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.PostgreSql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -61,6 +61,9 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.PostgreSql.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
+
+                    b.Property<decimal?>("CompletenessPercent")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(64)
@@ -123,8 +126,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.PostgreSql.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(128)");
 
-                    b.Property<int>("CompletenessPercent")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("CompletenessPercent")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -149,8 +152,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.PostgreSql.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(128)");
 
-                    b.Property<int>("CompletenessPercent")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("CompletenessPercent")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(64)
