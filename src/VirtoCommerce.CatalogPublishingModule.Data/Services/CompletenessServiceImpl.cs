@@ -45,8 +45,12 @@ namespace VirtoCommerce.CatalogPublishingModule.Data.Services
                         result = channelEntities.Select(x =>
                             {
                                 var channel = x.ToModel(AbstractTypeFactory<CompletenessChannel>.TryCreateInstance());
-                                var entriesCompletenessPercent = repository.Entries.Where(e => e.ChannelId == x.Id).Average(e => e.CompletenessPercent);
-                                channel.CompletenessPercent ??= entriesCompletenessPercent;
+                                var entries = repository.Entries.Where(e => e.ChannelId == x.Id).ToArray();
+
+                                if (entries.Length > 0 && channel.CompletenessPercent == null)
+                                {
+                                    channel.CompletenessPercent = entries.Average(e => e.CompletenessPercent);
+                                }
 
                                 return channel;
                             })
