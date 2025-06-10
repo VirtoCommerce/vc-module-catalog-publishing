@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Outlines;
 using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing;
-using VirtoCommerce.CoreModule.Core.Outlines;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SearchModule.Core.Model;
@@ -64,13 +64,13 @@ namespace VirtoCommerce.CatalogPublishingModule.Test
 
             foreach (var product in _products)
             {
-                var document = documents.FirstOrDefault(d => d.Id.EqualsInvariant(product.Id));
+                var document = documents.FirstOrDefault(d => d.Id.EqualsIgnoreCase(product.Id));
                 Assert.NotNull(document);
                 Assert.Single(document.Fields);
 
                 var catalogId = product.Outlines.First().Items.First().Id;
                 var fieldName = $"completeness_{catalogId}";
-                var completenessField = document.Fields.FirstOrDefault(f => f.Name.EqualsInvariant(fieldName));
+                var completenessField = document.Fields.FirstOrDefault(f => f.Name.EqualsIgnoreCase(fieldName));
                 Assert.NotNull(completenessField);
                 Assert.Equal(50m, completenessField.Value);
             }
