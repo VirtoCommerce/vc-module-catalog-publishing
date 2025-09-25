@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "Kanaler",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "Start",
+          "end": "Slutt",
+          "total": "Totalt",
+          "processed": "Behandlet",
+          "errors": "Feil",
+          "errors-count": "Antall feil"
+        }
+      },
+      "channel-list": {
+        "title": "Kanaler",
+        "labels": {
+          "name": "Navn",
+          "catalog": "Katalog",
+          "completeness-percent": "Fullført"
+        }
+      },
+      "channel-details": {
+        "new-title": "Ny kanal",
+        "title": "Kanal",
+        "labels": {
+          "name": "Navn",
+          "name-description": "Skriv inn navn med latinske bokstaver, tall eller understreker",
+          "name-pattern-error-message": "Navnet kan kun inneholde latinske bokstaver og tall",
+          "languages": "Språk",
+          "languages-description": "Angi språkene som skal brukes for produktvalidering",
+          "currencies": "Valutaer",
+          "currencies-description": "Angi valutaene som skal brukes for produktvalidering",
+          "catalog": "Katalog",
+          "catalog-description": "Velg katalogen som er tilknyttet denne kanalen",
+          "evaluator": "Evalueringsmetode",
+          "evaluator-description": "Velg algoritmene som brukes til å vurdere fullstendigheten av produktpublisering",
+          "evaluate": "Vurder"
+        },
+        "placeholders": {
+          "enter-value": "Skriv inn verdi",
+          "currencies": "Velg minst én valuta for denne kanalen",
+          "languages": "Velg minst ett språk for denne kanalen",
+          "catalog": "Velg katalog",
+          "evaluator": "Velg evalueringsmetode for fullstendighet"
+        }
+      },
+      "channel-select": {
+        "title": "Velg kanal",
+        "labels": {
+          "channels": "Velg kanal"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "Fremdrift for kanalevaluering"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "Lagre endringer",
+        "message": "Kanalen har blitt endret. Ønsker du å lagre endringene?"
+      },
+      "channel-delete": {
+        "title": "Slett bekreftelse",
+        "message": "Er du sikker på at du vil slette de valgte kanalene for katalogpublisering?"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "Fullstendighet for kanal ",
+        "no-channels-message": "Ingen kanaler tilgjengelig"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "Åpne kanalmenu",
+    "channel:create": "Opprett kanal",
+    "channel:read": "Vis kanal",
+    "channel:update": "Oppdater kanal",
+    "channel:delete": "Slett kanal"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "Kanaler",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "Start",
+          "end": "Slut",
+          "total": "Totalt",
+          "processed": "Behandlade",
+          "errors": "Fel",
+          "errors-count": "Antal fel"
+        }
+      },
+      "channel-list": {
+        "title": "Kanaler",
+        "labels": {
+          "name": "Namn",
+          "catalog": "Katalog",
+          "completeness-percent": "Komplett"
+        }
+      },
+      "channel-details": {
+        "new-title": "Ny kanal",
+        "title": "Kanal",
+        "labels": {
+          "name": "Namn",
+          "name-description": "Ange namn med latinska bokstäver, siffror eller understreck",
+          "name-pattern-error-message": "Namnet får endast innehålla latinska bokstäver och siffror",
+          "languages": "Språk",
+          "languages-description": "Ange språken som ska användas för produktvalidering",
+          "currencies": "Valutor",
+          "currencies-description": "Ange valutorna som ska användas för produktvalidering",
+          "catalog": "Katalog",
+          "catalog-description": "Välj katalogen som är associerad med denna kanal",
+          "evaluator": "Utvärderingstyp",
+          "evaluator-description": "Välj algoritmerna som används för att utvärdera publiceringskompletthet för produkter",
+          "evaluate": "Utvärdera"
+        },
+        "placeholders": {
+          "enter-value": "Ange värde",
+          "currencies": "Välj minst en valuta för denna kanal",
+          "languages": "Välj minst ett språk för denna kanal",
+          "catalog": "Välj katalog",
+          "evaluator": "Välj utvärderare för kompletthet"
+        }
+      },
+      "channel-select": {
+        "title": "Välj kanal",
+        "labels": {
+          "channels": "Välj kanal"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "Utvärderingsförlopp för kanal"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "Spara ändringar",
+        "message": "Kanalen har ändrats. Vill du spara ändringarna?"
+      },
+      "channel-delete": {
+        "title": "Bekräfta radering",
+        "message": "Är du säker på att du vill radera de valda katalogpubliceringskanalerna?"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "Kompletthet för kanal ",
+        "no-channels-message": "Inga kanaler tillgängliga"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "Öppna kanalmenyn",
+    "channel:create": "Skapa kanal",
+    "channel:read": "Visa kanal",
+    "channel:update": "Uppdatera kanal",
+    "channel:delete": "Radera kanal"
+  }
+}

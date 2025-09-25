@@ -1,0 +1,82 @@
+{
+  "catalog-publishing": {
+    "main-menu-title": "Kanavat",
+    "blades": {
+      "channel-evaluate": {
+        "labels": {
+          "start": "Alku",
+          "end": "Loppu",
+          "total": "Kokonaismäärä",
+          "processed": "Käsitelty määrä",
+          "errors": "Virheet",
+          "errors-count": "Virheiden määrä"
+        }
+      },
+      "channel-list": {
+        "title": "Kanavat",
+        "labels": {
+          "name": "Nimi",
+          "catalog": "Katalogi",
+          "completeness-percent": "Valmis"
+        }
+      },
+      "channel-details": {
+        "new-title": "Uusi kanava",
+        "title": "Kanava",
+        "labels": {
+          "name": "Nimi",
+          "name-description": "Syötä nimi käyttäen latinalaisia kirjaimia, numeroita tai alaviivoja",
+          "name-pattern-error-message": "Nimi voi sisältää vain latinalaisia kirjaimia ja numeroita",
+          "languages": "Kielet",
+          "languages-description": "Määritä kielet, joita käytetään tuotteen validoinnissa",
+          "currencies": "Valuutat",
+          "currencies-description": "Määritä valuutat, joita käytetään tuotteen validoinnissa",
+          "catalog": "Katalogi",
+          "catalog-description": "Valitse tähän kanavaan liittyvä katalogi",
+          "evaluator": "Arvioijan tyyppi",
+          "evaluator-description": "Valitse algoritmit, joita käytetään tuotteen julkaisun valmiuden arvioinnissa",
+          "evaluate": "Arvioi"
+        },
+        "placeholders": {
+          "enter-value": "Syötä arvo",
+          "currencies": "Valitse ainakin yksi valuutta tälle kanavalle",
+          "languages": "Valitse ainakin yksi kieli tälle kanavalle",
+          "catalog": "Valitse katalogi",
+          "evaluator": "Valitse valmiuden arvioija"
+        }
+      },
+      "channel-select": {
+        "title": "Valitse kanava",
+        "labels": {
+          "channels": "Valitse kanava"
+        }
+      },
+      "channel-evaluate-details": {
+        "title": "Kanavan arvioinnin edistyminen"
+      }
+    },
+    "dialogs": {
+      "channel-save": {
+        "title": "Tallenna muutokset",
+        "message": "Kanava on muokattu. Haluatko tallentaa muutokset?"
+      },
+      "channel-delete": {
+        "title": "Poiston vahvistus",
+        "message": "Oletko varma, että haluat poistaa valitut katalogin julkaisukanavat?"
+      }
+    },
+    "widgets": {
+      "catalog-publishing": {
+        "title": "Valmius kanavalle ",
+        "no-channels-message": "Ei kanavia käytettävissä"
+      }
+    }
+  },
+  "permissions": {
+    "channel:access": "Avaa kanavavalikko",
+    "channel:create": "Luo kanava",
+    "channel:read": "Näytä kanava",
+    "channel:update": "Päivitä kanava",
+    "channel:delete": "Poista kanava"
+  }
+}
