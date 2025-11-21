@@ -4,7 +4,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
     <noWarn>1591</noWarn>
-    <LangVersion>latest</LangVersion>
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <PropertyGroup>
