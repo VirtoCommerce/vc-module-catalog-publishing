@@ -3,11 +3,11 @@
   <id>VirtoCommerce.CatalogPublishing</id>
   <version>3.809.0</version>
   <version-tag />
-  <platformVersion>3.889.0</platformVersion>
+  <platformVersion>3.917.0</platformVersion>
 
   <dependencies>
-    <dependency id="VirtoCommerce.Catalog" version="3.868.0" />
-    <dependency id="VirtoCommerce.Pricing" version="3.809.0" />
+    <dependency id="VirtoCommerce.Catalog" version="3.904.0" />
+    <dependency id="VirtoCommerce.Pricing" version="3.822.0" />
   </dependencies>
 
   <title>Catalog Publishing</title>
