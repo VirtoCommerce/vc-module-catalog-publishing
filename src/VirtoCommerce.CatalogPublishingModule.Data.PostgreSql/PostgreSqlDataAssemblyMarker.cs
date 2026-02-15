@@ -1,0 +1,3 @@
+namespace VirtoCommerce.CatalogPublishingModule.Data.PostgreSql;
+
+public class PostgreSqlDataAssemblyMarker;
