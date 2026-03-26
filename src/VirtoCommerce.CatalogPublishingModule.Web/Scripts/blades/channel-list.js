@@ -55,7 +55,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
             const dialog = {
                 id: 'deleteCatalogPublishingChannelsDialog',
                 title: 'catalog-publishing.dialogs.channel-delete.title',
-                message: 'catalog-publishing.dialogs.channel-delete.message',
+                data: [{ key: 'catalog-publishing.dialogs.channel-delete.channel', count: selectedItems.length }],
                 callback: function (remove) {
                     if (remove) {
                         bladeNavigationService.closeChildrenBlades(blade, function () {
@@ -65,7 +65,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
                     }
                 }
             };
-            dialogService.showConfirmationDialog(dialog);
+            dialogService.showDeleteConfirmationDialog(dialog);
         }
 
         $scope.selectCatalogItem = function (channel) {

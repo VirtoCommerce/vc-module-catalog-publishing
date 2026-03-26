@@ -62,7 +62,8 @@
       },
       "channel-delete": {
         "title": "Poiston vahvistus",
-        "message": "Oletko varma, että haluat poistaa valitut katalogin julkaisukanavat?"
+        "message": "Oletko varma, että haluat poistaa valitut katalogin julkaisukanavat?",
+        "channel": "{{count}} kanava(a)"
       }
     },
     "widgets": {
