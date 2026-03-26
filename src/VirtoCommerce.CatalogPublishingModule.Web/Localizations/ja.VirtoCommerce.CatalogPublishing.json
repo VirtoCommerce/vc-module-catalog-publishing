@@ -63,7 +63,7 @@
       "channel-delete": {
         "title": "削除の確認",
         "message": "選択したカタログ公開チャネルを削除してもよろしいですか？",
-        "channel": "{{count}} 件のチャンネル"
+        "channel": "{{count}} 件のチャネル"
       }
     },
     "widgets": {

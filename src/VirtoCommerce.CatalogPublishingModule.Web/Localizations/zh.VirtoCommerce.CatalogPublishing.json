@@ -63,7 +63,7 @@
       "channel-delete": {
         "title": "删除确认",
         "message": "您确定要删除选定的目录发布渠道吗？",
-        "channel": "{{count}} 个频道"
+        "channel": "{{count}} 个渠道"
       }
     },
     "widgets": {
