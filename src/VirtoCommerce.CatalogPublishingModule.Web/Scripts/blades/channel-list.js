@@ -55,7 +55,7 @@ angular.module('virtoCommerce.catalogPublishingModule')
             const dialog = {
                 id: 'deleteCatalogPublishingChannelsDialog',
                 title: 'catalog-publishing.dialogs.channel-delete.title',
-                data: [{ key: 'catalog-publishing.dialogs.channel-delete.channel', count: selectedItems.length }],
+                items: [{ key: 'catalog-publishing.dialogs.channel-delete.channel', count: selectedItems.length }],
                 callback: function (remove) {
                     if (remove) {
                         bladeNavigationService.closeChildrenBlades(blade, function () {
