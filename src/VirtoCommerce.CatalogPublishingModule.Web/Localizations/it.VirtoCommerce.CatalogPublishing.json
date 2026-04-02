@@ -62,7 +62,8 @@
       },
       "channel-delete": {
         "title": "Conferma eliminazione",
-        "message": "Sei sicuro di voler eliminare i canali di pubblicazione del catalogo selezionati?"
+        "message": "Sei sicuro di voler eliminare i canali di pubblicazione del catalogo selezionati?",
+        "channel": "{{count}} canale(i)"
       }
     },
     "widgets": {

@@ -62,7 +62,8 @@
       },
       "channel-delete": {
         "title": "Bekräfta radering",
-        "message": "Är du säker på att du vill radera de valda katalogpubliceringskanalerna?"
+        "message": "Är du säker på att du vill radera de valda katalogpubliceringskanalerna?",
+        "channel": "{{count}} kanal(er)"
       }
     },
     "widgets": {

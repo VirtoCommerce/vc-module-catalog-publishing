@@ -62,7 +62,8 @@
       },
       "channel-delete": {
         "title": "Confirmation de suppression",
-        "message": "Êtes-vous sûr de vouloir supprimer les canaux de publication de catalogue sélectionnés ?"
+        "message": "Êtes-vous sûr de vouloir supprimer les canaux de publication de catalogue sélectionnés ?",
+        "channel": "{{count}} canal/canaux"
       }
     },
     "widgets": {
