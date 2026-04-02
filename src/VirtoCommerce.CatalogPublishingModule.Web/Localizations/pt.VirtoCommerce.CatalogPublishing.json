@@ -62,7 +62,8 @@
       },
       "channel-delete": {
         "title": "Confirmação de exclusão",
-        "message": "Tem certeza de que deseja excluir os canais de publicação de catálogo selecionados?"
+        "message": "Tem certeza de que deseja excluir os canais de publicação de catálogo selecionados?",
+        "channel": "{{count}} canal(is)"
       }
     },
     "widgets": {

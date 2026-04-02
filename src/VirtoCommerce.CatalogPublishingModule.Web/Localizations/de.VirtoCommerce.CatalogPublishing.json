@@ -62,7 +62,8 @@
       },
       "channel-delete": {
         "title": "Löschbestätigung",
-        "message": "Möchten Sie die ausgewählten Katalogveröffentlichungskanäle wirklich löschen?"
+        "message": "Möchten Sie die ausgewählten Katalogveröffentlichungskanäle wirklich löschen?",
+        "channel": "{{count}} Kanal/Kanäle"
       }
     },
     "widgets": {
