@@ -3,7 +3,7 @@
   <id>VirtoCommerce.CatalogPublishing</id>
   <version>3.1002.0</version>
   <version-tag />
-  <platformVersion>3.1013.0</platformVersion>
+  <platformVersion>3.1016.0-alpha.13231-vcst-4880-mysql</platformVersion>
 
   <dependencies>
     <dependency id="VirtoCommerce.Catalog" version="3.1000.0" />
