@@ -61,7 +61,7 @@ angular.module(moduleName, [])
         widgetMapperService.map("Properties", "virtoCommerce.catalogModule.itemPropertyWidgetController");
         widgetMapperService.map("Descriptions", "virtoCommerce.catalogModule.editorialReviewWidgetController");
         widgetMapperService.map("Prices", "virtoCommerce.pricingModule.itemPricesWidgetController");
-        widgetMapperService.map("Seo", "virtoCommerce.coreModule.seo.seoWidgetController");
+        widgetMapperService.map("Seo", "virtoCommerce.seo.seoWidgetController");
 
         const menuExportTemplate = {
             priority: 900,
