@@ -62,7 +62,8 @@
       },
       "channel-delete": {
         "title": "Slett bekreftelse",
-        "message": "Er du sikker på at du vil slette de valgte kanalene for katalogpublisering?"
+        "message": "Er du sikker på at du vil slette de valgte kanalene for katalogpublisering?",
+        "channel": "{{count}} kanal(er)"
       }
     },
     "widgets": {
