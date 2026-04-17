@@ -6,7 +6,7 @@
   <platformVersion>3.1016.0</platformVersion>
 
   <dependencies>
-    <dependency id="VirtoCommerce.Catalog" version="3.1017.0-alpha.2497-vcst-4516" />
+    <dependency id="VirtoCommerce.Catalog" version="3.1019.0" />
     <dependency id="VirtoCommerce.Pricing" version="3.1000.0" />
   </dependencies>
 
