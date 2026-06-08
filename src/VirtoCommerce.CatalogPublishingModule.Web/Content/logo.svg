@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Catalog Publishing">
+  <title>Catalog Publishing</title>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="92%" y2="100%">
+      <stop offset="0%" stop-color="#3FD8B4"/>
+      <stop offset="100%" stop-color="#0E9E80"/>
+    </linearGradient>
+    <filter id="lift" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#064F40" flood-opacity="0.30"/>
+    </filter>
+  </defs>
+
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <g transform="translate(64,64)" filter="url(#lift)">
+    <!-- Product card -->
+    <rect x="-42" y="-40" width="72" height="66" rx="10" fill="#ffffff"/>
+    <rect x="-32" y="-30" width="28" height="28" rx="4" fill="#5FC8F5"/>
+    <line x1="2" y1="-25" x2="24" y2="-25" stroke="#9FB6CC" stroke-width="4" stroke-linecap="round"/>
+    <line x1="2" y1="-15" x2="24" y2="-15" stroke="#CBD8E6" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-32" y1="4" x2="12" y2="4" stroke="#CBD8E6" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-32" y1="14" x2="-6" y2="14" stroke="#FFC24D" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Publish (go-live) badge -->
+    <circle cx="27" cy="24" r="16" fill="#2FA85A"/>
+    <rect x="24" y="23" width="6" height="9" fill="#ffffff"/>
+    <polygon points="18,24 36,24 27,13" fill="#ffffff"/>
+  </g>
+</svg>
