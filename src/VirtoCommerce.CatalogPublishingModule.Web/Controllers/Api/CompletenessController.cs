@@ -2,21 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Model.Search;
-using VirtoCommerce.CatalogModule.Core.Search;
 using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Core;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
 using VirtoCommerce.CatalogPublishingModule.Core.Model.Search;
 using VirtoCommerce.CatalogPublishingModule.Core.Services;
+using VirtoCommerce.CatalogPublishingModule.Web.BackgroundJobs;
 using VirtoCommerce.CatalogPublishingModule.Web.Model;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Exceptions;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
 
@@ -27,24 +26,24 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
     {
         private readonly ICompletenessService _completenessService;
         private readonly ICompletenessEvaluator[] _completenessEvaluators;
-        private readonly IProductIndexedSearchService _productIndexedSearchService;
         private readonly IItemService _productService;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _pushNotifier;
+        private readonly IBackgroundJob _backgroundJob;
 
         public CompletenessController(ICompletenessService completenessService,
             IEnumerable<ICompletenessEvaluator> completenessEvaluators,
-            IProductIndexedSearchService productIndexedSearchService,
             IItemService productService,
             IUserNameResolver userNameResolver,
-            IPushNotificationManager pushNotifier)
+            IPushNotificationManager pushNotifier,
+            IBackgroundJob backgroundJob)
         {
             _completenessService = completenessService;
             _completenessEvaluators = completenessEvaluators.ToArray();
-            _productIndexedSearchService = productIndexedSearchService;
             _productService = productService;
             _userNameResolver = userNameResolver;
             _pushNotifier = pushNotifier;
+            _backgroundJob = backgroundJob;
         }
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.Update)]
         public async Task<ActionResult<EvaluateCompletenessNotification>> EvaluateChannelCompletenessAsync([FromRoute] string id)
         {
-            return await EvaluateCompletenessAsync("EvaluateCompleteness", "Evaluate completeness task", notification => BackgroundJob.Enqueue(() => EvaluateCompletenessJob(id, notification)));
+            return await EvaluateCompletenessAsync("EvaluateCompleteness", "Evaluate completeness task", notification => _backgroundJob.Enqueue<EvaluateCompletenessJobHandler>(CreatePayload(id, notification)));
         }
 
         /// <summary>
@@ -213,7 +212,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             return NoContent();
         }
 
-        private async Task<ActionResult<EvaluateCompletenessNotification>> EvaluateCompletenessAsync(string notifyType, string notificationDescription, Action<EvaluateCompletenessNotification> job)
+        private async Task<ActionResult<EvaluateCompletenessNotification>> EvaluateCompletenessAsync(string notifyType, string notificationDescription, Func<EvaluateCompletenessNotification, Task> job)
         {
             var notification = new EvaluateCompletenessNotification(_userNameResolver.GetCurrentUserName(), notifyType)
             {
@@ -222,62 +221,31 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             };
             await _pushNotifier.SendAsync(notification);
 
-            job(notification);
+            await job(notification);
 
             return Ok(notification);
         }
 
+        /// <summary>
+        /// Kept for background jobs enqueued by an earlier version, which reference this method by name.
+        /// Hands the work to <see cref="EvaluateCompletenessJobHandler"/>; remove this once no such job can still be pending.
+        /// </summary>
+        // Signature is byte-identical on purpose: Hangfire persists a queued job as type name + method name +
+        // parameter types + serialized args, so changing any of them would strand already-queued entries as Failed.
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task EvaluateCompletenessJob(string channelId, EvaluateCompletenessNotification notification)
+        [Obsolete("Enqueued indirectly by legacy Hangfire jobs only; new work uses EvaluateCompletenessJobHandler.", DiagnosticId = "VC0015", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions")]
+        public Task EvaluateCompletenessJob(string channelId, EvaluateCompletenessNotification notification)
         {
-            var channel = (await _completenessService.GetChannelsByIdsAsync(new[] { channelId })).FirstOrDefault();
-            if (channel == null)
-            {
-                throw new ArgumentException("Channel with specified ID not found", nameof(channelId));
-            }
+            // The static facade: Hangfire activates this controller outside a request to run the legacy job.
+            return BackgroundJob.Enqueue<EvaluateCompletenessJobHandler>(CreatePayload(channelId, notification));
+        }
 
-            var evaluator = _completenessEvaluators.FirstOrDefault(x => channel.EvaluatorType == x.GetType().Name);
-            if (evaluator == null)
-            {
-                throw new InvalidOperationException("Channel's evaluator type not found");
-            }
-
-            try
-            {
-                const int productsPerIterationCount = 50;
-                notification.TotalCount = (await _productIndexedSearchService
-                    .SearchAsync(new ProductIndexedSearchCriteria { CatalogId = channel.CatalogId, ResponseGroup = ItemResponseGroup.ItemInfo.ToString(), Take = 0 }))
-                    .TotalCount;
-                do
-                {
-                    var products = (await _productIndexedSearchService
-                        .SearchAsync(new ProductIndexedSearchCriteria
-                        {
-                            CatalogId = channel.CatalogId,
-                            ResponseGroup = ItemResponseGroup.ItemInfo.ToString(),
-                            Skip = (int)notification.ProcessedCount,
-                            Take = productsPerIterationCount
-                        })).Items;
-
-                    var entries = await evaluator.EvaluateCompletenessAsync(channel, products);
-                    notification.Completeness = entries;
-                    await _completenessService.SaveEntriesAsync(entries);
-
-                    notification.ProcessedCount += products.Length;
-                    await _pushNotifier.SendAsync(notification);
-                } while (notification.ProcessedCount < notification.TotalCount);
-            }
-            catch (Exception ex)
-            {
-                notification.Description = "Evaluation failed";
-                notification.Errors.Add(ex.ExpandExceptionMessage());
-            }
-            finally
-            {
-                notification.Description = "Evaluation finished";
-                notification.Finished = DateTime.UtcNow;
-                await _pushNotifier.SendAsync(notification);
-            }
+        private static EvaluateCompletenessJobPayload CreatePayload(string channelId, EvaluateCompletenessNotification notification)
+        {
+            var payload = AbstractTypeFactory<EvaluateCompletenessJobPayload>.TryCreateInstance();
+            payload.ChannelId = channelId;
+            payload.Notification = notification;
+            return payload;
         }
     }
 }
