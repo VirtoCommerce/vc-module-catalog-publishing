@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Model.Search;
-using VirtoCommerce.CatalogModule.Core.Search;
 using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CatalogPublishingModule.Core;
 using VirtoCommerce.CatalogPublishingModule.Core.Model;
@@ -27,7 +26,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
     {
         private readonly ICompletenessService _completenessService;
         private readonly ICompletenessEvaluator[] _completenessEvaluators;
-        private readonly IProductIndexedSearchService _productIndexedSearchService;
         private readonly IItemService _productService;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _pushNotifier;
@@ -35,7 +33,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
 
         public CompletenessController(ICompletenessService completenessService,
             IEnumerable<ICompletenessEvaluator> completenessEvaluators,
-            IProductIndexedSearchService productIndexedSearchService,
             IItemService productService,
             IUserNameResolver userNameResolver,
             IPushNotificationManager pushNotifier,
@@ -43,7 +40,6 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         {
             _completenessService = completenessService;
             _completenessEvaluators = completenessEvaluators.ToArray();
-            _productIndexedSearchService = productIndexedSearchService;
             _productService = productService;
             _userNameResolver = userNameResolver;
             _pushNotifier = pushNotifier;
