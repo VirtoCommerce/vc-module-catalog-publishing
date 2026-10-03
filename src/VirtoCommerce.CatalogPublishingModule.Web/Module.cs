@@ -14,7 +14,9 @@ using VirtoCommerce.CatalogPublishingModule.Data.Search.Indexing;
 using VirtoCommerce.CatalogPublishingModule.Data.Services;
 using VirtoCommerce.CatalogPublishingModule.Data.Services.Evaluation;
 using VirtoCommerce.CatalogPublishingModule.Data.SqlServer;
+using VirtoCommerce.CatalogPublishingModule.Web.BackgroundJobs;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Data.Extensions;
@@ -60,6 +62,8 @@ namespace VirtoCommerce.CatalogPublishingModule.Web
             serviceCollection.AddTransient<ICompletenessDetailEvaluator, DescriptionsCompletenessDetailEvaluator>();
             serviceCollection.AddTransient<ICompletenessDetailEvaluator, PricesCompletenessDetailEvaluator>();
             serviceCollection.AddTransient<ICompletenessDetailEvaluator, SeoCompletenessDetailEvaluator>();
+
+            serviceCollection.AddBackgroundJob<EvaluateCompletenessJobHandler, EvaluateCompletenessJobPayload>(triggerable: false);
 
             serviceCollection.AddTransient<ProductCompletenessChangesProvider>();
             serviceCollection.AddTransient<ProductCompletenessDocumentBuilder>();
