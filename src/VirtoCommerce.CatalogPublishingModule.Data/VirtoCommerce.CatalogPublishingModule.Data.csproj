@@ -16,7 +16,7 @@
   <ItemGroup>
     
     <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.1076.0" />
-    <PackageReference Include="VirtoCommerce.PricingModule.Core" Version="3.1003.0" />
+    <PackageReference Include="VirtoCommerce.PricingModule.Core" Version="3.1008.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj" />
