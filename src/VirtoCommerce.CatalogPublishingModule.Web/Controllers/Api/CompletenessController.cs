@@ -23,6 +23,7 @@ using VirtoCommerce.Platform.Core.Security;
 namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
 {
     [Route("api/completeness")]
+    [Authorize]
     public class CompletenessController : Controller
     {
         private readonly ICompletenessService _completenessService;
@@ -52,6 +53,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// </summary>
         [HttpGet]
         [Route("evaluators")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
         public Task<ActionResult<string[]>> GetEvaluators()
         {
@@ -79,6 +81,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <remarks>Evaluate completeness for specified products</remarks>
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         [ProducesResponseType(typeof(CompletenessEntry[]), StatusCodes.Status200OK)]
         public async Task<ActionResult> EvaluateProductsCompleteness([FromRoute] string id, [FromBody] string[] productIds)
         {
@@ -227,6 +230,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
             return Ok(notification);
         }
 
+        [NonAction]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task EvaluateCompletenessJob(string channelId, EvaluateCompletenessNotification notification)
         {
