@@ -20,5 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\VirtoCommerce.CatalogPublishingModule.Core\VirtoCommerce.CatalogPublishingModule.Core.csproj" />
     <ProjectReference Include="..\..\src\VirtoCommerce.CatalogPublishingModule.Data\VirtoCommerce.CatalogPublishingModule.Data.csproj" />
+    <ProjectReference Include="..\..\src\VirtoCommerce.CatalogPublishingModule.Web\VirtoCommerce.CatalogPublishingModule.Web.csproj" />
   </ItemGroup>
 </Project>
