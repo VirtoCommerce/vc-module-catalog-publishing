@@ -22,6 +22,7 @@ using VirtoCommerce.Platform.Core.Security;
 namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
 {
     [Route("api/completeness")]
+    [Authorize]
     public class CompletenessController : Controller
     {
         private readonly ICompletenessService _completenessService;
@@ -51,6 +52,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// </summary>
         [HttpGet]
         [Route("evaluators")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
         public Task<ActionResult<string[]>> GetEvaluators()
         {
@@ -78,6 +80,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// <remarks>Evaluate completeness for specified products</remarks>
         [HttpPost]
         [Route("channels/{id}/products/evaluate")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         [ProducesResponseType(typeof(CompletenessEntry[]), StatusCodes.Status200OK)]
         public async Task<ActionResult> EvaluateProductsCompleteness([FromRoute] string id, [FromBody] string[] productIds)
         {
@@ -232,6 +235,7 @@ namespace VirtoCommerce.CatalogPublishingModule.Web.Controllers.Api
         /// </summary>
         // Signature is byte-identical on purpose: Hangfire persists a queued job as type name + method name +
         // parameter types + serialized args, so changing any of them would strand already-queued entries as Failed.
+        [NonAction]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Obsolete("Enqueued indirectly by legacy Hangfire jobs only; new work uses EvaluateCompletenessJobHandler.", DiagnosticId = "VC0015", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions")]
         public Task EvaluateCompletenessJob(string channelId, EvaluateCompletenessNotification notification)
