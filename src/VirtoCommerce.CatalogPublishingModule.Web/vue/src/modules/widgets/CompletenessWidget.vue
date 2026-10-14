@@ -37,9 +37,11 @@ const catalogIds = computed(() => [
 
 const channelId = ref<string>();
 const value = ref<number>();
-const label = computed(() =>
-  !channelId.value ? t("CHANNELS.WIDGET.NONE") : `${t("CHANNELS.WIDGET.TITLE")} ${value.value == null ? "…" : percent(value.value)}`,
-);
+const label = computed(() => {
+  if (!channelId.value) return t("CHANNELS.WIDGET.NONE");
+  const shown = value.value == null ? "…" : percent(value.value);
+  return `${t("CHANNELS.WIDGET.TITLE")} ${shown}`;
+});
 
 async function refresh() {
   if (!product.value?.id || !catalogIds.value.length || !hasAccess("channel:read")) return;

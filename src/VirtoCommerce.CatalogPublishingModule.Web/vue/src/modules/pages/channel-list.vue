@@ -114,7 +114,10 @@ const { loading, action: load } = useAsync(async () => {
   totalCount.value = result.totalCount ?? 0;
 });
 
-const statusVariant = (value?: number) => ((value ?? 0) >= 100 ? "success" : (value ?? 0) >= 50 ? "warning" : "danger");
+function statusVariant(value?: number) {
+  if ((value ?? 0) >= 100) return "success";
+  return (value ?? 0) >= 50 ? "warning" : "danger";
+}
 
 function openChannel(id?: string) {
   activeItemId.value = id;
