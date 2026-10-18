@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Kanaler" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kanaler",
+        "EMPTY": "Inga kanaler",
+        "COLUMNS": { "NAME": "Namn", "CATALOG": "Katalog", "COMPLETENESS": "Kompletthet", "LANGUAGES": "Språk", "CURRENCIES": "Valutor" },
+        "TOOLBAR": { "REFRESH": "Uppdatera", "ADD": "Lägg till", "DELETE": "Radera" },
+        "ACTIONS": { "EVALUATE": "Utvärdera", "PRODUCTS": "Produkter", "DELETE": "Radera" }
+      },
+      "DETAILS": {
+        "TITLE": "Kanal",
+        "NEW": "Ny kanal",
+        "FIELDS": {
+          "NAME": "Namn",
+          "NAME_HINT": "Endast latinska bokstäver, siffror och _; används i produktindexfältet completeness_<name>",
+          "NAME_ERROR": "Använd endast latinska bokstäver, siffror och _",
+          "LANGUAGES": "Språk",
+          "LANGUAGES_HINT": "Beskrivningar och SEO kontrolleras på dessa språk",
+          "CURRENCIES": "Valutor",
+          "CURRENCIES_HINT": "Priser kontrolleras i dessa valutor",
+          "CATALOG": "Katalog",
+          "EVALUATOR": "Utvärderare",
+          "EVALUATOR_HINT": "Logik för utvärdering av kompletthet"
+        },
+        "TOOLBAR": { "SAVE": "Spara", "RESET": "Återställ", "EVALUATE": "Utvärdera", "DELETE": "Radera" },
+        "WIDGETS": { "PRODUCTS": "Produkter" }
+      },
+      "EVALUATION": { "TITLE": "Utvärdera kompletthet" },
+      "PRODUCTS": {
+        "TITLE": "Produkternas kompletthet",
+        "EMPTY": "Inga produkter i den här katalogen",
+        "COLUMNS": { "IMAGE": "Bild", "NAME": "Namn", "CODE": "SKU", "COMPLETENESS": "Kompletthet", "MISSING": "Ofullständig" }
+      },
+      "PRODUCT": {
+        "TITLE": "Kompletthet",
+        "CHANNEL": "Kanal",
+        "TOTAL": "Kompletthet",
+        "DETAILS": "Per aspekt",
+        "NO_CHANNELS": "Ingen kanal publicerar katalogen för den här produkten",
+        "TOOLBAR": { "EVALUATE": "Utvärdera och spara" }
+      }
+    },
+    "WIDGET": { "TITLE": "Kompletthet", "NONE": "Inga kanaler" },
+    "JOB": { "STARTED": "Startad", "FINISHED": "Slutförd", "ELAPSED": "Förfluten tid", "PROCESSED": "Behandlade", "ERRORS": "Fel" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "Radera {count} kanal(er)? Deras kompletthetsresultat raderas också.",
+      "CLOSE_CONFIRMATION": "Du har osparade ändringar. Vill du verkligen stänga?",
+      "SAVED": "Kompletthet sparad"
+    }
+  }
+}
