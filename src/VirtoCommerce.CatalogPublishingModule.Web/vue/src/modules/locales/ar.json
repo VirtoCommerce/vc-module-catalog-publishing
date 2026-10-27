@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "القنوات" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "القنوات",
+        "EMPTY": "لا توجد قنوات",
+        "COLUMNS": { "NAME": "الاسم", "CATALOG": "الكتالوج", "COMPLETENESS": "الاكتمال", "LANGUAGES": "اللغات", "CURRENCIES": "العملات" },
+        "TOOLBAR": { "REFRESH": "تحديث", "ADD": "إضافة", "DELETE": "حذف" },
+        "ACTIONS": { "EVALUATE": "تقييم", "PRODUCTS": "المنتجات", "DELETE": "حذف" }
+      },
+      "DETAILS": {
+        "TITLE": "القناة",
+        "NEW": "قناة جديدة",
+        "FIELDS": {
+          "NAME": "الاسم",
+          "NAME_HINT": "أحرف لاتينية وأرقام و_ فقط؛ يُستخدم في حقل فهرس المنتج completeness_<name>",
+          "NAME_ERROR": "استخدم الأحرف اللاتينية والأرقام و_ فقط",
+          "LANGUAGES": "اللغات",
+          "LANGUAGES_HINT": "يتم التحقق من الأوصاف وبيانات SEO بهذه اللغات",
+          "CURRENCIES": "العملات",
+          "CURRENCIES_HINT": "يتم التحقق من الأسعار بهذه العملات",
+          "CATALOG": "الكتالوج",
+          "EVALUATOR": "المقيِّم",
+          "EVALUATOR_HINT": "منطق تقييم الاكتمال"
+        },
+        "TOOLBAR": { "SAVE": "حفظ", "RESET": "إعادة تعيين", "EVALUATE": "تقييم", "DELETE": "حذف" },
+        "WIDGETS": { "PRODUCTS": "المنتجات" }
+      },
+      "EVALUATION": { "TITLE": "تقييم الاكتمال" },
+      "PRODUCTS": {
+        "TITLE": "اكتمال المنتجات",
+        "EMPTY": "لا توجد منتجات في هذا الكتالوج",
+        "COLUMNS": { "IMAGE": "الصورة", "NAME": "الاسم", "CODE": "SKU", "COMPLETENESS": "الاكتمال", "MISSING": "غير مكتمل" }
+      },
+      "PRODUCT": {
+        "TITLE": "الاكتمال",
+        "CHANNEL": "القناة",
+        "TOTAL": "الاكتمال",
+        "DETAILS": "حسب الجانب",
+        "NO_CHANNELS": "لا توجد قناة تنشر كتالوج هذا المنتج",
+        "TOOLBAR": { "EVALUATE": "تقييم وحفظ" }
+      }
+    },
+    "WIDGET": { "TITLE": "الاكتمال", "NONE": "لا توجد قنوات" },
+    "JOB": { "STARTED": "وقت البدء", "FINISHED": "وقت الانتهاء", "ELAPSED": "الوقت المنقضي", "PROCESSED": "تمت المعالجة", "ERRORS": "الأخطاء" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "هل تريد حذف القنوات المحددة ({count})؟ ستُحذف نتائج اكتمالها أيضًا.",
+      "CLOSE_CONFIRMATION": "لديك تغييرات غير محفوظة. هل تريد بالتأكيد الإغلاق؟",
+      "SAVED": "تم حفظ الاكتمال"
+    }
+  }
+}

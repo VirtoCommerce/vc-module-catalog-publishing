@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "channel:access": "פתיחת תפריט הערוצים",
+    "channel:create": "יצירת ערוץ",
+    "channel:read": "צפייה בערוץ",
+    "channel:update": "עדכון ערוץ",
+    "channel:delete": "מחיקת ערוץ"
+  }
+}

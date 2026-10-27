@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "ערוצים" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "ערוצים",
+        "EMPTY": "אין ערוצים",
+        "COLUMNS": { "NAME": "שם", "CATALOG": "קטלוג", "COMPLETENESS": "שלמות", "LANGUAGES": "שפות", "CURRENCIES": "מטבעות" },
+        "TOOLBAR": { "REFRESH": "רענון", "ADD": "הוספה", "DELETE": "מחיקה" },
+        "ACTIONS": { "EVALUATE": "הערכה", "PRODUCTS": "מוצרים", "DELETE": "מחיקה" }
+      },
+      "DETAILS": {
+        "TITLE": "ערוץ",
+        "NEW": "ערוץ חדש",
+        "FIELDS": {
+          "NAME": "שם",
+          "NAME_HINT": "אותיות לטיניות, ספרות ו-_ בלבד; משמש בשדה האינדקס של המוצרים completeness_<name>",
+          "NAME_ERROR": "יש להשתמש באותיות לטיניות, ספרות ו-_ בלבד",
+          "LANGUAGES": "שפות",
+          "LANGUAGES_HINT": "התיאורים וה-SEO נבדקים בשפות אלה",
+          "CURRENCIES": "מטבעות",
+          "CURRENCIES_HINT": "המחירים נבדקים במטבעות אלה",
+          "CATALOG": "קטלוג",
+          "EVALUATOR": "מנגנון הערכה",
+          "EVALUATOR_HINT": "לוגיקת הערכת השלמות"
+        },
+        "TOOLBAR": { "SAVE": "שמירה", "RESET": "איפוס", "EVALUATE": "הערכה", "DELETE": "מחיקה" },
+        "WIDGETS": { "PRODUCTS": "מוצרים" }
+      },
+      "EVALUATION": { "TITLE": "הערכת שלמות" },
+      "PRODUCTS": {
+        "TITLE": "שלמות מוצרים",
+        "EMPTY": "אין מוצרים בקטלוג זה",
+        "COLUMNS": { "IMAGE": "תמונה", "NAME": "שם", "CODE": "SKU", "COMPLETENESS": "שלמות", "MISSING": "חסר" }
+      },
+      "PRODUCT": {
+        "TITLE": "שלמות",
+        "CHANNEL": "ערוץ",
+        "TOTAL": "שלמות",
+        "DETAILS": "לפי היבט",
+        "NO_CHANNELS": "אף ערוץ אינו מפרסם את הקטלוג של מוצר זה",
+        "TOOLBAR": { "EVALUATE": "הערכה ושמירה" }
+      }
+    },
+    "WIDGET": { "TITLE": "שלמות", "NONE": "אין ערוצים" },
+    "JOB": { "STARTED": "התחלה", "FINISHED": "סיום", "ELAPSED": "זמן שחלף", "PROCESSED": "עובדו", "ERRORS": "שגיאות" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "מחיקת הערוצים שנבחרו ({count})? גם תוצאות השלמות שלהם יימחקו.",
+      "CLOSE_CONFIRMATION": "יש שינויים שלא נשמרו. האם לסגור?",
+      "SAVED": "השלמות נשמרה"
+    }
+  }
+}

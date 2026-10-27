@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "チャネル" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "チャネル",
+        "EMPTY": "チャネルがありません",
+        "COLUMNS": { "NAME": "名前", "CATALOG": "カタログ", "COMPLETENESS": "完全性", "LANGUAGES": "言語", "CURRENCIES": "通貨" },
+        "TOOLBAR": { "REFRESH": "更新", "ADD": "追加", "DELETE": "削除" },
+        "ACTIONS": { "EVALUATE": "評価", "PRODUCTS": "製品", "DELETE": "削除" }
+      },
+      "DETAILS": {
+        "TITLE": "チャネル",
+        "NEW": "新しいチャネル",
+        "FIELDS": {
+          "NAME": "名前",
+          "NAME_HINT": "半角英字、数字、_ のみ。製品インデックスのフィールド completeness_<name> で使用されます",
+          "NAME_ERROR": "半角英字、数字、_ のみを使用してください",
+          "LANGUAGES": "言語",
+          "LANGUAGES_HINT": "説明と SEO はこれらの言語でチェックされます",
+          "CURRENCIES": "通貨",
+          "CURRENCIES_HINT": "価格はこれらの通貨でチェックされます",
+          "CATALOG": "カタログ",
+          "EVALUATOR": "評価者",
+          "EVALUATOR_HINT": "完全性の評価ロジック"
+        },
+        "TOOLBAR": { "SAVE": "保存", "RESET": "リセット", "EVALUATE": "評価", "DELETE": "削除" },
+        "WIDGETS": { "PRODUCTS": "製品" }
+      },
+      "EVALUATION": { "TITLE": "完全性を評価" },
+      "PRODUCTS": {
+        "TITLE": "製品の完全性",
+        "EMPTY": "このカタログには製品がありません",
+        "COLUMNS": { "IMAGE": "画像", "NAME": "名前", "CODE": "SKU", "COMPLETENESS": "完全性", "MISSING": "不完全" }
+      },
+      "PRODUCT": {
+        "TITLE": "完全性",
+        "CHANNEL": "チャネル",
+        "TOTAL": "完全性",
+        "DETAILS": "観点別",
+        "NO_CHANNELS": "この製品のカタログを公開しているチャネルはありません",
+        "TOOLBAR": { "EVALUATE": "評価して保存" }
+      }
+    },
+    "WIDGET": { "TITLE": "完全性", "NONE": "チャネルがありません" },
+    "JOB": { "STARTED": "開始", "FINISHED": "終了", "ELAPSED": "経過時間", "PROCESSED": "処理済み", "ERRORS": "エラー" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "{count} 件のチャネルを削除しますか？完全性の評価結果も削除されます。",
+      "CLOSE_CONFIRMATION": "保存されていない変更があります。閉じてもよろしいですか？",
+      "SAVED": "完全性を保存しました"
+    }
+  }
+}

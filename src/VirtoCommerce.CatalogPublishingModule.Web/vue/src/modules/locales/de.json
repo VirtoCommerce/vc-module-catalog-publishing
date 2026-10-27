@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Kanäle" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kanäle",
+        "EMPTY": "Keine Kanäle",
+        "COLUMNS": { "NAME": "Name", "CATALOG": "Katalog", "COMPLETENESS": "Vollständigkeit", "LANGUAGES": "Sprachen", "CURRENCIES": "Währungen" },
+        "TOOLBAR": { "REFRESH": "Aktualisieren", "ADD": "Hinzufügen", "DELETE": "Löschen" },
+        "ACTIONS": { "EVALUATE": "Bewerten", "PRODUCTS": "Produkte", "DELETE": "Löschen" }
+      },
+      "DETAILS": {
+        "TITLE": "Kanal",
+        "NEW": "Neuer Kanal",
+        "FIELDS": {
+          "NAME": "Name",
+          "NAME_HINT": "Nur lateinische Buchstaben, Ziffern und _; wird im Produktindexfeld completeness_<name> verwendet",
+          "NAME_ERROR": "Nur lateinische Buchstaben, Ziffern und _ verwenden",
+          "LANGUAGES": "Sprachen",
+          "LANGUAGES_HINT": "Beschreibungen und SEO werden in diesen Sprachen geprüft",
+          "CURRENCIES": "Währungen",
+          "CURRENCIES_HINT": "Preise werden in diesen Währungen geprüft",
+          "CATALOG": "Katalog",
+          "EVALUATOR": "Evaluator",
+          "EVALUATOR_HINT": "Logik der Vollständigkeitsbewertung"
+        },
+        "TOOLBAR": { "SAVE": "Speichern", "RESET": "Zurücksetzen", "EVALUATE": "Bewerten", "DELETE": "Löschen" },
+        "WIDGETS": { "PRODUCTS": "Produkte" }
+      },
+      "EVALUATION": { "TITLE": "Vollständigkeit bewerten" },
+      "PRODUCTS": {
+        "TITLE": "Produktvollständigkeit",
+        "EMPTY": "Keine Produkte in diesem Katalog",
+        "COLUMNS": { "IMAGE": "Bild", "NAME": "Name", "CODE": "SKU", "COMPLETENESS": "Vollständigkeit", "MISSING": "Unvollständig" }
+      },
+      "PRODUCT": {
+        "TITLE": "Vollständigkeit",
+        "CHANNEL": "Kanal",
+        "TOTAL": "Vollständigkeit",
+        "DETAILS": "Nach Aspekt",
+        "NO_CHANNELS": "Kein Kanal veröffentlicht den Katalog dieses Produkts",
+        "TOOLBAR": { "EVALUATE": "Bewerten und speichern" }
+      }
+    },
+    "WIDGET": { "TITLE": "Vollständigkeit", "NONE": "Keine Kanäle" },
+    "JOB": { "STARTED": "Gestartet", "FINISHED": "Beendet", "ELAPSED": "Verstrichene Zeit", "PROCESSED": "Verarbeitet", "ERRORS": "Fehler" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "{count} Kanal/Kanäle löschen? Ihre Vollständigkeitsergebnisse werden ebenfalls gelöscht.",
+      "CLOSE_CONFIRMATION": "Sie haben ungespeicherte Änderungen. Möchten Sie wirklich schließen?",
+      "SAVED": "Vollständigkeit gespeichert"
+    }
+  }
+}

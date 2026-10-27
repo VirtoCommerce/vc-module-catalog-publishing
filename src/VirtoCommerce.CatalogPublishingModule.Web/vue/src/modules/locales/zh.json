@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "渠道" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "渠道",
+        "EMPTY": "没有渠道",
+        "COLUMNS": { "NAME": "名称", "CATALOG": "目录", "COMPLETENESS": "完整度", "LANGUAGES": "语言", "CURRENCIES": "货币" },
+        "TOOLBAR": { "REFRESH": "刷新", "ADD": "添加", "DELETE": "删除" },
+        "ACTIONS": { "EVALUATE": "评估", "PRODUCTS": "产品", "DELETE": "删除" }
+      },
+      "DETAILS": {
+        "TITLE": "渠道",
+        "NEW": "新渠道",
+        "FIELDS": {
+          "NAME": "名称",
+          "NAME_HINT": "仅限拉丁字母、数字和 _；用于产品索引字段 completeness_<name>",
+          "NAME_ERROR": "只能使用拉丁字母、数字和 _",
+          "LANGUAGES": "语言",
+          "LANGUAGES_HINT": "将检查这些语言的描述和 SEO",
+          "CURRENCIES": "货币",
+          "CURRENCIES_HINT": "将检查这些货币的价格",
+          "CATALOG": "目录",
+          "EVALUATOR": "评估器",
+          "EVALUATOR_HINT": "完整性评估逻辑"
+        },
+        "TOOLBAR": { "SAVE": "保存", "RESET": "重置", "EVALUATE": "评估", "DELETE": "删除" },
+        "WIDGETS": { "PRODUCTS": "产品" }
+      },
+      "EVALUATION": { "TITLE": "评估完整性" },
+      "PRODUCTS": {
+        "TITLE": "产品完整性",
+        "EMPTY": "此目录中没有产品",
+        "COLUMNS": { "IMAGE": "图片", "NAME": "名称", "CODE": "SKU", "COMPLETENESS": "完整度", "MISSING": "不完整" }
+      },
+      "PRODUCT": {
+        "TITLE": "完整性",
+        "CHANNEL": "渠道",
+        "TOTAL": "完整度",
+        "DETAILS": "按方面",
+        "NO_CHANNELS": "没有渠道发布此产品的目录",
+        "TOOLBAR": { "EVALUATE": "评估并保存" }
+      }
+    },
+    "WIDGET": { "TITLE": "完整性", "NONE": "没有渠道" },
+    "JOB": { "STARTED": "开始时间", "FINISHED": "完成时间", "ELAPSED": "已用时间", "PROCESSED": "已处理", "ERRORS": "错误" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "删除 {count} 个渠道？其完整性结果也将被删除。",
+      "CLOSE_CONFIRMATION": "您有未保存的更改。确定要关闭吗？",
+      "SAVED": "完整性已保存"
+    }
+  }
+}
