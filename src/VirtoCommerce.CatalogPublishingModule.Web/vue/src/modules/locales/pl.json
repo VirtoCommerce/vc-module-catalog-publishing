@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Kanały" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kanały",
+        "EMPTY": "Brak kanałów",
+        "COLUMNS": { "NAME": "Nazwa", "CATALOG": "Katalog", "COMPLETENESS": "Kompletność", "LANGUAGES": "Języki", "CURRENCIES": "Waluty" },
+        "TOOLBAR": { "REFRESH": "Odśwież", "ADD": "Dodaj", "DELETE": "Usuń" },
+        "ACTIONS": { "EVALUATE": "Oceń", "PRODUCTS": "Produkty", "DELETE": "Usuń" }
+      },
+      "DETAILS": {
+        "TITLE": "Kanał",
+        "NEW": "Nowy kanał",
+        "FIELDS": {
+          "NAME": "Nazwa",
+          "NAME_HINT": "Tylko litery łacińskie, cyfry i _; używane w polu indeksu produktów completeness_<name>",
+          "NAME_ERROR": "Używaj tylko liter łacińskich, cyfr i _",
+          "LANGUAGES": "Języki",
+          "LANGUAGES_HINT": "Opisy i SEO są sprawdzane w tych językach",
+          "CURRENCIES": "Waluty",
+          "CURRENCIES_HINT": "Ceny są sprawdzane w tych walutach",
+          "CATALOG": "Katalog",
+          "EVALUATOR": "Ewaluator",
+          "EVALUATOR_HINT": "Logika oceny kompletności"
+        },
+        "TOOLBAR": { "SAVE": "Zapisz", "RESET": "Resetuj", "EVALUATE": "Oceń", "DELETE": "Usuń" },
+        "WIDGETS": { "PRODUCTS": "Produkty" }
+      },
+      "EVALUATION": { "TITLE": "Oceń kompletność" },
+      "PRODUCTS": {
+        "TITLE": "Kompletność produktów",
+        "EMPTY": "Brak produktów w tym katalogu",
+        "COLUMNS": { "IMAGE": "Obraz", "NAME": "Nazwa", "CODE": "SKU", "COMPLETENESS": "Kompletność", "MISSING": "Niekompletne" }
+      },
+      "PRODUCT": {
+        "TITLE": "Kompletność",
+        "CHANNEL": "Kanał",
+        "TOTAL": "Kompletność",
+        "DETAILS": "Według aspektu",
+        "NO_CHANNELS": "Żaden kanał nie publikuje katalogu tego produktu",
+        "TOOLBAR": { "EVALUATE": "Oceń i zapisz" }
+      }
+    },
+    "WIDGET": { "TITLE": "Kompletność", "NONE": "Brak kanałów" },
+    "JOB": { "STARTED": "Rozpoczęto", "FINISHED": "Zakończono", "ELAPSED": "Upłynęło", "PROCESSED": "Przetworzone", "ERRORS": "Błędy" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "Usunąć kanały ({count})? Ich wyniki kompletności również zostaną usunięte.",
+      "CLOSE_CONFIRMATION": "Masz niezapisane zmiany. Czy na pewno chcesz zamknąć?",
+      "SAVED": "Zapisano kompletność"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Canali" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Canali",
+        "EMPTY": "Nessun canale",
+        "COLUMNS": { "NAME": "Nome", "CATALOG": "Catalogo", "COMPLETENESS": "Completezza", "LANGUAGES": "Lingue", "CURRENCIES": "Valute" },
+        "TOOLBAR": { "REFRESH": "Aggiorna", "ADD": "Aggiungi", "DELETE": "Elimina" },
+        "ACTIONS": { "EVALUATE": "Valuta", "PRODUCTS": "Prodotti", "DELETE": "Elimina" }
+      },
+      "DETAILS": {
+        "TITLE": "Canale",
+        "NEW": "Nuovo canale",
+        "FIELDS": {
+          "NAME": "Nome",
+          "NAME_HINT": "Solo lettere latine, cifre e _; usato nel campo dell'indice prodotti completeness_<name>",
+          "NAME_ERROR": "Usare solo lettere latine, cifre e _",
+          "LANGUAGES": "Lingue",
+          "LANGUAGES_HINT": "Descrizioni e SEO vengono verificati in queste lingue",
+          "CURRENCIES": "Valute",
+          "CURRENCIES_HINT": "I prezzi vengono verificati in queste valute",
+          "CATALOG": "Catalogo",
+          "EVALUATOR": "Valutatore",
+          "EVALUATOR_HINT": "Logica di valutazione della completezza"
+        },
+        "TOOLBAR": { "SAVE": "Salva", "RESET": "Reimposta", "EVALUATE": "Valuta", "DELETE": "Elimina" },
+        "WIDGETS": { "PRODUCTS": "Prodotti" }
+      },
+      "EVALUATION": { "TITLE": "Valuta completezza" },
+      "PRODUCTS": {
+        "TITLE": "Completezza dei prodotti",
+        "EMPTY": "Nessun prodotto in questo catalogo",
+        "COLUMNS": { "IMAGE": "Immagine", "NAME": "Nome", "CODE": "SKU", "COMPLETENESS": "Completezza", "MISSING": "Incompleto" }
+      },
+      "PRODUCT": {
+        "TITLE": "Completezza",
+        "CHANNEL": "Canale",
+        "TOTAL": "Completezza",
+        "DETAILS": "Per aspetto",
+        "NO_CHANNELS": "Nessun canale pubblica il catalogo di questo prodotto",
+        "TOOLBAR": { "EVALUATE": "Valuta e salva" }
+      }
+    },
+    "WIDGET": { "TITLE": "Completezza", "NONE": "Nessun canale" },
+    "JOB": { "STARTED": "Avviato", "FINISHED": "Completato", "ELAPSED": "Tempo trascorso", "PROCESSED": "Elaborato", "ERRORS": "Errori" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "Eliminare {count} canale/i? Verranno eliminati anche i relativi risultati di completezza.",
+      "CLOSE_CONFIRMATION": "Ci sono modifiche non salvate. Chiudere comunque?",
+      "SAVED": "Completezza salvata"
+    }
+  }
+}

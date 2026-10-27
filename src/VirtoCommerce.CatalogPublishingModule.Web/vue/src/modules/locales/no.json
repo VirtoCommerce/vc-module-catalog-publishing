@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Kanaler" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kanaler",
+        "EMPTY": "Ingen kanaler",
+        "COLUMNS": { "NAME": "Navn", "CATALOG": "Katalog", "COMPLETENESS": "Fullstendighet", "LANGUAGES": "Språk", "CURRENCIES": "Valutaer" },
+        "TOOLBAR": { "REFRESH": "Oppdater", "ADD": "Legg til", "DELETE": "Slett" },
+        "ACTIONS": { "EVALUATE": "Vurder", "PRODUCTS": "Produkter", "DELETE": "Slett" }
+      },
+      "DETAILS": {
+        "TITLE": "Kanal",
+        "NEW": "Ny kanal",
+        "FIELDS": {
+          "NAME": "Navn",
+          "NAME_HINT": "Bare latinske bokstaver, sifre og _; brukes i produktindeksfeltet completeness_<name>",
+          "NAME_ERROR": "Bruk bare latinske bokstaver, sifre og _",
+          "LANGUAGES": "Språk",
+          "LANGUAGES_HINT": "Beskrivelser og SEO kontrolleres på disse språkene",
+          "CURRENCIES": "Valutaer",
+          "CURRENCIES_HINT": "Priser kontrolleres i disse valutaene",
+          "CATALOG": "Katalog",
+          "EVALUATOR": "Evalueringsmetode",
+          "EVALUATOR_HINT": "Logikk for vurdering av fullstendighet"
+        },
+        "TOOLBAR": { "SAVE": "Lagre", "RESET": "Tilbakestill", "EVALUATE": "Vurder", "DELETE": "Slett" },
+        "WIDGETS": { "PRODUCTS": "Produkter" }
+      },
+      "EVALUATION": { "TITLE": "Vurder fullstendighet" },
+      "PRODUCTS": {
+        "TITLE": "Produktenes fullstendighet",
+        "EMPTY": "Ingen produkter i denne katalogen",
+        "COLUMNS": { "IMAGE": "Bilde", "NAME": "Navn", "CODE": "SKU", "COMPLETENESS": "Fullstendighet", "MISSING": "Ufullstendig" }
+      },
+      "PRODUCT": {
+        "TITLE": "Fullstendighet",
+        "CHANNEL": "Kanal",
+        "TOTAL": "Fullstendighet",
+        "DETAILS": "Etter aspekt",
+        "NO_CHANNELS": "Ingen kanal publiserer katalogen til dette produktet",
+        "TOOLBAR": { "EVALUATE": "Vurder og lagre" }
+      }
+    },
+    "WIDGET": { "TITLE": "Fullstendighet", "NONE": "Ingen kanaler" },
+    "JOB": { "STARTED": "Startet", "FINISHED": "Fullført", "ELAPSED": "Medgått tid", "PROCESSED": "Behandlet", "ERRORS": "Feil" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "Slette {count} kanal(er)? Fullstendighetsresultatene deres slettes også.",
+      "CLOSE_CONFIRMATION": "Du har ulagrede endringer. Er du sikker på at du vil lukke?",
+      "SAVED": "Fullstendighet lagret"
+    }
+  }
+}

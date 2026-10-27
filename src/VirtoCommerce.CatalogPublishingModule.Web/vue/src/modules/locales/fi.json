@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Kanavat" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kanavat",
+        "EMPTY": "Ei kanavia",
+        "COLUMNS": { "NAME": "Nimi", "CATALOG": "Katalogi", "COMPLETENESS": "Valmius", "LANGUAGES": "Kielet", "CURRENCIES": "Valuutat" },
+        "TOOLBAR": { "REFRESH": "Päivitä", "ADD": "Lisää", "DELETE": "Poista" },
+        "ACTIONS": { "EVALUATE": "Arvioi", "PRODUCTS": "Tuotteet", "DELETE": "Poista" }
+      },
+      "DETAILS": {
+        "TITLE": "Kanava",
+        "NEW": "Uusi kanava",
+        "FIELDS": {
+          "NAME": "Nimi",
+          "NAME_HINT": "Vain latinalaiset kirjaimet, numerot ja _; käytetään tuoteindeksin kentässä completeness_<name>",
+          "NAME_ERROR": "Käytä vain latinalaisia kirjaimia, numeroita ja _",
+          "LANGUAGES": "Kielet",
+          "LANGUAGES_HINT": "Kuvaukset ja SEO tarkistetaan näillä kielillä",
+          "CURRENCIES": "Valuutat",
+          "CURRENCIES_HINT": "Hinnat tarkistetaan näissä valuutoissa",
+          "CATALOG": "Katalogi",
+          "EVALUATOR": "Arvioija",
+          "EVALUATOR_HINT": "Valmiuden arviointilogiikka"
+        },
+        "TOOLBAR": { "SAVE": "Tallenna", "RESET": "Palauta", "EVALUATE": "Arvioi", "DELETE": "Poista" },
+        "WIDGETS": { "PRODUCTS": "Tuotteet" }
+      },
+      "EVALUATION": { "TITLE": "Arvioi valmius" },
+      "PRODUCTS": {
+        "TITLE": "Tuotteiden valmius",
+        "EMPTY": "Tässä katalogissa ei ole tuotteita",
+        "COLUMNS": { "IMAGE": "Kuva", "NAME": "Nimi", "CODE": "SKU", "COMPLETENESS": "Valmius", "MISSING": "Puutteellinen" }
+      },
+      "PRODUCT": {
+        "TITLE": "Valmius",
+        "CHANNEL": "Kanava",
+        "TOTAL": "Valmius",
+        "DETAILS": "Osa-alueittain",
+        "NO_CHANNELS": "Mikään kanava ei julkaise tämän tuotteen katalogia",
+        "TOOLBAR": { "EVALUATE": "Arvioi ja tallenna" }
+      }
+    },
+    "WIDGET": { "TITLE": "Valmius", "NONE": "Ei kanavia" },
+    "JOB": { "STARTED": "Aloitettu", "FINISHED": "Valmis", "ELAPSED": "Kulunut aika", "PROCESSED": "Käsitelty", "ERRORS": "Virheet" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "Poistetaanko {count} kanava(a)? Myös niiden valmiustulokset poistetaan.",
+      "CLOSE_CONFIRMATION": "Sinulla on tallentamattomia muutoksia. Haluatko varmasti sulkea?",
+      "SAVED": "Valmius tallennettu"
+    }
+  }
+}

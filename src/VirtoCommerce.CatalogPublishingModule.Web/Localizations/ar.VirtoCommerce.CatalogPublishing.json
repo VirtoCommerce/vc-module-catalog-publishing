@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "channel:access": "فتح قائمة القنوات",
+    "channel:create": "إنشاء قناة",
+    "channel:read": "عرض القناة",
+    "channel:update": "تحديث القناة",
+    "channel:delete": "حذف القناة"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "remote": { "name": "catalogpublishing_admin", "exposed": "./Module" },
+  "contributions": {
+    "menu": [
+      {
+        "id": "channels",
+        "sectionId": "configuration",
+        "title": "Channels",
+        "icon": "lucide-list-checks",
+        "route": "/channels",
+        "permission": "channel:access",
+        "priority": 70,
+        "replaces": "legacy.channels"
+      }
+    ]
+  }
+}

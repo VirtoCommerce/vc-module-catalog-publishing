@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Channels" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Channels",
+        "EMPTY": "No channels",
+        "COLUMNS": { "NAME": "Name", "CATALOG": "Catalog", "COMPLETENESS": "Completeness", "LANGUAGES": "Languages", "CURRENCIES": "Currencies" },
+        "TOOLBAR": { "REFRESH": "Refresh", "ADD": "Add", "DELETE": "Delete" },
+        "ACTIONS": { "EVALUATE": "Evaluate", "PRODUCTS": "Products", "DELETE": "Delete" }
+      },
+      "DETAILS": {
+        "TITLE": "Channel",
+        "NEW": "New channel",
+        "FIELDS": {
+          "NAME": "Name",
+          "NAME_HINT": "Latin letters, digits and _ only; used in the product index field completeness_<name>",
+          "NAME_ERROR": "Use Latin letters, digits and _ only",
+          "LANGUAGES": "Languages",
+          "LANGUAGES_HINT": "Descriptions and SEO are checked in these languages",
+          "CURRENCIES": "Currencies",
+          "CURRENCIES_HINT": "Prices are checked in these currencies",
+          "CATALOG": "Catalog",
+          "EVALUATOR": "Evaluator",
+          "EVALUATOR_HINT": "Completeness evaluation logic"
+        },
+        "TOOLBAR": { "SAVE": "Save", "RESET": "Reset", "EVALUATE": "Evaluate", "DELETE": "Delete" },
+        "WIDGETS": { "PRODUCTS": "Products" }
+      },
+      "EVALUATION": { "TITLE": "Evaluate completeness" },
+      "PRODUCTS": {
+        "TITLE": "Product completeness",
+        "EMPTY": "No products in this catalog",
+        "COLUMNS": { "IMAGE": "Image", "NAME": "Name", "CODE": "SKU", "COMPLETENESS": "Completeness", "MISSING": "Incomplete" }
+      },
+      "PRODUCT": {
+        "TITLE": "Completeness",
+        "CHANNEL": "Channel",
+        "TOTAL": "Completeness",
+        "DETAILS": "By aspect",
+        "NO_CHANNELS": "No channel publishes this product's catalog",
+        "TOOLBAR": { "EVALUATE": "Evaluate and save" }
+      }
+    },
+    "WIDGET": { "TITLE": "Completeness", "NONE": "No channels" },
+    "JOB": { "STARTED": "Started", "FINISHED": "Finished", "ELAPSED": "Elapsed", "PROCESSED": "Processed", "ERRORS": "Errors" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "Delete {count} channel(s)? Their completeness results are deleted too.",
+      "CLOSE_CONFIRMATION": "You have unsaved changes. Are you sure you want to close?",
+      "SAVED": "Completeness saved"
+    }
+  }
+}

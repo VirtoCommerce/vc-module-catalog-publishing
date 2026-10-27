@@ -1,0 +1,53 @@
+{
+  "CHANNELS": {
+    "MENU": { "TITLE": "Каналы" },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Каналы",
+        "EMPTY": "Нет каналов",
+        "COLUMNS": { "NAME": "Имя", "CATALOG": "Каталог", "COMPLETENESS": "Полнота", "LANGUAGES": "Языки", "CURRENCIES": "Валюты" },
+        "TOOLBAR": { "REFRESH": "Обновить", "ADD": "Добавить", "DELETE": "Удалить" },
+        "ACTIONS": { "EVALUATE": "Оценить", "PRODUCTS": "Товары", "DELETE": "Удалить" }
+      },
+      "DETAILS": {
+        "TITLE": "Канал",
+        "NEW": "Новый канал",
+        "FIELDS": {
+          "NAME": "Имя",
+          "NAME_HINT": "Только латинские буквы, цифры и _; используется в поле индекса товаров completeness_<name>",
+          "NAME_ERROR": "Используйте только латинские буквы, цифры и _",
+          "LANGUAGES": "Языки",
+          "LANGUAGES_HINT": "Описания и SEO проверяются на этих языках",
+          "CURRENCIES": "Валюты",
+          "CURRENCIES_HINT": "Цены проверяются в этих валютах",
+          "CATALOG": "Каталог",
+          "EVALUATOR": "Оценщик",
+          "EVALUATOR_HINT": "Логика оценки полноты"
+        },
+        "TOOLBAR": { "SAVE": "Сохранить", "RESET": "Сбросить", "EVALUATE": "Оценить", "DELETE": "Удалить" },
+        "WIDGETS": { "PRODUCTS": "Товары" }
+      },
+      "EVALUATION": { "TITLE": "Оценить полноту" },
+      "PRODUCTS": {
+        "TITLE": "Полнота товаров",
+        "EMPTY": "В этом каталоге нет товаров",
+        "COLUMNS": { "IMAGE": "Изображение", "NAME": "Имя", "CODE": "SKU", "COMPLETENESS": "Полнота", "MISSING": "Не заполнено" }
+      },
+      "PRODUCT": {
+        "TITLE": "Полнота",
+        "CHANNEL": "Канал",
+        "TOTAL": "Полнота",
+        "DETAILS": "По аспектам",
+        "NO_CHANNELS": "Ни один канал не публикует каталог этого товара",
+        "TOOLBAR": { "EVALUATE": "Оценить и сохранить" }
+      }
+    },
+    "WIDGET": { "TITLE": "Полнота", "NONE": "Нет каналов" },
+    "JOB": { "STARTED": "Начато", "FINISHED": "Завершено", "ELAPSED": "Прошло времени", "PROCESSED": "Обработано", "ERRORS": "Ошибки" },
+    "ALERTS": {
+      "DELETE_CHANNELS": "Удалить каналы ({count})? Их результаты оценки полноты тоже будут удалены.",
+      "CLOSE_CONFIRMATION": "У вас есть несохранённые изменения. Вы уверены, что хотите закрыть?",
+      "SAVED": "Полнота сохранена"
+    }
+  }
+}
